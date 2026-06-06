@@ -1,0 +1,289 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后勤报修运维系统 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/repair.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="rep-hero">
+        <div class="rep-hero-content">
+            <h1><i class="fas fa-tools"></i> 后勤报修运维系统</h1>
+            <p>一键报修 · 进度追踪 · 维修评价 · 快速响应</p>
+            <div class="rep-hero-stats">
+                <div class="rep-stat">
+                    <span class="rep-stat-num" data-target="12">0</span>
+                    <span class="rep-stat-label">待处理</span>
+                </div>
+                <div class="rep-stat">
+                    <span class="rep-stat-num" data-target="8">0</span>
+                    <span class="rep-stat-label">处理中</span>
+                </div>
+                <div class="rep-stat">
+                    <span class="rep-stat-num" data-target="156">0</span>
+                    <span class="rep-stat-label">已完成</span>
+                </div>
+                <div class="rep-stat">
+                    <span class="rep-stat-num" data-target="98">0</span>
+                    <span class="rep-stat-label">满意度%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="rep-tabs-section">
+        <div class="rep-tabs-header">
+            <button class="rep-tab active" data-tab="submit"><i class="fas fa-plus-circle"></i><span>报修提交</span></button>
+            <button class="rep-tab" data-tab="progress"><i class="fas fa-tasks"></i><span>进度查询</span></button>
+            <button class="rep-tab" data-tab="evaluate"><i class="fas fa-star"></i><span>维修评价</span></button>
+        </div>
+    </section>
+
+    <div class="rep-tab-content active" id="submit">
+        <div class="rep-container">
+            <div class="rep-submit-layout">
+                <div class="rep-form-section">
+                    <h2><i class="fas fa-edit"></i> 提交报修申请</h2>
+                    <div class="rep-type-select">
+                        <h3>选择报修类型</h3>
+                        <div class="rep-type-grid">
+                            <div class="rep-type-card" data-type="water">
+                                <i class="fas fa-faucet"></i>
+                                <span>水电维修</span>
+                            </div>
+                            <div class="rep-type-card" data-type="furniture">
+                                <i class="fas fa-couch"></i>
+                                <span>家具维修</span>
+                            </div>
+                            <div class="rep-type-card" data-type="network">
+                                <i class="fas fa-wifi"></i>
+                                <span>网络故障</span>
+                            </div>
+                            <div class="rep-type-card" data-type="electric">
+                                <i class="fas fa-plug"></i>
+                                <span>电器维修</span>
+                            </div>
+                            <div class="rep-type-card" data-type="door">
+                                <i class="fas fa-door-open"></i>
+                                <span>门窗维修</span>
+                            </div>
+                            <div class="rep-type-card" data-type="other">
+                                <i class="fas fa-question-circle"></i>
+                                <span>其他报修</span>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="repairForm">
+                        <div class="rep-form-row">
+                            <div class="rep-form-group">
+                                <label>报修区域</label>
+                                <select id="repArea" required>
+                                    <option value="">请选择区域</option>
+                                    <option>宿舍区</option>
+                                    <option>教学区</option>
+                                    <option>图书馆</option>
+                                    <option>食堂</option>
+                                    <option>行政楼</option>
+                                    <option>其他</option>
+                                </select>
+                            </div>
+                            <div class="rep-form-group">
+                                <label>具体位置</label>
+                                <input type="text" id="repLocation" placeholder="如：学生公寓2号楼302室" required>
+                            </div>
+                        </div>
+                        <div class="rep-form-group">
+                            <label>问题描述</label>
+                            <textarea id="repDesc" placeholder="请详细描述报修问题，如故障现象、发生时间等..." rows="4" required></textarea>
+                        </div>
+                        <div class="rep-form-group">
+                            <label>上传图片（可选）</label>
+                            <div class="rep-upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>点击或拖拽上传图片</span>
+                                <small>支持 JPG/PNG，最大5MB</small>
+                            </div>
+                        </div>
+                        <div class="rep-form-row">
+                            <div class="rep-form-group">
+                                <label>联系人</label>
+                                <input type="text" id="repContact" placeholder="您的姓名" required>
+                            </div>
+                            <div class="rep-form-group">
+                                <label>联系电话</label>
+                                <input type="tel" id="repPhone" placeholder="手机号码" required>
+                            </div>
+                        </div>
+                        <div class="rep-form-group">
+                            <label>期望处理时间</label>
+                            <div class="rep-urgency">
+                                <label class="rep-urgency-option">
+                                    <input type="radio" name="urgency" value="normal" checked>
+                                    <span class="rep-urgency-label normal">一般（3天内）</span>
+                                </label>
+                                <label class="rep-urgency-option">
+                                    <input type="radio" name="urgency" value="urgent">
+                                    <span class="rep-urgency-label urgent">紧急（24小时内）</span>
+                                </label>
+                                <label class="rep-urgency-option">
+                                    <input type="radio" name="urgency" value="critical">
+                                    <span class="rep-urgency-label critical">非常紧急（立即处理）</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="rep-submit-btn"><i class="fas fa-paper-plane"></i> 提交报修</button>
+                    </form>
+                </div>
+                <div class="rep-sidebar">
+                    <div class="rep-notice-card">
+                        <h3><i class="fas fa-bell"></i> 报修须知</h3>
+                        <ul>
+                            <li>请如实填写报修信息，便于维修人员快速定位问题</li>
+                            <li>紧急报修请选择"非常紧急"，后勤将优先处理</li>
+                            <li>上传故障照片可加快维修效率</li>
+                            <li>维修完成后请及时评价，帮助我们改进服务</li>
+                            <li>如需取消报修，请在"进度查询"中操作</li>
+                        </ul>
+                    </div>
+                    <div class="rep-hot-card">
+                        <h3><i class="fas fa-fire"></i> 常见问题</h3>
+                        <div class="rep-faq-item">
+                            <h4>宿舍断电怎么办？</h4>
+                            <p>先检查是否超负荷用电，如非人为原因请提交水电维修报修</p>
+                        </div>
+                        <div class="rep-faq-item">
+                            <h4>WiFi连不上？</h4>
+                            <p>尝试重启设备，如仍无法连接请提交网络故障报修</p>
+                        </div>
+                        <div class="rep-faq-item">
+                            <h4>空调不制冷？</h4>
+                            <p>检查遥控器设置和滤网，如仍无效请提交电器维修报修</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rep-tab-content" id="progress">
+        <div class="rep-container">
+            <div class="rep-progress-header">
+                <h2><i class="fas fa-tasks"></i> 我的报修记录</h2>
+                <div class="rep-filter-tabs">
+                    <button class="rep-filter-tab active" data-status="all">全部</button>
+                    <button class="rep-filter-tab" data-status="pending">待处理</button>
+                    <button class="rep-filter-tab" data-status="processing">处理中</button>
+                    <button class="rep-filter-tab" data-status="completed">已完成</button>
+                </div>
+            </div>
+            <div class="rep-record-list" id="recordList"></div>
+        </div>
+    </div>
+
+    <div class="rep-tab-content" id="evaluate">
+        <div class="rep-container">
+            <div class="rep-eval-header">
+                <h2><i class="fas fa-star"></i> 维修评价</h2>
+                <p>您的评价将帮助我们提升服务质量</p>
+            </div>
+            <div class="rep-eval-list" id="evalList"></div>
+        </div>
+    </div>
+
+    <div class="rep-modal" id="detailModal">
+        <div class="rep-modal-content">
+            <div class="rep-modal-header">
+                <h3 id="detailTitle">报修详情</h3>
+                <button class="rep-modal-close" id="closeDetailModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="rep-modal-body" id="detailBody"></div>
+        </div>
+    </div>
+
+    <div class="rep-modal" id="evalModal">
+        <div class="rep-modal-content">
+            <div class="rep-modal-header">
+                <h3>评价维修服务</h3>
+                <button class="rep-modal-close" id="closeEvalModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="rep-modal-body">
+                <div class="rep-eval-form">
+                    <div class="rep-eval-stars" id="evalStars">
+                        <i class="fas fa-star" data-rating="1"></i>
+                        <i class="fas fa-star" data-rating="2"></i>
+                        <i class="fas fa-star" data-rating="3"></i>
+                        <i class="fas fa-star" data-rating="4"></i>
+                        <i class="fas fa-star" data-rating="5"></i>
+                    </div>
+                    <div class="rep-eval-tags">
+                        <span class="rep-eval-tag" data-tag="响应迅速">响应迅速</span>
+                        <span class="rep-eval-tag" data-tag="态度友好">态度友好</span>
+                        <span class="rep-eval-tag" data-tag="维修专业">维修专业</span>
+                        <span class="rep-eval-tag" data-tag="一次修好">一次修好</span>
+                        <span class="rep-eval-tag" data-tag="环境整洁">环境整洁</span>
+                    </div>
+                    <textarea id="evalComment" placeholder="请输入您的评价内容..." rows="3"></textarea>
+                    <button class="rep-submit-btn" id="submitEval"><i class="fas fa-check"></i> 提交评价</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rep-toast" id="repToast"></div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 智慧校园综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/repair.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

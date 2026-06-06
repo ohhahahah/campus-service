@@ -1,0 +1,97 @@
+﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻公告 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/news.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+                <a href="news.html" class="nav-link active">新闻公告</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="nw-hero">
+        <div class="nw-hero-content">
+            <h1><i class="fas fa-newspaper"></i> 校园新闻公告中心</h1>
+            <p>校园通知 · 新闻动态 · 活动预告 · 重要公告</p>
+        </div>
+    </section>
+
+    <section class="nw-search-section">
+        <div class="nw-container">
+            <div class="nw-search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索通知、新闻、公告...">
+                <button id="searchBtn">搜索</button>
+            </div>
+            <div class="nw-filter-bar">
+                <button class="nw-filter active" data-cat="all">全部</button>
+                <button class="nw-filter" data-cat="教务通知">教务通知</button>
+                <button class="nw-filter" data-cat="校园活动">校园活动</button>
+                <button class="nw-filter" data-cat="后勤公告">后勤公告</button>
+                <button class="nw-filter" data-cat="安全提示">安全提示</button>
+                <button class="nw-filter" data-cat="新闻动态">新闻动态</button>
+                <button class="nw-filter" data-cat="社团活动">社团活动</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="nw-pinned-section">
+        <div class="nw-container">
+            <div class="nw-section-header"><h2><i class="fas fa-thumbtack"></i> 置顶公告</h2></div>
+            <div class="nw-pinned-list" id="pinnedList"></div>
+        </div>
+    </section>
+
+    <section class="nw-news-section">
+        <div class="nw-container">
+            <div class="nw-section-header"><h2><i class="fas fa-list-alt"></i> 全部通知</h2></div>
+            <div class="nw-news-list" id="newsList"></div>
+            <div class="nw-empty" id="emptyState" style="display:none;">
+                <i class="fas fa-search"></i>
+                <p>未找到相关内容</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="nw-modal" id="detailModal">
+        <div class="nw-modal-content">
+            <div class="nw-modal-header"><h3 id="modalTitle"></h3><button class="nw-modal-close" id="closeModal"><i class="fas fa-times"></i></button></div>
+            <div class="nw-modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>智慧校园</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="secondhand.html">二手市场</a></li><li><a href="news.html">新闻公告</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：XX大学信息中心</p><p>电话：010-12345678</p><p>邮箱：support@campus.edu</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 智慧校园综合服务平台</p></div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/news.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

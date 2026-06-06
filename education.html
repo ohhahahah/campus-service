@@ -1,0 +1,347 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教务教学服务中心 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/education.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="edu-hero">
+        <div class="edu-hero-content">
+            <h1><i class="fas fa-graduation-cap"></i> 教务教学服务中心</h1>
+            <p>课程查询 · 成绩管理 · 选课报名 · 考试安排 · 证书报考</p>
+            <div class="edu-hero-stats">
+                <div class="edu-stat">
+                    <span class="edu-stat-num" data-target="128">0</span>
+                    <span class="edu-stat-label">开设课程</span>
+                </div>
+                <div class="edu-stat">
+                    <span class="edu-stat-num" data-target="56">0</span>
+                    <span class="edu-stat-label">在授教师</span>
+                </div>
+                <div class="edu-stat">
+                    <span class="edu-stat-num" data-target="3200">0</span>
+                    <span class="edu-stat-label">在校学生</span>
+                </div>
+                <div class="edu-stat">
+                    <span class="edu-stat-num" data-target="98">0</span>
+                    <span class="edu-stat-label">毕业率%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="edu-tabs-section">
+        <div class="edu-tabs-header">
+            <button class="edu-tab active" data-tab="schedule"><i class="fas fa-calendar-alt"></i><span>课程查询</span></button>
+            <button class="edu-tab" data-tab="scores"><i class="fas fa-chart-line"></i><span>成绩通知</span></button>
+            <button class="edu-tab" data-tab="adjust"><i class="fas fa-exchange-alt"></i><span>调课信息</span></button>
+            <button class="edu-tab" data-tab="certificate"><i class="fas fa-certificate"></i><span>证书报考</span></button>
+            <button class="edu-tab" data-tab="exams"><i class="fas fa-file-alt"></i><span>考试安排</span></button>
+        </div>
+    </section>
+
+    <div class="edu-tab-content active" id="schedule">
+        <div class="edu-container">
+            <div class="edu-schedule-header">
+                <h2><i class="fas fa-calendar-alt"></i> 本周课程表</h2>
+                <div class="edu-week-nav">
+                    <button class="edu-nav-btn" id="prevWeek"><i class="fas fa-chevron-left"></i></button>
+                    <span id="weekTitle">第12周 (2026年5月18日-5月24日)</span>
+                    <button class="edu-nav-btn" id="nextWeek"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="edu-schedule-grid" id="scheduleGrid"></div>
+            <div class="edu-schedule-legend">
+                <div class="edu-legend-item"><span class="edu-legend-color" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)"></span>必修课</div>
+                <div class="edu-legend-item"><span class="edu-legend-color" style="background:linear-gradient(135deg,#10b981,#059669)"></span>选修课</div>
+                <div class="edu-legend-item"><span class="edu-legend-color" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"></span>实验课</div>
+                <div class="edu-legend-item"><span class="edu-legend-color" style="background:linear-gradient(135deg,#f59e0b,#d97706)"></span>体育课</div>
+            </div>
+            <div class="edu-today-courses">
+                <h3><i class="fas fa-clock"></i> 今日课程提醒</h3>
+                <div class="edu-today-list" id="todayCourses"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="edu-tab-content" id="scores">
+        <div class="edu-container">
+            <div class="edu-score-header">
+                <h2><i class="fas fa-chart-line"></i> 成绩查询</h2>
+                <div class="edu-score-filter">
+                    <select id="scoreTerm">
+                        <option>2025-2026学年第二学期</option>
+                        <option>2025-2026学年第一学期</option>
+                        <option>2024-2025学年第二学期</option>
+                        <option>2024-2025学年第一学期</option>
+                    </select>
+                    <button class="edu-export-btn" id="exportScore"><i class="fas fa-download"></i> 导出成绩单</button>
+                </div>
+            </div>
+            <div class="edu-score-summary">
+                <div class="edu-summary-card">
+                    <div class="edu-summary-icon"><i class="fas fa-star"></i></div>
+                    <div class="edu-summary-info">
+                        <span class="edu-summary-value">3.78</span>
+                        <span class="edu-summary-label">平均绩点</span>
+                    </div>
+                </div>
+                <div class="edu-summary-card">
+                    <div class="edu-summary-icon"><i class="fas fa-book"></i></div>
+                    <div class="edu-summary-info">
+                        <span class="edu-summary-value">48</span>
+                        <span class="edu-summary-label">总学分</span>
+                    </div>
+                </div>
+                <div class="edu-summary-card">
+                    <div class="edu-summary-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="edu-summary-info">
+                        <span class="edu-summary-value">75%</span>
+                        <span class="edu-summary-label">优秀率</span>
+                    </div>
+                </div>
+                <div class="edu-summary-card">
+                    <div class="edu-summary-icon"><i class="fas fa-medal"></i></div>
+                    <div class="edu-summary-info">
+                        <span class="edu-summary-value">12/320</span>
+                        <span class="edu-summary-label">专业排名</span>
+                    </div>
+                </div>
+            </div>
+            <div class="edu-score-chart">
+                <canvas id="scoreChart"></canvas>
+            </div>
+            <div class="edu-score-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>课程名称</th>
+                            <th>学分</th>
+                            <th>成绩</th>
+                            <th>绩点</th>
+                            <th>考核方式</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="edu-tab-content" id="adjust">
+        <div class="edu-container">
+            <div class="edu-adjust-header">
+                <h2><i class="fas fa-exchange-alt"></i> 调课信息公告</h2>
+                <div class="edu-adjust-filter">
+                    <select id="adjustWeek">
+                        <option>本周</option>
+                        <option>下周</option>
+                        <option>本月</option>
+                        <option>全部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="edu-adjust-list" id="adjustList"></div>
+            <div class="edu-adjust-apply">
+                <h3><i class="fas fa-edit"></i> 教师调课申请</h3>
+                <form id="adjustForm">
+                    <div class="edu-form-row">
+                        <div class="edu-form-group">
+                            <label>原上课时间</label>
+                            <input type="text" placeholder="如：周一 1-2节" required>
+                        </div>
+                        <div class="edu-form-group">
+                            <label>调整后时间</label>
+                            <input type="text" placeholder="如：周三 3-4节" required>
+                        </div>
+                    </div>
+                    <div class="edu-form-row">
+                        <div class="edu-form-group">
+                            <label>课程名称</label>
+                            <input type="text" placeholder="请输入课程名称" required>
+                        </div>
+                        <div class="edu-form-group">
+                            <label>调课原因</label>
+                            <select required>
+                                <option value="">请选择原因</option>
+                                <option>出差开会</option>
+                                <option>身体原因</option>
+                                <option>课程调整</option>
+                                <option>其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="edu-form-group">
+                        <label>详细说明</label>
+                        <textarea placeholder="请详细说明调课原因及补课安排..." rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="edu-submit-btn"><i class="fas fa-paper-plane"></i> 提交申请</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="edu-tab-content" id="certificate">
+        <div class="edu-container">
+            <div class="edu-cert-header">
+                <h2><i class="fas fa-certificate"></i> 证书报考中心</h2>
+            </div>
+            <div class="edu-notice-section">
+                <div class="edu-notice-header">
+                    <h3><i class="fas fa-bullhorn"></i> 考试最新通知</h3>
+                </div>
+                <div class="edu-notice-list" id="examNoticeList"></div>
+            </div>
+            <div class="edu-cert-categories">
+                <div class="edu-cert-cat" data-cat="language">
+                    <div class="edu-cert-cat-icon"><i class="fas fa-language"></i></div>
+                    <h3>语言类</h3>
+                    <p>CET-4/CET-6 · 雅思 · 托福 · 日语N1/N2</p>
+                </div>
+                <div class="edu-cert-cat" data-cat="computer">
+                    <div class="edu-cert-cat-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>计算机类</h3>
+                    <p>计算机二级 · 软考 · 华为认证 · 思科认证</p>
+                </div>
+                <div class="edu-cert-cat" data-cat="teacher">
+                    <div class="edu-cert-cat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h3>教师资格</h3>
+                    <p>小学教资 · 中学教资 · 普通话等级</p>
+                </div>
+                <div class="edu-cert-cat" data-cat="profession">
+                    <div class="edu-cert-cat-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3>职业资格</h3>
+                    <p>会计初级 · 证券从业 · 银行从业 · 法律职业</p>
+                </div>
+            </div>
+            <div class="edu-cert-list" id="certList"></div>
+            <div class="edu-cert-my">
+                <h3><i class="fas fa-id-badge"></i> 我的报考记录</h3>
+                <div class="edu-cert-records" id="certRecords"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="edu-tab-content" id="exams">
+        <div class="edu-container">
+            <div class="edu-exam-header">
+                <h2><i class="fas fa-file-alt"></i> 考试安排</h2>
+                <div class="edu-exam-filter">
+                    <select id="examType">
+                        <option>全部考试</option>
+                        <option>期末考试</option>
+                        <option>补考</option>
+                        <option>等级考试</option>
+                    </select>
+                </div>
+            </div>
+            <div class="edu-exam-timeline" id="examTimeline"></div>
+            <div class="edu-exam-rules">
+                <h3><i class="fas fa-exclamation-triangle"></i> 考试须知</h3>
+                <div class="edu-rules-grid">
+                    <div class="edu-rule-item">
+                        <i class="fas fa-id-card"></i>
+                        <h4>携带证件</h4>
+                        <p>学生证+身份证双证齐全</p>
+                    </div>
+                    <div class="edu-rule-item">
+                        <i class="fas fa-clock"></i>
+                        <h4>提前到场</h4>
+                        <p>开考前15分钟入场</p>
+                    </div>
+                    <div class="edu-rule-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h4>禁止手机</h4>
+                        <p>手机关机放入指定位置</p>
+                    </div>
+                    <div class="edu-rule-item">
+                        <i class="fas fa-pen"></i>
+                        <h4>文具要求</h4>
+                        <p>黑色签字笔，2B铅笔</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="edu-modal" id="courseDetailModal">
+        <div class="edu-modal-content">
+            <div class="edu-modal-header">
+                <h3 id="modalTitle">课程详情</h3>
+                <button class="edu-modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="edu-modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <div class="edu-modal" id="noticeDetailModal">
+        <div class="edu-modal-content">
+            <div class="edu-modal-header">
+                <h3 id="noticeModalTitle">通知详情</h3>
+                <button class="edu-modal-close" id="closeNoticeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="edu-modal-body" id="noticeModalBody"></div>
+        </div>
+    </div>
+
+    <div class="edu-toast" id="eduToast"></div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 智慧校园综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/education.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

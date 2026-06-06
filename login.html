@@ -1,0 +1,122 @@
+﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录系统 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn active">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="lg-page">
+        <div class="lg-bg-shapes">
+            <div class="lg-shape lg-shape-1"></div>
+            <div class="lg-shape lg-shape-2"></div>
+            <div class="lg-shape lg-shape-3"></div>
+        </div>
+        <div class="lg-container">
+            <div class="lg-left">
+                <div class="lg-brand">
+                    <i class="fas fa-university"></i>
+                    <h1>智慧校园</h1>
+                    <p>一站式校园服务平台</p>
+                </div>
+                <div class="lg-features">
+                    <div class="lg-feature"><i class="fas fa-check-circle"></i><span>校园服务 · 便捷高效</span></div>
+                    <div class="lg-feature"><i class="fas fa-check-circle"></i><span>二手交易 · 场馆预约</span></div>
+                    <div class="lg-feature"><i class="fas fa-check-circle"></i><span>兼职互助 · 生活服务</span></div>
+                    <div class="lg-feature"><i class="fas fa-check-circle"></i><span>场馆预约 · 生活服务</span></div>
+                </div>
+            </div>
+            <div class="lg-right">
+                <div class="lg-card">
+                    <div class="lg-tabs">
+                        <button class="lg-tab active" data-tab="studentLogin"><i class="fas fa-user-graduate"></i><span>学生登录</span></button>
+                        <button class="lg-tab" data-tab="adminLogin"><i class="fas fa-user-shield"></i><span>管理员登录</span></button>
+                        <button class="lg-tab" data-tab="studentRegister"><i class="fas fa-user-plus"></i><span>学生注册</span></button>
+                    </div>
+
+                    <div class="lg-form-wrapper active" id="studentLoginForm">
+                        <h2>学生登录</h2>
+                        <p class="lg-subtitle">使用学号和密码登录</p>
+                        <form id="studentLogin">
+                            <div class="lg-input-group"><i class="fas fa-id-card"></i><input type="text" id="stuLoginId" placeholder="请输入学号" required></div>
+                            <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="stuLoginPwd" placeholder="请输入密码" required></div>
+                            <div class="lg-options">
+                                <label class="lg-remember"><input type="checkbox" id="stuRemember"><span>记住我</span></label>
+                                <a href="javascript:void(0)" class="lg-forgot" id="stuForgot">忘记密码？</a>
+                            </div>
+                            <button type="submit" class="lg-submit-btn"><i class="fas fa-sign-in-alt"></i> 登录</button>
+                        </form>
+                    </div>
+
+                    <div class="lg-form-wrapper" id="adminLoginForm">
+                        <h2>管理员登录</h2>
+                        <p class="lg-subtitle">系统管理员专用入口，不可注册</p>
+                        <form id="adminLogin">
+                            <div class="lg-input-group"><i class="fas fa-user-shield"></i><input type="text" id="admLoginId" placeholder="请输入管理员账号" required></div>
+                            <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="admLoginPwd" placeholder="请输入管理员密码" required></div>
+                            <div class="lg-admin-notice"><i class="fas fa-info-circle"></i><span>管理员账号由系统分配，不支持自主注册</span></div>
+                            <button type="submit" class="lg-submit-btn admin"><i class="fas fa-sign-in-alt"></i> 登录</button>
+                        </form>
+                    </div>
+
+                    <div class="lg-form-wrapper" id="studentRegisterForm">
+                        <h2>学生注册</h2>
+                        <p class="lg-subtitle">注册后可使用全部学生端功能</p>
+                        <form id="studentRegister">
+                            <div class="lg-input-group"><i class="fas fa-id-card"></i><input type="text" id="regStuId" placeholder="学号（必填，注册后不可修改）" required></div>
+                            <div class="lg-input-group"><i class="fas fa-user"></i><input type="text" id="regName" placeholder="真实姓名（必填）" required></div>
+                            <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="regPwd" placeholder="设置密码（6位以上）" required></div>
+                            <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="regPwdConfirm" placeholder="确认密码" required></div>
+                            <div class="lg-input-group"><i class="fas fa-building"></i>
+                                <select id="regDept" required>
+                                    <option value="">请选择院系（必填）</option>
+                                    <option value="数智产业学院">数智产业学院</option>
+                                    <option value="信息商务学院">信息商务学院</option>
+                                    <option value="艺术学院">艺术学院</option>
+                                    <option value="体育学院">体育学院</option>
+                                    <option value="学前教育学院">学前教育学院</option>
+                                    <option value="人文教育学院">人文教育学院</option>
+                                    <option value="育婴育幼学院">育婴育幼学院</option>
+                                </select>
+                            </div>
+                            <div class="lg-input-group"><i class="fas fa-phone"></i><input type="tel" id="regPhone" placeholder="联系电话（必填）" required></div>
+                            <div class="lg-agreement"><input type="checkbox" id="regAgree" required><span>我已阅读并同意<a href="javascript:void(0)">《用户服务协议》</a></span></div>
+                            <button type="submit" class="lg-submit-btn register"><i class="fas fa-user-plus"></i> 注册</button>
+                        </form>
+                        <p class="lg-switch-text">已有账号？<a href="javascript:void(0)" class="lg-to-login">返回登录</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lg-toast" id="lgToast"></div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/login.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

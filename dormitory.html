@@ -1,0 +1,154 @@
+﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宿舍管理 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/life.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link active">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="header-content">
+            <h1>宿舍管理</h1>
+            <p>宿舍报修 · 进度查询 · 卫生检查</p>
+        </div>
+    </section>
+
+    <div class="breadcrumb">
+        <a href="life.html"><i class="fas fa-home"></i> 生活服务</a>
+        <span class="separator">/</span>
+        <span class="current">宿舍管理</span>
+    </div>
+
+    <div class="content-section">
+        <a href="life.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+    </div>
+
+    <section class="content-section">
+        <div class="form-card">
+            <h3><i class="fas fa-tools"></i> 宿舍报修</h3>
+            <form id="repairForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>宿舍楼栋</label>
+                        <select id="building" required>
+                            <option value="">请选择楼栋</option>
+                            <option>1号楼</option>
+                            <option>2号楼</option>
+                            <option>3号楼</option>
+                            <option>4号楼</option>
+                            <option>5号楼</option>
+                            <option>6号楼</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>房间号</label>
+                        <input type="text" id="room" placeholder="如：301" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>问题类型</label>
+                    <select id="issueType" required>
+                        <option value="">请选择问题类型</option>
+                        <option>水电维修</option>
+                        <option>门窗损坏</option>
+                        <option>网络故障</option>
+                        <option>空调故障</option>
+                        <option>家具损坏</option>
+                        <option>卫生问题</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>问题描述</label>
+                    <textarea id="issueDesc" placeholder="请详细描述报修问题..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>上传图片（可选）</label>
+                    <input type="file" id="issueImg" accept="image/*" style="padding:10px">
+                </div>
+                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> 提交报修</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-clipboard-list" style="color:var(--primary-light)"></i> 报修记录</h2>
+        </div>
+        <div class="data-list" id="repairList"></div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-broom" style="color:var(--primary-light)"></i> 卫生检查通知</h2>
+        </div>
+        <div id="hygieneNotices"></div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-star" style="color:var(--primary-light)"></i> 卫生评分公示</h2>
+        </div>
+        <div class="data-list" id="scoreList"></div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 智慧校园综合服务平台 | 大学生网页设计大赛参赛作品</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dormitory.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

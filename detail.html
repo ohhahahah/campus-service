@@ -1,0 +1,71 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 智慧校园二手市场</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+    <link rel="stylesheet" href="css/detail.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link active">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="sh-nav-links">
+                    <a href="messages.html" class="sh-nav-link" title="我的私信"><i class="fas fa-comment-dots"></i></a>
+                    <a href="favorites.html" class="sh-nav-link" title="我的收藏"><i class="fas fa-heart"></i></a>
+                    <a href="orders.html" class="sh-nav-link" title="我的订单"><i class="fas fa-receipt"></i></a>
+                </div>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-breadcrumb">
+        <div class="detail-breadcrumb-inner">
+            <a href="secondhand.html"><i class="fas fa-home"></i> 首页</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="secondhand.html">二手市场</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbName">商品详情</span>
+        </div>
+    </div>
+
+    <div class="detail-main" id="detailMain">
+        <div class="detail-loading" id="detailLoading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>加载中...</span>
+        </div>
+    </div>
+
+    <div class="detail-toast" id="detailToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="detailToastMsg"></span>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/detail.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

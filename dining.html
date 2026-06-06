@@ -1,0 +1,191 @@
+﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐饮服务 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/life.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link active">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="header-content">
+            <h1>餐饮服务</h1>
+            <p>食堂菜单 · 消费账单 · 就餐记录</p>
+        </div>
+    </section>
+
+    <div class="breadcrumb">
+        <a href="life.html"><i class="fas fa-home"></i> 生活服务</a>
+        <span class="separator">/</span>
+        <span class="current">餐饮服务</span>
+    </div>
+
+    <div class="content-section">
+        <a href="life.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+    </div>
+
+    <!-- 筛选栏：食堂+时段 -->
+    <section class="content-section" style="padding-bottom:0">
+        <div class="dining-filter-bar">
+            <div class="tab-group" id="canteenTabs">
+                <button class="tab-btn active" data-canteen="1">一食堂</button>
+                <button class="tab-btn" data-canteen="2">二食堂</button>
+                <button class="tab-btn" data-canteen="3">三食堂</button>
+            </div>
+            <div class="tab-group" id="mealTabs">
+                <button class="tab-btn" data-meal="breakfast"><i class="fas fa-sun"></i> 早餐</button>
+                <button class="tab-btn active" data-meal="lunch"><i class="fas fa-cloud-sun"></i> 午餐</button>
+                <button class="tab-btn" data-meal="dinner"><i class="fas fa-moon"></i> 晚餐</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第一部分：每日推荐菜品 -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-star" style="color:#f59e0b"></i> 每日推荐菜品</h2>
+            <span class="recommend-hint">当日食堂精选招牌菜</span>
+        </div>
+        <div class="recommend-scroll" id="recommendScroll"></div>
+    </section>
+
+    <!-- 第二部分：食堂菜单浏览 -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-utensils" style="color:var(--primary-light)"></i> 今日菜单</h2>
+        </div>
+        <div class="menu-grid" id="menuGrid"></div>
+    </section>
+
+    <!-- 第三部分：每日消费账单记录 -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-file-invoice-dollar" style="color:var(--primary-light)"></i> 每日消费账单</h2>
+            <div class="bill-filter-bar">
+                <input type="date" class="bill-date-input" id="billDateInput">
+                <button class="bill-clear-btn" id="billClearAllBtn"><i class="fas fa-trash-alt"></i> 清空当日账单</button>
+            </div>
+        </div>
+        <div class="bill-table-wrap">
+            <table class="bill-table">
+                <thead>
+                    <tr>
+                        <th>消费日期</th>
+                        <th>就餐食堂</th>
+                        <th>菜品名称</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="billTableBody"></tbody>
+            </table>
+            <div class="bill-empty" id="billEmpty">
+                <i class="fas fa-receipt"></i>
+                <p>当日暂无消费记录</p>
+            </div>
+        </div>
+        <div class="bill-summary" id="billSummary" style="display:none">
+            <div class="bill-summary-item">
+                <span class="bill-summary-label">当日就餐总笔数</span>
+                <span class="bill-summary-value" id="billTotalCount">0 笔</span>
+            </div>
+            <div class="bill-summary-item">
+                <span class="bill-summary-label">当日消费总金额</span>
+                <span class="bill-summary-value bill-summary-amount" id="billTotalAmount">¥0.00</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 菜品详情弹窗（仅浏览，无加购） -->
+    <div class="dish-modal" id="dishModal">
+        <div class="dish-modal-content">
+            <button class="dish-modal-close" id="dishModalClose"><i class="fas fa-times"></i></button>
+            <div class="dish-modal-img" id="dishModalImg"></div>
+            <div class="dish-modal-body">
+                <h3 id="dishModalName"></h3>
+                <p class="dish-modal-desc" id="dishModalDesc"></p>
+                <div class="dish-modal-detail">
+                    <div class="dish-detail-item">
+                        <i class="fas fa-carrot"></i>
+                        <span>食材</span>
+                        <strong id="dishModalIngredients"></strong>
+                    </div>
+                    <div class="dish-detail-item">
+                        <i class="fas fa-fire"></i>
+                        <span>热量</span>
+                        <strong id="dishModalCalories"></strong>
+                    </div>
+                    <div class="dish-detail-item">
+                        <i class="fas fa-boxes-stacked"></i>
+                        <span>库存</span>
+                        <strong id="dishModalStock"></strong>
+                    </div>
+                </div>
+                <div class="dish-modal-footer-view">
+                    <span class="dish-modal-price" id="dishModalPrice"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 智慧校园综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dining.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

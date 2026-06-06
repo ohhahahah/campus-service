@@ -1,0 +1,214 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场馆预约系统 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/booking.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link active">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="bk-hero">
+        <div class="bk-hero-content">
+            <h1><i class="fas fa-calendar-check"></i> 校园场馆预约系统</h1>
+            <p>图书馆 · 活动室 · 操场 · 实训室 · 一键预约</p>
+            <div class="bk-hero-stats">
+                <div class="bk-stat">
+                    <span class="bk-stat-num" data-target="24">0</span>
+                    <span class="bk-stat-label">可预约场馆</span>
+                </div>
+                <div class="bk-stat">
+                    <span class="bk-stat-num" data-target="186">0</span>
+                    <span class="bk-stat-label">今日预约</span>
+                </div>
+                <div class="bk-stat">
+                    <span class="bk-stat-num" data-target="95">0</span>
+                    <span class="bk-stat-label">使用率%</span>
+                </div>
+                <div class="bk-stat">
+                    <span class="bk-stat-num" data-target="4">0</span>
+                    <span class="bk-stat-label">场馆类型</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bk-category-section">
+        <div class="bk-container">
+            <h2 class="bk-section-title"><i class="fas fa-th-large"></i> 选择场馆类型</h2>
+            <div class="bk-category-grid">
+                <div class="bk-category-card" data-type="library">
+                    <div class="bk-category-icon"><i class="fas fa-book"></i></div>
+                    <h3>图书馆</h3>
+                    <p>自习室 · 阅览室 · 研讨间</p>
+                    <span class="bk-category-count">8个可预约</span>
+                </div>
+                <div class="bk-category-card" data-type="activity">
+                    <div class="bk-category-icon"><i class="fas fa-users"></i></div>
+                    <h3>活动室</h3>
+                    <p>社团活动 · 会议厅 · 多功能厅</p>
+                    <span class="bk-category-count">6个可预约</span>
+                </div>
+                <div class="bk-category-card" data-type="stadium">
+                    <div class="bk-category-icon"><i class="fas fa-running"></i></div>
+                    <h3>操场/体育馆</h3>
+                    <p>篮球场 · 羽毛球场 · 乒乓球室</p>
+                    <span class="bk-category-count">6个可预约</span>
+                </div>
+                <div class="bk-category-card" data-type="lab">
+                    <div class="bk-category-icon"><i class="fas fa-flask"></i></div>
+                    <h3>实训室</h3>
+                    <p>计算机房 · 实验室 · 工作坊</p>
+                    <span class="bk-category-count">4个可预约</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bk-venues-section" id="venuesSection">
+        <div class="bk-container">
+            <div class="bk-venues-header">
+                <h2 class="bk-section-title"><i class="fas fa-building"></i> 场馆列表</h2>
+                <div class="bk-venues-filter">
+                    <button class="bk-filter-btn active" data-filter="all">全部</button>
+                    <button class="bk-filter-btn" data-filter="library">图书馆</button>
+                    <button class="bk-filter-btn" data-filter="activity">活动室</button>
+                    <button class="bk-filter-btn" data-filter="stadium">操场</button>
+                    <button class="bk-filter-btn" data-filter="lab">实训室</button>
+                </div>
+            </div>
+            <div class="bk-venues-grid" id="venuesGrid"></div>
+        </div>
+    </section>
+
+    <section class="bk-mybookings-section" id="myBookings">
+        <div class="bk-container">
+            <h2 class="bk-section-title"><i class="fas fa-list-alt"></i> 我的预约</h2>
+            <div class="bk-bookings-list" id="bookingsList"></div>
+        </div>
+    </section>
+
+    <div class="bk-modal" id="bookingModal">
+        <div class="bk-modal-content">
+            <div class="bk-modal-header">
+                <h3 id="bookingModalTitle">预约场馆</h3>
+                <button class="bk-modal-close" id="closeBookingModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="bk-modal-body">
+                <div class="bk-venue-preview" id="venuePreview"></div>
+                <form id="bookingForm">
+                    <input type="hidden" id="bkVenueId">
+                    <div class="bk-form-row">
+                        <div class="bk-form-group">
+                            <label>预约日期</label>
+                            <input type="date" id="bkDate" required>
+                        </div>
+                        <div class="bk-form-group">
+                            <label>预约时段</label>
+                            <select id="bkTimeSlot" required>
+                                <option value="">请选择时段</option>
+                                <option value="08:00-10:00">08:00 - 10:00</option>
+                                <option value="10:00-12:00">10:00 - 12:00</option>
+                                <option value="12:00-14:00">12:00 - 14:00</option>
+                                <option value="14:00-16:00">14:00 - 16:00</option>
+                                <option value="16:00-18:00">16:00 - 18:00</option>
+                                <option value="18:00-20:00">18:00 - 20:00</option>
+                                <option value="20:00-22:00">20:00 - 22:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="bk-form-group">
+                        <label>预约用途</label>
+                        <select id="bkPurpose" required>
+                            <option value="">请选择用途</option>
+                            <option>自习</option>
+                            <option>社团活动</option>
+                            <option>小组讨论</option>
+                            <option>课程教学</option>
+                            <option>体育锻炼</option>
+                            <option>实验实训</option>
+                            <option>会议</option>
+                            <option>其他</option>
+                        </select>
+                    </div>
+                    <div class="bk-form-group">
+                        <label>参与人数</label>
+                        <input type="number" id="bkPeople" placeholder="预计参与人数" min="1" required>
+                    </div>
+                    <div class="bk-form-group">
+                        <label>备注说明</label>
+                        <textarea id="bkNote" placeholder="如有特殊需求请备注..." rows="2"></textarea>
+                    </div>
+                    <div class="bk-time-slots-preview" id="timeSlotsPreview"></div>
+                    <button type="submit" class="bk-submit-btn"><i class="fas fa-check-circle"></i> 确认预约</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="bk-modal" id="detailModal">
+        <div class="bk-modal-content">
+            <div class="bk-modal-header">
+                <h3 id="detailModalTitle">场馆详情</h3>
+                <button class="bk-modal-close" id="closeDetailModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="bk-modal-body" id="detailBody"></div>
+        </div>
+    </div>
+
+    <div class="bk-toast" id="bkToast"></div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 智慧校园综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/booking.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

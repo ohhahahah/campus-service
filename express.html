@@ -1,0 +1,218 @@
+﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快递服务 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/life.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link active">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+                
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="header-content">
+            <h1>快递服务</h1>
+            <p>发布代取 · 自由接单 · 实时沟通</p>
+        </div>
+    </section>
+
+    <div class="breadcrumb">
+        <a href="life.html"><i class="fas fa-home"></i> 生活服务</a>
+        <span class="separator">/</span>
+        <span class="current">快递服务</span>
+    </div>
+
+    <div class="content-section">
+        <a href="life.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+    </div>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-plus-circle" style="color:var(--primary-light)"></i> 发布代取订单</h2>
+        </div>
+        <div class="form-card">
+            <form id="publishForm">
+                <h3><i class="fas fa-box"></i> 取件信息</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>快递驿站</label>
+                        <select id="stationName" required>
+                            <option value="">请选择驿站</option>
+                            <option>菜鸟驿站（北门）</option>
+                            <option>快递柜A区（东门）</option>
+                            <option>快递柜B区（南门）</option>
+                            <option>顺丰网点（西门）</option>
+                            <option>京东快递点（北门）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>取件码/快递单号</label>
+                        <input type="text" id="pickupCode" placeholder="请输入取件码或快递单号" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>包裹大小（可选）</label>
+                        <select id="packageSize">
+                            <option value="小件">小件（可手提）</option>
+                            <option value="中件">中件（需背包）</option>
+                            <option value="大件">大件（需推车）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>重量（可选）</label>
+                        <select id="packageWeight">
+                            <option value="轻">轻（1kg以内）</option>
+                            <option value="一般">一般（1-5kg）</option>
+                            <option value="重">重（5kg以上）</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:25px"><i class="fas fa-map-marker-alt"></i> 送达信息</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>收件人姓名</label>
+                        <input type="text" id="receiverName" placeholder="请输入收件人姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="tel" id="receiverPhone" placeholder="请输入联系电话" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>宿舍楼栋</label>
+                        <select id="deliveryBuilding" required>
+                            <option value="">请选择楼栋</option>
+                            <option>1号楼</option>
+                            <option>2号楼</option>
+                            <option>3号楼</option>
+                            <option>4号楼</option>
+                            <option>5号楼</option>
+                            <option>6号楼</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>房间号</label>
+                        <input type="text" id="deliveryRoom" placeholder="如：301" required>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:25px"><i class="fas fa-yen-sign"></i> 费用设置</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>代取费用（元）</label>
+                        <input type="number" id="orderFee" placeholder="请输入代取费用" min="1" max="50" step="0.5" value="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label>附加要求</label>
+                        <input type="text" id="orderNote" placeholder="如：需要送到楼下、易碎品小心轻放">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" style="width:100%;text-align:center"><i class="fas fa-paper-plane"></i> 立即发布订单</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-th-list" style="color:var(--primary-light)"></i> 代取订单大厅</h2>
+            <div class="tab-group" id="hallSort">
+                <button class="tab-btn active" data-sort="time">最新发布</button>
+                <button class="tab-btn" data-sort="fee">费用最高</button>
+            </div>
+        </div>
+        <div class="express-order-list" id="hallOrders"></div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-user" style="color:var(--primary-light)"></i> 我的订单</h2>
+            <div class="tab-group" id="myOrderTabs">
+                <button class="tab-btn active" data-tab="published">我发布的</button>
+                <button class="tab-btn" data-tab="accepted">我接的订单</button>
+            </div>
+        </div>
+        <div class="express-order-list" id="myOrders"></div>
+    </section>
+
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-modal-content">
+            <div class="chat-modal-header">
+                <h3 id="chatTitle">订单对话</h3>
+                <button class="chat-close-btn" id="chatCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <div class="chat-fee-edit" id="chatFeeEdit" style="display:none">
+                    <input type="number" id="chatFeeInput" placeholder="修改费用（元）" min="1" max="50" step="0.5">
+                    <button class="chat-fee-btn" id="chatFeeBtn">改价</button>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" placeholder="输入消息...">
+                    <button class="chat-send-btn" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 智慧校园综合服务平台 | 大学生网页设计大赛参赛作品</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/express.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

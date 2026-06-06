@@ -1,0 +1,193 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布闲置 - 智慧校园二手市场</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+    <link rel="stylesheet" href="css/publish.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link active">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pub-breadcrumb">
+        <div class="pub-breadcrumb-inner">
+            <a href="secondhand.html"><i class="fas fa-home"></i> 首页</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="secondhand.html">二手市场</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>发布闲置</span>
+        </div>
+    </div>
+
+    <div class="pub-main">
+        <div class="pub-header">
+            <h1><i class="fas fa-plus-circle"></i> 发布闲置商品</h1>
+            <p>填写商品信息，让闲置物品找到新主人</p>
+        </div>
+
+        <form class="pub-form" id="publishForm">
+            <div class="pub-section">
+                <div class="pub-section-title"><i class="fas fa-camera"></i> 商品图片</div>
+                <div class="pub-upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>点击或拖拽上传图片</span>
+                    <small>支持 JPG/PNG，最多6张，第一张为主图</small>
+                    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                </div>
+                <div class="pub-upload-preview" id="uploadPreview"></div>
+            </div>
+
+            <div class="pub-section">
+                <div class="pub-section-title"><i class="fas fa-info-circle"></i> 基本信息</div>
+                <div class="pub-form-row">
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-tag"></i> 商品名称 <span class="required">*</span></label>
+                        <input type="text" id="pubName" placeholder="请输入商品名称" maxlength="50" required>
+                        <small class="pub-char-count"><span id="nameCount">0</span>/50</small>
+                    </div>
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-folder"></i> 商品分类 <span class="required">*</span></label>
+                        <select id="pubCategory" required>
+                            <option value="">请选择分类</option>
+                            <option value="数码">数码产品</option>
+                            <option value="书籍">书籍教材</option>
+                            <option value="生活用品">生活用品</option>
+                            <option value="运动">运动器材</option>
+                            <option value="实训工具">实训工具</option>
+                            <option value="小家电">小家电</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pub-form-row">
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-yen-sign"></i> 售价 <span class="required">*</span></label>
+                        <input type="number" id="pubPrice" placeholder="请输入售价" min="1" required>
+                    </div>
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-yen-sign"></i> 原价</label>
+                        <input type="number" id="pubOriginalPrice" placeholder="请输入原价（选填）" min="1">
+                    </div>
+                </div>
+                <div class="pub-form-row">
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-star-half-alt"></i> 成色 <span class="required">*</span></label>
+                        <select id="pubCondition" required>
+                            <option value="">请选择成色</option>
+                            <option value="全新">全新（未拆封）</option>
+                            <option value="99新">99新（几乎无使用痕迹）</option>
+                            <option value="95新">95新（轻微使用痕迹）</option>
+                            <option value="9成新">9成新（少量使用痕迹）</option>
+                            <option value="8成新">8成新（明显使用痕迹）</option>
+                            <option value="7成新及以下">7成新及以下</option>
+                        </select>
+                    </div>
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> 交易地点</label>
+                        <input type="text" id="pubLocation" placeholder="如：北区宿舍、教学楼">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pub-section">
+                <div class="pub-section-title"><i class="fas fa-clipboard-list"></i> 详细信息</div>
+                <div class="pub-form-row">
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-calendar-alt"></i> 购买时间</label>
+                        <input type="text" id="pubBuyTime" placeholder="如：2023年9月">
+                    </div>
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-clock"></i> 使用时长</label>
+                        <input type="text" id="pubUseDuration" placeholder="如：半年、1年">
+                    </div>
+                </div>
+                <div class="pub-form-row">
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-shield-alt"></i> 保修情况</label>
+                        <select id="pubWarranty">
+                            <option value="无">无保修</option>
+                            <option value="在保">在保</option>
+                            <option value="已过保">已过保</option>
+                        </select>
+                    </div>
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-puzzle-piece"></i> 配件情况</label>
+                        <input type="text" id="pubAccessories" placeholder="如：原装充电器、包装盒">
+                    </div>
+                </div>
+                <div class="pub-form-group">
+                    <label><i class="fas fa-align-left"></i> 商品描述 <span class="required">*</span></label>
+                    <textarea id="pubDesc" placeholder="详细描述商品的功能、优缺点、转让原因等，描述越详细越容易成交..." rows="5" maxlength="500" required></textarea>
+                    <small class="pub-char-count"><span id="descCount">0</span>/500</small>
+                </div>
+            </div>
+
+            <div class="pub-section">
+                <div class="pub-section-title"><i class="fas fa-user"></i> 联系方式</div>
+                <div class="pub-form-row">
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-phone"></i> 联系电话</label>
+                        <input type="text" id="pubPhone" placeholder="买家可联系您的电话">
+                    </div>
+                    <div class="pub-form-group">
+                        <label><i class="fas fa-graduation-cap"></i> 所在院系</label>
+                        <input type="text" id="pubDept" placeholder="如：计算机学院">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pub-tips">
+                <h4><i class="fas fa-lightbulb"></i> 发布提示</h4>
+                <ul>
+                    <li>商品信息请真实准确，虚假信息将被管理员下架</li>
+                    <li>建议上传实物照片，有助于提高成交率</li>
+                    <li>发布后商品将进入审核状态，审核通过后即可展示</li>
+                    <li>交易请选择校内当面交易，注意安全</li>
+                </ul>
+            </div>
+
+            <div class="pub-actions">
+                <button type="button" class="pub-btn-cancel" id="cancelBtn"><i class="fas fa-times"></i> 取消</button>
+                <button type="submit" class="pub-btn-submit"><i class="fas fa-paper-plane"></i> 发布商品</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="pub-toast" id="pubToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="pubToastMsg"></span>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/publish.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

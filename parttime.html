@@ -1,0 +1,170 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兼职互助板块 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/parttime.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link active">兼职互助</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="pt-hero">
+        <div class="pt-hero-content">
+            <h1><i class="fas fa-handshake"></i> 校园兼职互助板块</h1>
+            <p>兼职信息 · 拼车出行 · 技能接单</p>
+            <div class="pt-hero-stats">
+                <div class="pt-stat"><span class="pt-stat-num" data-target="56">0</span><span class="pt-stat-label">在线兼职</span></div>
+                <div class="pt-stat"><span class="pt-stat-num" data-target="23">0</span><span class="pt-stat-label">拼车信息</span></div>
+                <div class="pt-stat"><span class="pt-stat-num" data-target="18">0</span><span class="pt-stat-label">技能接单</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-tabs-section">
+        <div class="pt-tabs-header">
+            <button class="pt-tab active" data-tab="jobs"><i class="fas fa-briefcase"></i><span>兼职信息</span></button>
+            <button class="pt-tab" data-tab="carpool"><i class="fas fa-car"></i><span>校内拼车</span></button>
+            <button class="pt-tab" data-tab="skills"><i class="fas fa-tools"></i><span>技能接单</span></button>
+        </div>
+    </section>
+
+    <div class="pt-tab-content active" id="jobs">
+        <div class="pt-container">
+            <div class="pt-section-header">
+                <h2><i class="fas fa-briefcase"></i> 校园兼职信息</h2>
+                <button class="pt-publish-btn" id="publishJobBtn"><i class="fas fa-plus"></i> 发布兼职</button>
+            </div>
+            <div class="pt-filter-bar">
+                <button class="pt-filter active" data-cat="all">全部</button>
+                <button class="pt-filter" data-cat="勤工助学">勤工助学</button>
+                <button class="pt-filter" data-cat="校园兼职">校园兼职</button>
+                <button class="pt-filter" data-cat="家教">家教</button>
+                <button class="pt-filter" data-cat="代取快递">代取快递</button>
+                <button class="pt-filter" data-cat="其他">其他</button>
+            </div>
+            <div class="pt-list" id="jobsList"></div>
+        </div>
+    </div>
+
+    <div class="pt-tab-content" id="carpool">
+        <div class="pt-container">
+            <div class="pt-section-header">
+                <h2><i class="fas fa-car"></i> 校内拼车信息</h2>
+                <button class="pt-publish-btn" id="publishCarpoolBtn"><i class="fas fa-plus"></i> 发布拼车</button>
+            </div>
+            <div class="pt-list" id="carpoolList"></div>
+        </div>
+    </div>
+
+    <div class="pt-tab-content" id="skills">
+        <div class="pt-container">
+            <div class="pt-section-header">
+                <h2><i class="fas fa-tools"></i> 个人技能接单</h2>
+                <button class="pt-publish-btn" id="publishSkillBtn"><i class="fas fa-plus"></i> 发布技能</button>
+            </div>
+            <div class="pt-skills-grid" id="skillsGrid"></div>
+        </div>
+    </div>
+
+    <div class="pt-modal" id="jobModal">
+        <div class="pt-modal-content">
+            <div class="pt-modal-header"><h3>发布兼职信息</h3><button class="pt-modal-close" data-modal="jobModal"><i class="fas fa-times"></i></button></div>
+            <div class="pt-modal-body">
+                <form id="jobForm">
+                    <div class="pt-form-group"><label>兼职标题</label><input type="text" id="jobTitle" placeholder="如：图书馆管理员" required></div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>兼职类型</label><select id="jobCat" required><option value="">请选择</option><option>勤工助学</option><option>校园兼职</option><option>家教</option><option>代取快递</option><option>其他</option></select></div>
+                        <div class="pt-form-group"><label>薪资待遇</label><input type="text" id="jobSalary" placeholder="如：15元/小时" required></div>
+                    </div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>工作地点</label><input type="text" id="jobLocation" placeholder="如：校内图书馆" required></div>
+                        <div class="pt-form-group"><label>工作时间</label><input type="text" id="jobTime" placeholder="如：周一至周五 14:00-18:00" required></div>
+                    </div>
+                    <div class="pt-form-group"><label>详细描述</label><textarea id="jobDesc" placeholder="请描述工作内容和要求..." rows="3" required></textarea></div>
+                    <div class="pt-form-group"><label>联系方式</label><input type="text" id="jobContact" placeholder="手机号或微信号" required></div>
+                    <button type="submit" class="pt-submit-btn"><i class="fas fa-check"></i> 发布</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-modal" id="carpoolModal">
+        <div class="pt-modal-content">
+            <div class="pt-modal-header"><h3>发布拼车信息</h3><button class="pt-modal-close" data-modal="carpoolModal"><i class="fas fa-times"></i></button></div>
+            <div class="pt-modal-body">
+                <form id="carpoolForm">
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>出发地</label><input type="text" id="cpFrom" placeholder="如：学校南门" required></div>
+                        <div class="pt-form-group"><label>目的地</label><input type="text" id="cpTo" placeholder="如：火车站" required></div>
+                    </div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>出发日期</label><input type="date" id="cpDate" required></div>
+                        <div class="pt-form-group"><label>出发时间</label><input type="time" id="cpTime" required></div>
+                    </div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>可载人数</label><input type="number" id="cpSeats" min="1" max="6" value="3" required></div>
+                        <div class="pt-form-group"><label>费用分摊</label><input type="text" id="cpCost" placeholder="如：AA制约20元/人" required></div>
+                    </div>
+                    <div class="pt-form-group"><label>备注</label><textarea id="cpNote" placeholder="其他说明..." rows="2"></textarea></div>
+                    <div class="pt-form-group"><label>联系方式</label><input type="text" id="cpContact" placeholder="手机号或微信号" required></div>
+                    <button type="submit" class="pt-submit-btn"><i class="fas fa-check"></i> 发布</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-modal" id="skillModal">
+        <div class="pt-modal-content">
+            <div class="pt-modal-header"><h3>发布技能服务</h3><button class="pt-modal-close" data-modal="skillModal"><i class="fas fa-times"></i></button></div>
+            <div class="pt-modal-body">
+                <form id="skillForm">
+                    <div class="pt-form-group"><label>技能名称</label><input type="text" id="skName" placeholder="如：PPT制作" required></div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>技能分类</label><select id="skCat" required><option value="">请选择</option><option>设计制图</option><option>编程开发</option><option>文案写作</option><option>摄影摄像</option><option>音乐艺术</option><option>学业辅导</option><option>其他</option></select></div>
+                        <div class="pt-form-group"><label>服务价格</label><input type="text" id="skPrice" placeholder="如：50元/次" required></div>
+                    </div>
+                    <div class="pt-form-group"><label>技能描述</label><textarea id="skDesc" placeholder="描述你的技能和服务内容..." rows="3" required></textarea></div>
+                    <div class="pt-form-group"><label>联系方式</label><input type="text" id="skContact" placeholder="手机号或微信号" required></div>
+                    <button type="submit" class="pt-submit-btn"><i class="fas fa-check"></i> 发布</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-toast" id="ptToast"></div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>智慧校园</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="secondhand.html">二手市场</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：XX大学信息中心</p><p>电话：010-12345678</p><p>邮箱：support@campus.edu</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 智慧校园综合服务平台</p></div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/parttime.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

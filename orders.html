@@ -1,0 +1,107 @@
+﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的租用订单 - 智慧校园二手市场</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link active">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="sh-nav-links">
+                    <a href="messages.html" class="sh-nav-link" title="我的私信"><i class="fas fa-comment-dots"></i></a>
+                    <a href="favorites.html" class="sh-nav-link" title="我的收藏"><i class="fas fa-heart"></i></a>
+                    <a href="orders.html" class="sh-nav-link" title="我的订单" style="color:var(--primary-light)"><i class="fas fa-receipt"></i></a>
+                </div>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sh-page-container">
+        <h1 class="sh-page-title"><i class="fas fa-receipt"></i> 我的租用订单</h1>
+        <div id="orderList" class="sh-order-list"></div>
+    </div>
+
+    <div class="sh-toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function getCurrentUser() {
+            if (window.CampusDB) return CampusDB.getCurrentUser();
+            try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
+        }
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2500);
+        }
+        function getOrders() {
+            try { return JSON.parse(localStorage.getItem('campus_rental_orders') || '[]'); } catch(e) { return []; }
+        }
+
+        var user = getCurrentUser();
+        var listEl = document.getElementById('orderList');
+
+        function renderOrders() {
+            var orders = getOrders();
+
+            /* 过滤当前用户的订单 */
+            if (user && user.stuId) {
+                orders = orders.filter(function(o) { return o.buyerStuId === user.stuId; });
+            }
+
+            if (orders.length === 0) {
+                listEl.innerHTML = '<div class="sh-page-empty"><i class="fas fa-inbox"></i><p>暂无租用订单，去二手市场看看吧</p></div>';
+                return;
+            }
+
+            listEl.innerHTML = '';
+            orders.forEach(function(order) {
+                var statusClass = order.status === '待配送' ? 'pending' : (order.status === '配送中' ? 'shipped' : 'completed');
+                var card = document.createElement('div');
+                card.className = 'sh-order-card';
+                card.innerHTML = '<div class="sh-order-img"><img src="' + order.productImg + '" alt="' + order.productName + '" onerror="this.style.display=\'none\'"></div><div class="sh-order-info"><h3>' + order.productName + '</h3><div class="sh-order-meta"><div><i class="fas fa-user-tag"></i> 卖家：' + order.seller + '（' + order.sellerDept + '）</div><div><i class="fas fa-building"></i> 配送至：' + order.building + '</div><div><i class="fas fa-calendar-alt"></i> 租用：' + order.days + '天 · 单价 ¥' + order.price + '</div>' + (order.note ? '<div><i class="fas fa-sticky-note"></i> 备注：' + order.note + '</div>' : '') + '<div><i class="fas fa-clock"></i> 下单时间：' + order.time + '</div></div></div><span class="sh-order-status ' + statusClass + '">' + order.status + '</span>';
+                listEl.appendChild(card);
+            });
+        }
+
+        if (!user || user.role !== 'student') {
+            listEl.innerHTML = '<div class="sh-page-empty"><i class="fas fa-lock"></i><p>请先<a href="login.html" style="color:var(--primary-light)">登录</a>后查看订单</p></div>';
+            return;
+        }
+
+        renderOrders();
+    });
+    </script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

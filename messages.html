@@ -1,0 +1,227 @@
+﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的私信 - 智慧校园二手市场</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link active">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="sh-nav-links">
+                    <a href="messages.html" class="sh-nav-link" title="我的私信" style="color:var(--primary-light)"><i class="fas fa-comment-dots"></i></a>
+                    <a href="favorites.html" class="sh-nav-link" title="我的收藏"><i class="fas fa-heart"></i></a>
+                    <a href="orders.html" class="sh-nav-link" title="我的订单"><i class="fas fa-receipt"></i></a>
+                </div>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sh-page-container">
+        <h1 class="sh-page-title"><i class="fas fa-comment-dots"></i> 我的私信</h1>
+        <div id="sessionList" class="sh-session-list"></div>
+    </div>
+
+    <!-- 聊天弹窗 -->
+    <div class="sh-chat-overlay" id="chatOverlay">
+        <div class="sh-chat-modal">
+            <div class="sh-chat-header">
+                <div class="sh-chat-seller-info">
+                    <div class="sh-chat-avatar" id="chatSellerAvatar">卖</div>
+                    <div class="sh-chat-seller-detail">
+                        <span class="sh-chat-seller-name" id="chatSellerName">卖家</span>
+                        <span class="sh-chat-seller-dept" id="chatSellerDept">学院</span>
+                    </div>
+                </div>
+                <button class="sh-chat-close" id="chatCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="sh-chat-messages" id="chatMessages"></div>
+            <div class="sh-chat-input-bar">
+                <input type="text" id="chatInput" placeholder="输入消息，按回车发送...">
+                <button class="sh-chat-send" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sh-toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function getCurrentUser() {
+            if (window.CampusDB) return CampusDB.getCurrentUser();
+            try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
+        }
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2500);
+        }
+        function getChatData() {
+            try { return JSON.parse(localStorage.getItem('campus_chat') || '{}'); } catch(e) { return {}; }
+        }
+        function saveChatData(data) {
+            localStorage.setItem('campus_chat', JSON.stringify(data));
+        }
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        var user = getCurrentUser();
+        if (!user || user.role !== 'student') {
+            document.getElementById('sessionList').innerHTML = '<div class="sh-page-empty"><i class="fas fa-lock"></i><p>请先<a href="login.html" style="color:var(--primary-light)">登录</a>后查看私信</p></div>';
+            return;
+        }
+
+        var chatData = getChatData();
+        var userId = user.stuId || user.name;
+
+        /* 提取会话列表 */
+        var sessions = [];
+        Object.keys(chatData).forEach(function(key) {
+            var msgs = chatData[key];
+            if (!msgs || msgs.length === 0) return;
+            var lastMsg = msgs[msgs.length - 1];
+            var hasMyMsg = msgs.some(function(m) { return m.sender === userId; });
+            var isMySession = hasMyMsg || lastMsg.sellerName !== user.name;
+            if (!isMySession) return;
+
+            var otherName = lastMsg.sender === userId ? lastMsg.sellerName : lastMsg.senderName;
+            var otherDept = '';
+            var productId = lastMsg.productId;
+            var productName = lastMsg.productName || '';
+            var hasUnread = msgs.some(function(m) { return m.unread && m.sender !== userId; });
+
+            sessions.push({
+                key: key,
+                otherName: otherName || '未知',
+                otherDept: otherDept,
+                productId: productId,
+                productName: productName,
+                lastText: lastMsg.text,
+                lastTime: lastMsg.time,
+                lastDate: lastMsg.date || '',
+                hasUnread: hasUnread,
+                sellerId: lastMsg.sender === userId ? lastMsg.sellerName : lastMsg.sender
+            });
+        });
+
+        /* 按时间倒序 */
+        sessions.reverse();
+
+        var listEl = document.getElementById('sessionList');
+        if (sessions.length === 0) {
+            listEl.innerHTML = '<div class="sh-page-empty"><i class="fas fa-comment-slash"></i><p>暂无私信记录，去二手市场看看吧</p></div>';
+            return;
+        }
+
+        sessions.forEach(function(s) {
+            var item = document.createElement('div');
+            item.className = 'sh-session-item';
+            item.innerHTML = '<div class="sh-session-avatar">' + (s.otherName ? s.otherName.charAt(0) : '?') + (s.hasUnread ? '<span class="sh-session-unread-dot"></span>' : '') + '</div><div class="sh-session-info"><div class="sh-session-name"><span>' + escapeHtml(s.otherName) + '</span><span class="sh-session-time">' + s.lastDate + ' ' + s.lastTime + '</span></div><div class="sh-session-preview">' + escapeHtml(s.lastText) + '</div>' + (s.productName ? '<div class="sh-session-product"><i class="fas fa-tag"></i> ' + escapeHtml(s.productName) + '</div>' : '') + '</div>';
+            item.addEventListener('click', function() {
+                openChat(s);
+            });
+            listEl.appendChild(item);
+        });
+
+        /* 聊天弹窗 */
+        var chatOverlay = document.getElementById('chatOverlay');
+        var chatMessages = document.getElementById('chatMessages');
+        var chatInput = document.getElementById('chatInput');
+        var chatSendBtn = document.getElementById('chatSendBtn');
+        var chatCloseBtn = document.getElementById('chatCloseBtn');
+        var currentSession = null;
+
+        function openChat(session) {
+            currentSession = session;
+            document.getElementById('chatSellerName').textContent = session.otherName;
+            document.getElementById('chatSellerDept').textContent = session.otherDept || '';
+            document.getElementById('chatSellerAvatar').textContent = session.otherName ? session.otherName.charAt(0) : '?';
+
+            var msgs = chatData[session.key] || [];
+            renderMessages(msgs);
+            chatOverlay.classList.add('active');
+
+            /* 标记已读 */
+            msgs.forEach(function(m) { m.unread = false; });
+            saveChatData(chatData);
+        }
+
+        function renderMessages(msgs) {
+            chatMessages.innerHTML = '';
+            if (msgs.length === 0) {
+                chatMessages.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-secondary);font-size:13px">暂无消息</div>';
+                return;
+            }
+            msgs.forEach(function(msg) {
+                var isMe = msg.sender === userId;
+                var div = document.createElement('div');
+                div.className = 'sh-chat-msg ' + (isMe ? 'sh-chat-msg-right' : 'sh-chat-msg-left');
+                div.innerHTML = '<div class="sh-chat-bubble">' + escapeHtml(msg.text) + '</div><div class="sh-chat-msg-time">' + msg.time + '</div>';
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            var text = chatInput.value.trim();
+            if (!text || !currentSession) return;
+            var now = new Date();
+            var timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+            if (!chatData[currentSession.key]) chatData[currentSession.key] = [];
+            chatData[currentSession.key].push({
+                sender: userId,
+                senderName: user.name,
+                text: text,
+                time: timeStr,
+                date: now.toLocaleDateString(),
+                productId: currentSession.productId,
+                productName: currentSession.productName,
+                sellerName: currentSession.otherName,
+                unread: true
+            });
+            saveChatData(chatData);
+            chatInput.value = '';
+            renderMessages(chatData[currentSession.key]);
+        }
+
+        if (chatCloseBtn) chatCloseBtn.addEventListener('click', function() { chatOverlay.classList.remove('active'); });
+        if (chatOverlay) chatOverlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+        if (chatSendBtn) chatSendBtn.addEventListener('click', sendMessage);
+        if (chatInput) chatInput.addEventListener('keyup', function(e) { if (e.key === 'Enter') sendMessage(); });
+    });
+    </script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

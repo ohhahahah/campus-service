@@ -1,0 +1,236 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能校园助手 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ai-assistant.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="ai-hero">
+        <div class="ai-hero-content">
+            <div class="ai-hero-icon"><i class="fas fa-robot"></i></div>
+            <h1>AI智能校园助手</h1>
+            <p>你的校园智能伙伴，随时解答学习生活疑问</p>
+        </div>
+    </section>
+
+    <section class="ai-main">
+        <div class="ai-container">
+            <div class="ai-sidebar">
+                <div class="ai-sidebar-section">
+                    <h3><i class="fas fa-bolt"></i> 快捷问题</h3>
+                    <div class="ai-quick-btns">
+                        <button class="ai-quick-btn" data-question="如何选课？"><i class="fas fa-book-open"></i> 选课咨询</button>
+                        <button class="ai-quick-btn" data-question="如何报修宿舍设施？"><i class="fas fa-wrench"></i> 报修指引</button>
+                        <button class="ai-quick-btn" data-question="图书馆开放时间是什么？"><i class="fas fa-library"></i> 图书馆时间</button>
+                        <button class="ai-quick-btn" data-question="如何预约场馆？"><i class="fas fa-calendar-check"></i> 场馆预约</button>
+                        <button class="ai-quick-btn" data-question="食堂有哪些档口？"><i class="fas fa-utensils"></i> 食堂信息</button>
+                        <button class="ai-quick-btn" data-question="如何查询成绩？"><i class="fas fa-chart-bar"></i> 成绩查询</button>
+                        <button class="ai-quick-btn" data-question="校园卡丢了怎么办？"><i class="fas fa-id-card"></i> 校园卡挂失</button>
+                        <button class="ai-quick-btn" data-question="奖学金申请条件是什么？"><i class="fas fa-award"></i> 奖学金</button>
+                    </div>
+                </div>
+                <div class="ai-sidebar-section">
+                    <h3><i class="fas fa-history"></i> 历史记录</h3>
+                    <div class="ai-history-list" id="historyList">
+                        <div class="ai-history-item">选课流程咨询</div>
+                        <div class="ai-history-item">图书馆开放时间</div>
+                        <div class="ai-history-item">宿舍报修方法</div>
+                    </div>
+                </div>
+                <div class="ai-sidebar-section">
+                    <h3><i class="fas fa-link"></i> 相关服务</h3>
+                    <div class="ai-service-links">
+                        <a href="booking.html" class="ai-service-link"><i class="fas fa-door-open"></i> 场馆预约</a>
+                        <a href="life.html" class="ai-service-link"><i class="fas fa-concierge-bell"></i> 生活服务</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-chat-area">
+                <div class="ai-chat-header">
+                    <div class="ai-chat-title">
+                        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                        <div>
+                            <h3>校园智能助手</h3>
+                            <span class="ai-status"><i class="fas fa-circle"></i> 在线</span>
+                        </div>
+                    </div>
+                    <div class="ai-chat-actions">
+                        <button class="ai-action-btn" id="clearChat" title="清空对话"><i class="fas fa-trash-alt"></i></button>
+                        <button class="ai-action-btn" id="exportChat" title="导出对话"><i class="fas fa-download"></i></button>
+                    </div>
+                </div>
+
+                <div class="ai-chat-messages" id="chatMessages">
+                    <div class="ai-msg ai-msg-bot">
+                        <div class="ai-msg-avatar"><i class="fas fa-robot"></i></div>
+                        <div class="ai-msg-content">
+                            <div class="ai-msg-bubble">
+                                你好！我是校园智能助手 🤖 可以帮你解答选课、报修、生活服务等问题。试试点击左侧快捷问题，或直接输入你的疑问吧！
+                            </div>
+                            <div class="ai-msg-time">刚刚</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-chat-input-area">
+                    <div class="ai-input-wrapper">
+                        <textarea id="chatInput" placeholder="输入你的问题..." rows="1"></textarea>
+                        <button class="ai-send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                    <div class="ai-input-tips">
+                        <span>试试问：如何选课？ / 图书馆在哪？ / 校园卡挂失</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ai-features">
+        <div class="ai-section-header">
+            <h2><i class="fas fa-magic"></i> AI助手能力</h2>
+            <p>智能解答，全方位服务校园生活</p>
+        </div>
+        <div class="ai-features-grid">
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3>选课咨询</h3>
+                <p>选课流程、课程推荐、学分规划，一站式解答</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <h3>报修指引</h3>
+                <p>宿舍报修、教室维修、设备故障，快速提交工单</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h3>生活答疑</h3>
+                <p>食堂信息、快递服务、校园导航，生活问题全知道</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>日程提醒</h3>
+                <p>考试安排、活动预告、截止日期，不再错过重要事项</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3>校园问答</h3>
+                <p>校规校纪、办事流程、常见问题，精准回答</p>
+            </div>
+            <div class="ai-feature-card">
+                <div class="ai-feature-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h3>服务导航</h3>
+                <p>一键跳转对应服务页面，快速办理各类事务</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="ai-faq">
+        <div class="ai-section-header">
+            <h2><i class="fas fa-question-circle"></i> 常见问题</h2>
+            <p>同学们最常问的问题</p>
+        </div>
+        <div class="ai-faq-list">
+            <div class="ai-faq-item">
+                <div class="ai-faq-question"><i class="fas fa-chevron-right"></i> 新生入学需要准备什么材料？</div>
+                <div class="ai-faq-answer">新生入学需准备：录取通知书、身份证及复印件、户口迁移证（自愿）、一寸和两寸照片若干、高考准考证、党团组织关系转接材料、银行卡等。具体以入学须知为准。</div>
+            </div>
+            <div class="ai-faq-item">
+                <div class="ai-faq-question"><i class="fas fa-chevron-right"></i> 如何申请勤工助学岗位？</div>
+                <div class="ai-faq-answer">登录智慧校园平台，进入"兼职互助"板块，选择"勤工助学"分类，浏览校内岗位信息并在线申请。需提供学生证和家庭经济困难证明材料。</div>
+            </div>
+            <div class="ai-faq-item">
+                <div class="ai-faq-question"><i class="fas fa-chevron-right"></i> 宿舍水电费怎么充值？</div>
+                <div class="ai-faq-answer">可通过以下方式充值：1. 智慧校园APP在线充值；2. 一卡通自助机充值；3. 后勤服务中心窗口充值。建议使用线上充值，方便快捷。</div>
+            </div>
+            <div class="ai-faq-item">
+                <div class="ai-faq-question"><i class="fas fa-chevron-right"></i> 英语四六级什么时候报名？</div>
+                <div class="ai-faq-answer">英语四六级每年两次报名机会：上半年3月报名6月考试，下半年9月报名12月考试。请关注教务处通知，在规定时间内登录报名系统完成报名。</div>
+            </div>
+            <div class="ai-faq-item">
+                <div class="ai-faq-question"><i class="fas fa-chevron-right"></i> 如何办理走读手续？</div>
+                <div class="ai-faq-answer">走读办理流程：1. 向辅导员提交走读申请；2. 家长签字同意；3. 学院审批；4. 宿管中心备案。走读学生需自行解决住宿，学校不承担住宿安全责任。</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-university"></i> 智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>服务导航</h4>
+                <ul>
+                    <li><a href="booking.html">场馆预约</a></li>
+                    <li><a href="parttime.html">兼职互助</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p><i class="fas fa-map-marker-alt"></i> XX大学信息中心</p>
+                <p><i class="fas fa-phone"></i> 010-12345678</p>
+                <p><i class="fas fa-envelope"></i> support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>智慧校园综合服务平台 &copy;2026</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/ai-assistant.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

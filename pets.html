@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流浪猫寄养 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pets.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a>
+                <a href="pets.html" class="nav-link active">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pets-hero">
+        <div class="pets-hero-content">
+            <h1><i class="fas fa-cat"></i> 流浪猫寄养平台</h1>
+            <p>用爱温暖每一个小生命 · 让流浪不再流浪</p>
+            <div class="pets-hero-stats">
+                <div class="pets-stat"><span class="pets-stat-num" data-target="12">0</span><span class="pets-stat-label">待领养</span></div>
+                <div class="pets-stat"><span class="pets-stat-num" data-target="38">0</span><span class="pets-stat-label">已领养</span></div>
+                <div class="pets-stat"><span class="pets-stat-num" data-target="56">0</span><span class="pets-stat-label">爱心志愿者</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 爱心理念 -->
+    <section class="pets-intro-section">
+        <div class="pets-container">
+            <div class="pets-intro-grid">
+                <div class="pets-intro-card">
+                    <div class="pets-intro-icon"><i class="fas fa-heart"></i></div>
+                    <h3>爱心寄养</h3>
+                    <p>为校园流浪猫寻找温暖的家，让每一只猫咪都能被温柔以待</p>
+                </div>
+                <div class="pets-intro-card">
+                    <div class="pets-intro-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>健康保障</h3>
+                    <p>定期体检、驱虫、疫苗接种，确保每只猫咪健康安全</p>
+                </div>
+                <div class="pets-intro-card">
+                    <div class="pets-intro-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h3>责任领养</h3>
+                    <p>签署领养协议，终身负责，定期回访，确保猫咪幸福生活</p>
+                </div>
+                <div class="pets-intro-card">
+                    <div class="pets-intro-icon"><i class="fas fa-users"></i></div>
+                    <h3>志愿团队</h3>
+                    <p>校园流浪猫关爱协会日常巡查、喂养、TNR管理</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 筛选与列表 -->
+    <section class="pets-list-section">
+        <div class="pets-container">
+            <div class="pets-section-header">
+                <h2><i class="fas fa-paw"></i> 待领养猫咪</h2>
+                <button class="pets-publish-btn" id="publishPetBtn"><i class="fas fa-plus"></i> 登记猫咪</button>
+            </div>
+            <div class="pets-filter-bar">
+                <button class="pets-filter active" data-cat="all">全部</button>
+                <button class="pets-filter" data-cat="橘猫">橘猫</button>
+                <button class="pets-filter" data-cat="狸花猫">狸花猫</button>
+                <button class="pets-filter" data-cat="三花猫">三花猫</button>
+                <button class="pets-filter" data-cat="黑猫">黑猫</button>
+                <button class="pets-filter" data-cat="白猫">白猫</button>
+                <button class="pets-filter" data-cat="其他">其他</button>
+            </div>
+            <div class="pets-grid" id="petsGrid"></div>
+        </div>
+    </section>
+
+    <!-- 领养须知 -->
+    <section class="pets-notice-section">
+        <div class="pets-container">
+            <div class="pets-section-header">
+                <h2><i class="fas fa-clipboard-list"></i> 领养须知</h2>
+            </div>
+            <div class="pets-notice-grid">
+                <div class="pets-notice-item">
+                    <div class="pets-notice-num">1</div>
+                    <div class="pets-notice-text"><h4>确认条件</h4><p>确保有稳定住所，家人同意养猫，经济能力承担日常开销</p></div>
+                </div>
+                <div class="pets-notice-item">
+                    <div class="pets-notice-num">2</div>
+                    <div class="pets-notice-text"><h4>提交申请</h4><p>填写领养申请表，包括个人信息、居住环境、养猫经验等</p></div>
+                </div>
+                <div class="pets-notice-item">
+                    <div class="pets-notice-num">3</div>
+                    <div class="pets-notice-text"><h4>审核面谈</h4><p>志愿者审核申请，安排面谈，确认领养人资质和诚意</p></div>
+                </div>
+                <div class="pets-notice-item">
+                    <div class="pets-notice-num">4</div>
+                    <div class="pets-notice-text"><h4>签署协议</h4><p>签署领养协议，承诺科学喂养、定期疫苗、不弃养</p></div>
+                </div>
+                <div class="pets-notice-item">
+                    <div class="pets-notice-num">5</div>
+                    <div class="pets-notice-text"><h4>带猫回家</h4><p>领取猫咪及健康档案，志愿者提供过渡期指导</p></div>
+                </div>
+                <div class="pets-notice-item">
+                    <div class="pets-notice-num">6</div>
+                    <div class="pets-notice-text"><h4>定期回访</h4><p>领养后定期回访，分享猫咪近况，确保猫咪幸福生活</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 登记弹窗 -->
+    <div class="pets-modal" id="petModal">
+        <div class="pets-modal-content">
+            <div class="pets-modal-header"><h3>登记流浪猫信息</h3><button class="pets-modal-close" data-modal="petModal"><i class="fas fa-times"></i></button></div>
+            <div class="pets-modal-body">
+                <form id="petForm">
+                    <div class="pets-form-group"><label>猫咪名称</label><input type="text" id="petName" placeholder="给猫咪取个名字" required></div>
+                    <div class="pets-form-row">
+                        <div class="pets-form-group"><label>猫咪品种</label><select id="petBreed" required><option value="">请选择</option><option>橘猫</option><option>狸花猫</option><option>三花猫</option><option>黑猫</option><option>白猫</option><option>奶牛猫</option><option>其他</option></select></div>
+                        <div class="pets-form-group"><label>大致年龄</label><input type="text" id="petAge" placeholder="如：约1岁" required></div>
+                    </div>
+                    <div class="pets-form-row">
+                        <div class="pets-form-group"><label>性别</label><select id="petGender" required><option value="">请选择</option><option>公</option><option>母</option><option>未知</option></select></div>
+                        <div class="pets-form-group"><label>是否绝育</label><select id="petNeutered" required><option value="">请选择</option><option>已绝育</option><option>未绝育</option></select></div>
+                    </div>
+                    <div class="pets-form-group"><label>健康状态</label><textarea id="petHealth" placeholder="描述猫咪健康状况，如是否驱虫、疫苗等" rows="2" required></textarea></div>
+                    <div class="pets-form-group"><label>发现地点</label><input type="text" id="petLocation" placeholder="如：2号宿舍楼下" required></div>
+                    <div class="pets-form-group"><label>联系方式</label><input type="text" id="petContact" placeholder="手机号或微信号" required></div>
+                    <button type="submit" class="pets-submit-btn"><i class="fas fa-check"></i> 提交登记</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pets-toast" id="petsToast"></div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>智慧校园</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="secondhand.html">二手市场</a></li><li><a href="parttime.html">兼职互助</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：XX大学信息中心</p><p>电话：010-12345678</p><p>邮箱：support@campus.edu</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 智慧校园综合服务平台</p></div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/pets.js"></script>
+    <script src="js/robot-assistant.js"></script>
+</body>
+</html>

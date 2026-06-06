@@ -1,0 +1,99 @@
+/* ========== 流浪猫寄养页面 ========== */
+.pets-hero{padding:120px 20px 60px;background:linear-gradient(135deg,#92400e 0%,#f59e0b 50%,#fbbf24 100%);text-align:center;position:relative;overflow:hidden}
+.pets-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 70%);animation:petsHeroFloat 15s ease-in-out infinite}
+@keyframes petsHeroFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.pets-hero-content{position:relative;z-index:1;max-width:900px;margin:0 auto}
+.pets-hero h1{font-size:42px;font-weight:700;color:#fff;margin-bottom:12px}
+.pets-hero h1 i{margin-right:10px}
+.pets-hero p{font-size:18px;color:rgba(255,255,255,0.9);margin-bottom:40px}
+.pets-hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.pets-stat{text-align:center}
+.pets-stat-num{display:block;font-size:36px;font-weight:700;color:#fff}
+.pets-stat-label{font-size:14px;color:rgba(255,255,255,0.8)}
+
+/* 容器 */
+.pets-container{max-width:1200px;margin:0 auto}
+
+/* 爱心理念 */
+.pets-intro-section{padding:50px 20px;background:var(--bg-primary)}
+.pets-intro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.pets-intro-card{background:var(--bg-card);border-radius:16px;padding:28px 20px;border:1px solid var(--border-color);text-align:center;transition:all .3s}
+.pets-intro-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.08)}
+.pets-intro-icon{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin:0 auto 14px}
+.pets-intro-card h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.pets-intro-card p{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+/* 列表区 */
+.pets-list-section{padding:50px 20px;background:var(--bg-secondary)}
+.pets-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.pets-section-header h2{font-size:22px;font-weight:600;color:var(--text-primary)}
+.pets-section-header h2 i{color:#f59e0b;margin-right:8px}
+.pets-publish-btn{padding:10px 22px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:6px}
+.pets-publish-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+
+/* 筛选 */
+.pets-filter-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.pets-filter{padding:8px 18px;border:1px solid var(--border-color);border-radius:20px;background:transparent;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .3s}
+.pets-filter:hover{border-color:#f59e0b;color:#f59e0b}
+.pets-filter.active{background:#f59e0b;color:#fff;border-color:#f59e0b}
+
+/* 猫咪卡片 */
+.pets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pets-card{background:var(--bg-card);border-radius:16px;overflow:hidden;border:1px solid var(--border-color);transition:all .3s}
+.pets-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.1)}
+.pets-card-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(135deg,#fef3c7,#fde68a)}
+.pets-card-info{padding:20px}
+.pets-card-info h4{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.pets-card-info p{font-size:13px;color:var(--text-secondary);margin-bottom:4px;line-height:1.5}
+.pets-card-info p i{width:16px;text-align:center;color:#f59e0b;margin-right:4px}
+.pets-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pets-card-tag{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.pets-card-tag.gender{background:#fce7f3;color:#db2777}
+.pets-card-tag.neutered{background:#dcfce7;color:#16a34a}
+.pets-card-tag.not-neutered{background:#fef3c7;color:#d97706}
+.pets-adopt-btn{width:100%;padding:10px;margin-top:12px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+.pets-adopt-btn:hover{box-shadow:0 4px 12px rgba(245,158,11,0.3)}
+
+/* 领养须知 */
+.pets-notice-section{padding:50px 20px;background:var(--bg-primary)}
+.pets-notice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pets-notice-item{display:flex;gap:16px;padding:20px;background:var(--bg-card);border-radius:16px;border:1px solid var(--border-color);align-items:flex-start;transition:all .3s}
+.pets-notice-item:hover{box-shadow:0 4px 15px rgba(0,0,0,0.06)}
+.pets-notice-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.pets-notice-text h4{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.pets-notice-text p{font-size:13px;color:var(--text-secondary);line-height:1.5}
+
+/* 弹窗 */
+.pets-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.pets-modal.active{display:flex}
+.pets-modal-content{background:var(--bg-card);border-radius:20px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;animation:petsModalIn .3s ease}
+@keyframes petsModalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.pets-modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border-color)}
+.pets-modal-header h3{font-size:18px;font-weight:600;color:var(--text-primary)}
+.pets-modal-close{width:36px;height:36px;border-radius:50%;border:none;background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.pets-modal-close:hover{background:#ef4444;color:#fff}
+.pets-modal-body{padding:24px}
+.pets-form-group{margin-bottom:16px}
+.pets-form-group label{display:block;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.pets-form-group input,.pets-form-group select,.pets-form-group textarea{width:100%;padding:12px 16px;border:1px solid var(--border-color);border-radius:10px;font-size:14px;background:var(--bg-secondary);color:var(--text-primary);transition:all .3s;font-family:inherit}
+.pets-form-group input:focus,.pets-form-group select:focus,.pets-form-group textarea:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.15)}
+.pets-form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.pets-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pets-submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.3)}
+
+/* Toast */
+.pets-toast{position:fixed;top:80px;right:20px;padding:14px 24px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:12px;font-size:14px;font-weight:600;z-index:2000;transform:translateX(120%);transition:transform .3s ease;box-shadow:0 4px 20px rgba(245,158,11,0.3)}
+.pets-toast.show{transform:translateX(0)}
+
+/* 响应式 */
+@media(max-width:900px){
+    .pets-intro-grid{grid-template-columns:repeat(2,1fr)}
+    .pets-grid,.pets-notice-grid{grid-template-columns:repeat(2,1fr)}
+    .pets-form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+    .pets-hero h1{font-size:28px}
+    .pets-hero-stats{gap:20px}
+    .pets-stat-num{font-size:28px}
+    .pets-intro-grid,.pets-grid,.pets-notice-grid{grid-template-columns:1fr}
+}

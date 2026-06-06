@@ -1,0 +1,138 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园数据大屏 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bigdata.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="bd-hero">
+        <div class="bd-hero-content">
+            <h1><i class="fas fa-chart-line"></i> 校园数据可视化大屏</h1>
+            <p>实时监控 · 数据驱动 · 智慧决策</p>
+            <div class="bd-hero-time" id="heroTime"></div>
+        </div>
+    </section>
+
+    <section class="bd-stats-row">
+        <div class="bd-container">
+            <div class="bd-stats-grid">
+                <div class="bd-stat-card"><div class="bd-stat-icon" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)"><i class="fas fa-eye"></i></div><div class="bd-stat-info"><span class="bd-stat-num" data-target="128560">0</span><span class="bd-stat-label">服务访问总量</span></div></div>
+                <div class="bd-stat-card"><div class="bd-stat-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="fas fa-check-circle"></i></div><div class="bd-stat-info"><span class="bd-stat-num" data-target="96">0</span><span class="bd-stat-label">报修完成率(%)</span></div></div>
+                <div class="bd-stat-card"><div class="bd-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-exchange-alt"></i></div><div class="bd-stat-info"><span class="bd-stat-num" data-target="3428">0</span><span class="bd-stat-label">二手交易量</span></div></div>
+                <div class="bd-stat-card"><div class="bd-stat-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-users"></i></div><div class="bd-stat-info"><span class="bd-stat-num" data-target="8920">0</span><span class="bd-stat-label">活动参与人数</span></div></div>
+                <div class="bd-stat-card"><div class="bd-stat-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)"><i class="fas fa-calendar-check"></i></div><div class="bd-stat-info"><span class="bd-stat-num" data-target="2156">0</span><span class="bd-stat-label">场馆预约次数</span></div></div>
+                <div class="bd-stat-card"><div class="bd-stat-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2)"><i class="fas fa-briefcase"></i></div><div class="bd-stat-info"><span class="bd-stat-num" data-target="568">0</span><span class="bd-stat-label">兼职发布数</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bd-charts-section">
+        <div class="bd-container">
+            <div class="bd-charts-grid">
+                <div class="bd-chart-card">
+                    <div class="bd-chart-header"><h3><i class="fas fa-chart-pie"></i> 二手商品分类占比</h3></div>
+                    <div class="bd-chart-body"><canvas id="pieChart"></canvas></div>
+                </div>
+                <div class="bd-chart-card">
+                    <div class="bd-chart-header"><h3><i class="fas fa-chart-bar"></i> 月度交易热度</h3></div>
+                    <div class="bd-chart-body"><canvas id="barChart"></canvas></div>
+                </div>
+                <div class="bd-chart-card">
+                    <div class="bd-chart-header"><h3><i class="fas fa-chart-area"></i> 服务访问趋势</h3></div>
+                    <div class="bd-chart-body"><canvas id="lineChart"></canvas></div>
+                </div>
+                <div class="bd-chart-card">
+                    <div class="bd-chart-header"><h3><i class="fas fa-wrench"></i> 报修类型分布</h3></div>
+                    <div class="bd-chart-body"><canvas id="repairChart"></canvas></div>
+                </div>
+                <div class="bd-chart-card bd-chart-wide">
+                    <div class="bd-chart-header"><h3><i class="fas fa-chart-line"></i> 各服务周访问量对比</h3></div>
+                    <div class="bd-chart-body"><canvas id="multiLineChart"></canvas></div>
+                </div>
+                <div class="bd-chart-card">
+                    <div class="bd-chart-header"><h3><i class="fas fa-building"></i> 场馆预约热度</h3></div>
+                    <div class="bd-chart-body"><canvas id="venueChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bd-realtime-section">
+        <div class="bd-container">
+            <div class="bd-section-header"><h2><i class="fas fa-bolt"></i> 实时动态</h2></div>
+            <div class="bd-realtime-grid">
+                <div class="bd-realtime-card">
+                    <div class="bd-realtime-header"><h3><i class="fas fa-shopping-cart"></i> 最新交易</h3></div>
+                    <div class="bd-realtime-list" id="tradeList"></div>
+                </div>
+                <div class="bd-realtime-card">
+                    <div class="bd-realtime-header"><h3><i class="fas fa-tools"></i> 最新报修</h3></div>
+                    <div class="bd-realtime-list" id="repairList"></div>
+                </div>
+                <div class="bd-realtime-card">
+                    <div class="bd-realtime-header"><h3><i class="fas fa-calendar-alt"></i> 最新预约</h3></div>
+                    <div class="bd-realtime-list" id="bookingList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bd-rank-section">
+        <div class="bd-container">
+            <div class="bd-section-header"><h2><i class="fas fa-trophy"></i> 服务排行榜</h2></div>
+            <div class="bd-rank-grid">
+                <div class="bd-rank-card">
+                    <div class="bd-rank-header"><h3><i class="fas fa-fire"></i> 热门二手商品</h3></div>
+                    <div class="bd-rank-list" id="hotProducts"></div>
+                </div>
+                <div class="bd-rank-card">
+                    <div class="bd-rank-header"><h3><i class="fas fa-star"></i> 活跃社团</h3></div>
+                    <div class="bd-rank-list" id="activeClubs"></div>
+                </div>
+                <div class="bd-rank-card">
+                    <div class="bd-rank-header"><h3><i class="fas fa-map-marker-alt"></i> 热门场馆</h3></div>
+                    <div class="bd-rank-list" id="hotVenues"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>智慧校园</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="secondhand.html">二手市场</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：XX大学信息中心</p><p>电话：010-12345678</p><p>邮箱：support@campus.edu</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 智慧校园综合服务平台</p></div>
+    </footer>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/bigdata.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

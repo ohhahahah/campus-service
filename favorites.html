@@ -1,0 +1,125 @@
+﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的收藏 - 智慧校园二手市场</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link active">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="sh-nav-links">
+                    <a href="messages.html" class="sh-nav-link" title="我的私信"><i class="fas fa-comment-dots"></i></a>
+                    <a href="favorites.html" class="sh-nav-link" title="我的收藏" style="color:var(--primary-light)"><i class="fas fa-heart"></i></a>
+                    <a href="orders.html" class="sh-nav-link" title="我的订单"><i class="fas fa-receipt"></i></a>
+                </div>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sh-page-container">
+        <h1 class="sh-page-title"><i class="fas fa-heart"></i> 我的收藏</h1>
+        <div id="favList" class="sh-fav-list"></div>
+    </div>
+
+    <div class="sh-toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function getCurrentUser() {
+            if (window.CampusDB) return CampusDB.getCurrentUser();
+            try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
+        }
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2500);
+        }
+        function getCollected() {
+            try { return JSON.parse(localStorage.getItem('campus_collected') || '[]'); } catch(e) { return []; }
+        }
+        function saveCollected(list) {
+            localStorage.setItem('campus_collected', JSON.stringify(list));
+        }
+
+        var user = getCurrentUser();
+        var listEl = document.getElementById('favList');
+
+        function renderFavorites() {
+            var list = getCollected();
+            if (list.length === 0) {
+                listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1"><i class="fas fa-heart-broken"></i><p>暂无收藏商品，去二手市场逛逛吧</p></div>';
+                return;
+            }
+            listEl.innerHTML = '';
+            list.forEach(function(item) {
+                var card = document.createElement('div');
+                card.className = 'sh-fav-card';
+                card.innerHTML = '<div class="sh-fav-card-img"><img src="' + item.img + '" alt="' + item.name + '" onerror="this.style.display=\'none\'"></div><div class="sh-fav-card-body"><h3>' + item.name + '</h3><div class="sh-fav-card-meta"><i class="fas fa-tag"></i> ' + item.category + ' · ' + item.condition + ' · ' + item.seller + '</div><div class="sh-fav-card-price">¥' + item.price + '</div><div class="sh-fav-card-actions"><button class="sh-fav-view" data-id="' + item.productId + '"><i class="fas fa-eye"></i> 查看详情</button><button class="sh-fav-remove" data-id="' + item.productId + '"><i class="fas fa-trash-alt"></i> 取消收藏</button></div></div>';
+                listEl.appendChild(card);
+            });
+
+            listEl.querySelectorAll('.sh-fav-view').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    window.location.href = 'detail.html?id=' + this.dataset.id;
+                });
+            });
+
+            listEl.querySelectorAll('.sh-fav-remove').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var pid = parseInt(this.dataset.id);
+                    var list = getCollected();
+                    var idx = -1;
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].productId === pid) { idx = i; break; }
+                    }
+                    if (idx >= 0) {
+                        list.splice(idx, 1);
+                        saveCollected(list);
+                        showToast('已取消收藏');
+                        renderFavorites();
+                    }
+                });
+            });
+        }
+
+        if (!user || user.role !== 'student') {
+            listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1"><i class="fas fa-lock"></i><p>请先<a href="login.html" style="color:var(--primary-light)">登录</a>后查看收藏</p></div>';
+            return;
+        }
+
+        renderFavorites();
+    });
+    </script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

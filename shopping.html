@@ -1,0 +1,152 @@
+﻿﻿﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园超市 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/life.css">
+<link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link active">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="header-content">
+            <h1>校园超市</h1>
+            <p>在线购物 · 送货上门 · 订单跟踪</p>
+        </div>
+    </section>
+
+    <div class="breadcrumb">
+        <a href="life.html"><i class="fas fa-home"></i> 生活服务</a>
+        <span class="separator">/</span>
+        <span class="current">校园超市</span>
+    </div>
+
+    <div class="content-section">
+        <a href="life.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+    </div>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-store" style="color:var(--primary-light)"></i> 商品分类</h2>
+            <div class="tab-group" id="categoryTabs">
+                <button class="tab-btn active" data-cat="snack">零食</button>
+                <button class="tab-btn" data-cat="drink">饮料</button>
+                <button class="tab-btn" data-cat="daily">日用品</button>
+                <button class="tab-btn" data-cat="stationery">文具</button>
+            </div>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-shopping-cart" style="color:var(--primary-light)"></i> 购物车</h2>
+        </div>
+        <div class="cart-panel" id="shopCartPanel">
+            <div class="empty-state" id="shopCartEmpty">
+                <i class="fas fa-shopping-basket"></i>
+                <p>购物车是空的，快去选购商品吧</p>
+            </div>
+            <div id="shopCartItems"></div>
+            <div class="cart-total" id="shopCartTotal" style="display:none">
+                <span>合计</span>
+                <span class="total-price" id="shopCartTotalPrice">¥0</span>
+            </div>
+            <div id="shopCheckoutArea" style="display:none">
+                <div class="form-card" style="margin-top:20px;margin-bottom:0">
+                    <h3><i class="fas fa-map-marker-alt"></i> 配送地址</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>楼栋</label>
+                            <select id="addrBuilding">
+                                <option value="">请选择</option>
+                                <option>1号楼</option>
+                                <option>2号楼</option>
+                                <option>3号楼</option>
+                                <option>4号楼</option>
+                                <option>5号楼</option>
+                                <option>6号楼</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>房间号</label>
+                            <input type="text" id="addrRoom" placeholder="如：301">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="tel" id="addrPhone" placeholder="请输入联系电话">
+                    </div>
+                </div>
+                <div style="text-align:right;margin-top:15px">
+                    <button class="checkout-btn" id="shopCheckoutBtn"><i class="fas fa-check"></i> 确认下单</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-clipboard-list" style="color:var(--primary-light)"></i> 订单状态</h2>
+        </div>
+        <div class="data-list" id="shopOrders"></div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>智慧校园</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="secondhand.html">二手市场</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：XX大学信息中心</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 智慧校园综合服务平台 | 大学生网页设计大赛参赛作品</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/shopping.js"></script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>
