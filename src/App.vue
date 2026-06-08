@@ -1,33 +1,9 @@
 <template>
-  <div class="smart-campus">
-    <NavBar />
-    <div class="page-content">
-      <HeroSection />
-      <AnnouncementSection />
-      <QuickServicesSection />
-      <SecondhandSection />
-      <MutualSection />
-      <DataPreviewSection />
-      <CampusEventsSection />
-      <NoticeSection />
-      <FooterSection />
-    </div>
-    <RobotAssistant />
-  </div>
+  <Home />
 </template>
 
 <script setup>
-import NavBar from './components/NavBar.vue'
-import HeroSection from './components/HeroSection.vue'
-import AnnouncementSection from './components/AnnouncementSection.vue'
-import QuickServicesSection from './components/QuickServicesSection.vue'
-import SecondhandSection from './components/SecondhandSection.vue'
-import MutualSection from './components/MutualSection.vue'
-import DataPreviewSection from './components/DataPreviewSection.vue'
-import CampusEventsSection from './components/CampusEventsSection.vue'
-import NoticeSection from './components/NoticeSection.vue'
-import FooterSection from './components/FooterSection.vue'
-import RobotAssistant from './components/RobotAssistant.vue'
+import Home from './views/Home.vue'
 </script>
 
 <style>
