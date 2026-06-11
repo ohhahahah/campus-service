@@ -1,4 +1,4 @@
-﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -53,7 +53,6 @@
                     <div class="lg-tabs">
                         <button class="lg-tab active" data-tab="studentLogin"><i class="fas fa-user-graduate"></i><span>学生登录</span></button>
                         <button class="lg-tab" data-tab="adminLogin"><i class="fas fa-user-shield"></i><span>管理员登录</span></button>
-                        <button class="lg-tab" data-tab="studentRegister"><i class="fas fa-user-plus"></i><span>学生注册</span></button>
                     </div>
 
                     <div class="lg-form-wrapper active" id="studentLoginForm">
@@ -64,7 +63,10 @@
                             <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="stuLoginPwd" placeholder="请输入密码" required></div>
                             <div class="lg-options">
                                 <label class="lg-remember"><input type="checkbox" id="stuRemember"><span>记住我</span></label>
-                                <a href="javascript:void(0)" class="lg-forgot" id="stuForgot">忘记密码？</a>
+                                <div class="lg-options-right">
+                                    <a href="javascript:void(0)" class="lg-forgot" id="stuForgot">忘记密码？</a>
+                                    <a href="javascript:void(0)" class="lg-register-link" id="stuToRegister">学生注册</a>
+                                </div>
                             </div>
                             <button type="submit" class="lg-submit-btn"><i class="fas fa-sign-in-alt"></i> 登录</button>
                         </form>

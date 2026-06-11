@@ -1,30 +1,49 @@
 .sh-hero {
     padding: 120px 20px 60px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 30%, #3b82f6 70%, #06b6d4 100%);
     text-align: center;
     position: relative;
     overflow: hidden;
+    min-height: 380px;
 }
 
-.sh-hero::before {
-    content: '';
+.sh-hero-slides {
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
-    animation: shHeroFloat 15s ease-in-out infinite;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
-@keyframes shHeroFloat {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(30px, -30px); }
+.sh-hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+
+.sh-hero-slide.active {
+    opacity: 1;
+}
+
+.sh-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(6,95,70,0.68) 0%, rgba(16,185,129,0.5) 40%, rgba(110,231,183,0.38) 70%, rgba(236,253,245,0.25) 100%);
+    z-index: 1;
 }
 
 .sh-hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -35,6 +54,7 @@
     color: #fff;
     margin-bottom: 15px;
     letter-spacing: 2px;
+    text-shadow: 0 2px 12px rgba(6,78,59,0.3);
 }
 
 .sh-hero h1 i {
@@ -44,8 +64,9 @@
 
 .sh-hero p {
     font-size: 18px;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.95);
     margin-bottom: 40px;
+    text-shadow: 0 1px 6px rgba(6,78,59,0.2);
 }
 
 .sh-hero-stats {
@@ -58,17 +79,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 16px 28px;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .sh-stat-num {
     font-size: 36px;
     font-weight: 800;
     color: #fff;
+    text-shadow: 0 1px 4px rgba(6,78,59,0.15);
 }
 
 .sh-stat-label {
     font-size: 14px;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.85);
     margin-top: 5px;
 }
 
@@ -116,7 +144,7 @@
 }
 
 .sh-search-btn {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     border: none;
     padding: 12px 30px;
     border-radius: 50px;
@@ -128,7 +156,7 @@
 }
 
 .sh-search-btn:hover {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    background: linear-gradient(135deg, #064e3b, #059669);
     transform: scale(1.02);
 }
 
@@ -160,7 +188,7 @@
 }
 
 .sh-filter-tag.active {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     color: #fff;
     border-color: transparent;
 }
@@ -323,7 +351,7 @@
 .sh-hot-card-img {
     width: 100%;
     height: 220px;
-    background: linear-gradient(135deg, #e0e7ff, #dbeafe);
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -434,7 +462,7 @@
 
 .sh-sort-btn:hover,
 .sh-sort-btn.active {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     color: #fff;
 }
 
@@ -464,7 +492,7 @@
 .sh-product-card-img {
     width: 100%;
     height: 180px;
-    background: linear-gradient(135deg, #e0e7ff, #dbeafe);
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -502,7 +530,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     color: #fff;
     padding: 3px 12px;
     border-radius: 15px;
@@ -747,7 +775,7 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     color: #fff;
     padding: 15px 28px;
     border-radius: 50px;
@@ -758,14 +786,14 @@
     gap: 10px;
     font-size: 16px;
     font-weight: 600;
-    box-shadow: 0 8px 30px rgba(30,64,175,0.4);
+    box-shadow: 0 8px 30px rgba(6,95,70,0.4);
     transition: all 0.3s;
     z-index: 100;
 }
 
 .sh-float-btn:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(30,64,175,0.5);
+    box-shadow: 0 12px 40px rgba(6,95,70,0.5);
 }
 
 .sh-modal {
@@ -789,7 +817,7 @@
 
 .sh-modal-content {
     background: var(--bg-card);
-    border-radius: 20px;
+    border-radius: 6px;
     width: 100%;
     max-width: 650px;
     max-height: 90vh;
@@ -817,7 +845,7 @@
     top: 0;
     background: var(--bg-card);
     z-index: 1;
-    border-radius: 20px 20px 0 0;
+    border-radius: 6px 6px 0 0;
 }
 
 .sh-modal-header h3 {
@@ -828,7 +856,7 @@
 
 .sh-modal-header h3 i {
     margin-right: 8px;
-    color: var(--primary-light);
+    color: #165DFF;
 }
 
 .sh-close-btn {
@@ -897,7 +925,7 @@
 .sh-form-group select:focus,
 .sh-form-group textarea:focus {
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
 }
 
 .sh-form-group textarea {
@@ -916,7 +944,7 @@
 
 .sh-upload-area:hover {
     border-color: var(--primary-light);
-    background: rgba(59,130,246,0.05);
+    background: rgba(16,185,129,0.05);
 }
 
 .sh-upload-area i {
@@ -973,27 +1001,30 @@
     padding: 24px;
 }
 
+/* 左侧商品图片区 - 矩形卡片+灰色边框+浅灰背景 */
 .sh-product-image-area {
     position: relative;
-    border-radius: 16px;
+    border-radius: 6px;
     overflow: hidden;
+    background: #f5f7fa;
+    border: 1px solid #d1d5db;
 }
 
 .sh-product-image-area img {
     width: 100%;
     height: 350px;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 6px;
 }
 
 .sh-product-badge {
     position: absolute;
     top: 12px;
     right: 12px;
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: #165DFF;
     color: #fff;
     padding: 4px 14px;
-    border-radius: 20px;
+    border-radius: 4px;
     font-size: 13px;
     font-weight: 600;
 }
@@ -1005,10 +1036,10 @@
 
 .sh-detail-category {
     display: inline-block;
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: #165DFF;
     color: #fff;
     padding: 4px 14px;
-    border-radius: 20px;
+    border-radius: 4px;
     font-size: 12px;
     margin-bottom: 12px;
     width: fit-content;
@@ -1021,11 +1052,15 @@
     margin-bottom: 12px;
 }
 
+/* 价格模块 - 蓝色背景卡片突出交易属性 */
 .sh-detail-price {
     font-size: 32px;
     font-weight: 800;
-    color: #ef4444;
+    color: #fff;
     margin-bottom: 15px;
+    background: linear-gradient(135deg, #165DFF, #4080FF);
+    padding: 14px 20px;
+    border-radius: 6px;
 }
 
 .sh-product-info-area p {
@@ -1033,34 +1068,53 @@
     line-height: 1.8;
     margin-bottom: 15px;
     flex: 1;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px 16px;
+    background: #fff;
 }
 
+/* 商品属性 - 网格布局+细灰色边框 */
 .sh-detail-meta {
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     color: var(--text-secondary);
     font-size: 13px;
     margin-bottom: 15px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px 16px;
+}
+
+.sh-detail-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
 }
 
 .sh-detail-meta i {
-    margin-right: 4px;
-    color: var(--primary-light);
+    color: #165DFF;
+    font-size: 14px;
 }
 
+/* 卖家信息区 - 浅灰背景卡片，清爽商务感 */
 .sh-seller-card {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px;
-    background: var(--bg-secondary);
-    border-radius: 14px;
+    padding: 14px 16px;
+    background: #f5f7fa;
+    border-radius: 6px;
     margin-bottom: 18px;
+    border: 1px solid #e5e7eb;
 }
 
 .sh-seller-avatar {
-    font-size: 40px;
-    color: var(--primary-light);
+    font-size: 36px;
+    color: #64748b;
 }
 
 .sh-seller-info {
@@ -1075,7 +1129,7 @@
 
 .sh-seller-level {
     font-size: 12px;
-    color: #f59e0b;
+    color: #165DFF;
 }
 
 .sh-seller-level i {
@@ -1085,11 +1139,13 @@
 .sh-seller-deals {
     font-size: 12px;
     color: var(--text-secondary);
-    background: var(--bg-primary);
+    background: #fff;
     padding: 4px 10px;
-    border-radius: 10px;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
 }
 
+/* 操作按钮 - 小圆角商务风 */
 .sh-detail-actions {
     display: flex;
     gap: 10px;
@@ -1100,6 +1156,27 @@
     justify-content: center;
     padding: 10px;
     font-size: 14px;
+    border-radius: 6px;
+}
+
+.sh-detail-actions .primary-btn {
+    background: linear-gradient(135deg, #165DFF, #4080FF);
+    border: none;
+}
+
+.sh-detail-actions .primary-btn:hover {
+    background: linear-gradient(135deg, #0E42D2, #165DFF);
+}
+
+.sh-detail-actions .secondary-btn {
+    background: #f5f7fa;
+    color: #64748b;
+    border: 1px solid #d1d5db;
+}
+
+.sh-detail-actions .secondary-btn:hover {
+    background: #e5e7eb;
+    color: #1e293b;
 }
 
 .sh-message-section {
@@ -1122,7 +1199,7 @@
 
 .sh-message-header h4 i {
     margin-right: 6px;
-    color: var(--primary-light);
+    color: #165DFF;
 }
 
 .sh-msg-count {
@@ -1151,7 +1228,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    background: linear-gradient(135deg, #10b981, #065f46);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1204,7 +1281,7 @@
 }
 
 .sh-message-input button {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     border: none;
     width: 42px;
     height: 42px;
@@ -1254,12 +1331,20 @@
         font-size: 28px;
     }
 
+    .sh-hero {
+        min-height: 300px;
+    }
+
     .sh-hero p {
         font-size: 15px;
     }
 
     .sh-hero-stats {
-        gap: 30px;
+        gap: 20px;
+    }
+
+    .sh-stat-item {
+        padding: 12px 18px;
     }
 
     .sh-stat-num {
@@ -1320,6 +1405,7 @@
 
     .sh-product-image-area img {
         height: 220px;
+        border-radius: 6px;
     }
 
     .sh-detail-actions {
@@ -1399,7 +1485,7 @@
     color: var(--text-primary);
 }
 .sh-suggest-item:hover {
-    background: rgba(59,130,246,0.08);
+    background: rgba(16,185,129,0.08);
 }
 .sh-suggest-item i {
     color: var(--text-secondary);
@@ -1425,7 +1511,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 20px;
-    background: rgba(59,130,246,0.08);
+    background: rgba(16,185,129,0.08);
     border-radius: 12px;
     margin-bottom: 16px;
     font-size: 14px;
@@ -1524,7 +1610,7 @@
 }
 .sh-nav-link:hover {
     color: var(--primary-light);
-    background: rgba(59,130,246,0.08);
+    background: rgba(16,185,129,0.08);
 }
 .sh-nav-badge {
     position: absolute;
@@ -1580,7 +1666,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     color: #fff;
     border-radius: 20px 20px 0 0;
 }
@@ -1656,7 +1742,7 @@
     word-break: break-word;
 }
 .sh-chat-msg-right .sh-chat-bubble {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     color: #fff;
     border-bottom-right-radius: 4px;
 }
@@ -1693,7 +1779,7 @@
     border-color: var(--primary-light);
 }
 .sh-chat-send {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #065f46, #10b981);
     border: none;
     width: 42px;
     height: 42px;
@@ -1765,13 +1851,13 @@
 }
 .sh-session-item:hover {
     border-color: var(--primary-light);
-    box-shadow: 0 4px 15px rgba(59,130,246,0.1);
+    box-shadow: 0 4px 15px rgba(16,185,129,0.1);
 }
 .sh-session-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    background: linear-gradient(135deg, #10b981, #065f46);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1957,8 +2043,8 @@
     color: #f59e0b;
 }
 .sh-order-status.shipped {
-    background: rgba(59,130,246,0.1);
-    color: #3b82f6;
+    background: rgba(16,185,129,0.1);
+    color: #10b981;
 }
 .sh-order-status.completed {
     background: rgba(16,185,129,0.1);

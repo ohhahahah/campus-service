@@ -1,21 +1,26 @@
 (function() {
+    /* 场馆数据 - 游泳馆/体育馆/图书馆/实训室 */
     var venues = [
-        { id: 'v1', type: 'library', name: '图书馆一楼自习室', icon: 'fa-book-open', desc: '安静自习空间，配备独立书桌和台灯', capacity: 120, location: '图书馆1楼', tags: ['自习', '安静', '空调'], available: true, openTime: '07:00-22:00', equipment: '独立书桌、台灯、电源插座、WiFi' },
-        { id: 'v2', type: 'library', name: '图书馆电子阅览室', icon: 'fa-desktop', desc: '配备电脑的电子阅览空间', capacity: 60, location: '图书馆2楼', tags: ['电脑', '电子资源', '打印'], available: true, openTime: '08:00-21:00', equipment: '电脑、打印机、扫描仪' },
-        { id: 'v3', type: 'library', name: '图书馆研讨间A', icon: 'fa-comments', desc: '小组讨论专用空间，可白板演示', capacity: 10, location: '图书馆3楼', tags: ['讨论', '白板', '投影'], available: true, openTime: '08:00-21:00', equipment: '白板、投影仪、会议桌' },
-        { id: 'v4', type: 'library', name: '图书馆研讨间B', icon: 'fa-comments', desc: '中型研讨空间，适合团队协作', capacity: 15, location: '图书馆3楼', tags: ['讨论', '协作', '投影'], available: false, openTime: '08:00-21:00', equipment: '白板、投影仪、视频会议设备' },
-        { id: 'v5', type: 'activity', name: '学生活动中心', icon: 'fa-theater-masks', desc: '大型活动场地，可举办演出和晚会', capacity: 300, location: '学生活动中心1楼', tags: ['演出', '晚会', '大型活动'], available: true, openTime: '08:00-22:00', equipment: '舞台、音响、灯光、投影' },
-        { id: 'v6', type: 'activity', name: '多功能会议室', icon: 'fa-chalkboard', desc: '中型会议空间，适合讲座和培训', capacity: 80, location: '行政楼2楼', tags: ['会议', '讲座', '培训'], available: true, openTime: '08:00-18:00', equipment: '投影仪、麦克风、会议桌' },
-        { id: 'v7', type: 'activity', name: '社团活动室', icon: 'fa-guitar', desc: '社团日常活动空间', capacity: 30, location: '学生活动中心2楼', tags: ['社团', '排练', '活动'], available: true, openTime: '08:00-22:00', equipment: '镜子、音响、储物柜' },
-        { id: 'v8', type: 'activity', name: '创业孵化室', icon: 'fa-lightbulb', desc: '创新创业团队专用工作空间', capacity: 20, location: '创新创业楼3楼', tags: ['创业', '办公', '路演'], available: false, openTime: '08:00-22:00', equipment: '办公桌椅、白板、网络' },
-        { id: 'v9', type: 'stadium', name: '室内篮球馆', icon: 'fa-basketball-ball', desc: '标准篮球场地，木地板', capacity: 50, location: '体育馆1楼', tags: ['篮球', '室内', '木地板'], available: true, openTime: '06:00-22:00', equipment: '篮球架、计分板、更衣室' },
-        { id: 'v10', type: 'stadium', name: '羽毛球馆', icon: 'fa-feather-alt', desc: '6片标准羽毛球场地', capacity: 30, location: '体育馆2楼', tags: ['羽毛球', '室内', '塑胶'], available: true, openTime: '06:00-22:00', equipment: '球网、计分器、更衣室' },
-        { id: 'v11', type: 'stadium', name: '乒乓球室', icon: 'fa-table-tennis', desc: '10张标准乒乓球台', capacity: 20, location: '体育馆3楼', tags: ['乒乓球', '室内'], available: true, openTime: '06:00-22:00', equipment: '球台、球网、更衣室' },
-        { id: 'v12', type: 'stadium', name: '田径操场', icon: 'fa-running', desc: '400米标准跑道，足球场', capacity: 200, location: '校园东区', tags: ['跑步', '足球', '室外'], available: true, openTime: '06:00-22:00', equipment: '跑道、足球场、看台' },
-        { id: 'v13', type: 'lab', name: '计算机实训室A', icon: 'fa-laptop-code', desc: '配备高性能电脑的实训空间', capacity: 50, location: '信息楼2楼', tags: ['计算机', '编程', '实训'], available: true, openTime: '08:00-21:00', equipment: '电脑、投影仪、白板' },
-        { id: 'v14', type: 'lab', name: '物理实验室', icon: 'fa-atom', desc: '物理实验专用空间', capacity: 30, location: '理学楼1楼', tags: ['物理', '实验', '科研'], available: true, openTime: '08:00-18:00', equipment: '实验仪器、安全设备' },
-        { id: 'v15', type: 'lab', name: '电子实训室', icon: 'fa-microchip', desc: '电子电路实训空间', capacity: 40, location: '工学楼3楼', tags: ['电子', '电路', '焊接'], available: false, openTime: '08:00-18:00', equipment: '示波器、焊接工具、电源' },
-        { id: 'v16', type: 'lab', name: '3D打印工作坊', icon: 'fa-cube', desc: '3D打印和创客空间', capacity: 15, location: '创新创业楼1楼', tags: ['3D打印', '创客', '设计'], available: true, openTime: '09:00-21:00', equipment: '3D打印机、设计软件' }
+        /* 游泳馆 */
+        { id: 'v1', type: 'swimming', name: '室内恒温泳池', icon: 'fa-swimmer', desc: '50米标准恒温泳池，水温常年保持26-28°C，配备专业救生员', capacity: 60, location: '游泳馆1楼', tags: ['恒温', '标准池', '救生员'], available: true, openTime: '06:00-22:00', equipment: '标准泳道、更衣室、淋浴间、储物柜' },
+        { id: 'v2', type: 'swimming', name: '训练短池', icon: 'fa-swimmer', desc: '25米短池，适合初学者和日常训练，水深1.2-1.8米', capacity: 30, location: '游泳馆2楼', tags: ['短池', '初学者', '浅水区'], available: true, openTime: '07:00-21:00', equipment: '泳道分隔线、浮板、更衣室' },
+        { id: 'v3', type: 'swimming', name: '儿童戏水区', icon: 'fa-water', desc: '专为儿童设计的安全戏水区域，水深0.4-0.6米，配有水上滑梯', capacity: 20, location: '游泳馆1楼东侧', tags: ['儿童', '戏水', '安全'], available: true, openTime: '09:00-20:00', equipment: '水上滑梯、浅水池、家长休息区' },
+        { id: 'v4', type: 'swimming', name: 'VIP私教泳池', icon: 'fa-hot-tub', desc: '私密教学空间，一对一或小班教学，环境安静舒适', capacity: 6, location: '游泳馆3楼', tags: ['私教', 'VIP', '安静'], available: false, openTime: '08:00-21:00', equipment: '独立泳池、休息区、毛巾浴巾' },
+        /* 体育馆 */
+        { id: 'v5', type: 'gym', name: '室内篮球馆', icon: 'fa-basketball-ball', desc: '标准篮球场地，专业木地板，配备计分系统和照明', capacity: 50, location: '体育馆1楼', tags: ['篮球', '木地板', '室内'], available: true, openTime: '06:00-22:00', equipment: '篮球架、计分板、更衣室、饮水机' },
+        { id: 'v6', type: 'gym', name: '羽毛球馆', icon: 'fa-feather-alt', desc: '6片标准羽毛球场地，PVC塑胶地面，灯光柔和不刺眼', capacity: 30, location: '体育馆2楼', tags: ['羽毛球', '塑胶地', '灯光'], available: true, openTime: '06:00-22:00', equipment: '球网、计分器、更衣室' },
+        { id: 'v7', type: 'gym', name: '乒乓球室', icon: 'fa-table-tennis', desc: '10张标准乒乓球台，空间宽敞，适合个人练习和比赛', capacity: 20, location: '体育馆3楼', tags: ['乒乓球', '室内', '多台'], available: true, openTime: '06:00-22:00', equipment: '球台、球网、挡板、更衣室' },
+        { id: 'v8', type: 'gym', name: '健身房', icon: 'fa-dumbbell', desc: '配备有氧和力量训练器械，专业教练指导，淋浴设施齐全', capacity: 40, location: '体育馆1楼西侧', tags: ['健身', '器械', '教练'], available: true, openTime: '06:00-22:00', equipment: '跑步机、动感单车、哑铃区、力量器械' },
+        { id: 'v9', type: 'gym', name: '瑜伽舞蹈室', icon: 'fa-spa', desc: '木地板+镜面墙，适合瑜伽、舞蹈、形体训练', capacity: 25, location: '体育馆2楼东侧', tags: ['瑜伽', '舞蹈', '镜面墙'], available: false, openTime: '07:00-21:00', equipment: '镜面墙、把杆、瑜伽垫、音响' },
+        /* 图书馆 */
+        { id: 'v10', type: 'library', name: '图书馆一楼自习室', icon: 'fa-book-open', desc: '安静自习空间，配备独立书桌和台灯，WiFi全覆盖', capacity: 120, location: '图书馆1楼', tags: ['自习', '安静', '空调'], available: true, openTime: '07:00-22:00', equipment: '独立书桌、台灯、电源插座、WiFi' },
+        { id: 'v11', type: 'library', name: '电子阅览室', icon: 'fa-desktop', desc: '配备电脑的电子阅览空间，可查阅电子期刊和数据库', capacity: 60, location: '图书馆2楼', tags: ['电脑', '电子资源', '打印'], available: true, openTime: '08:00-21:00', equipment: '电脑、打印机、扫描仪、数据库访问' },
+        { id: 'v12', type: 'library', name: '研讨间A', icon: 'fa-comments', desc: '小组讨论专用空间，可白板演示，适合团队协作', capacity: 10, location: '图书馆3楼', tags: ['讨论', '白板', '投影'], available: true, openTime: '08:00-21:00', equipment: '白板、投影仪、会议桌、电源' },
+        { id: 'v13', type: 'library', name: '研讨间B', icon: 'fa-comments', desc: '中型研讨空间，配备视频会议设备，适合远程协作', capacity: 15, location: '图书馆3楼', tags: ['讨论', '协作', '视频会议'], available: false, openTime: '08:00-21:00', equipment: '白板、投影仪、视频会议设备' },
+        /* 实训室 */
+        { id: 'v14', type: 'lab', name: '计算机实训室A', icon: 'fa-laptop-code', desc: '配备高性能电脑的实训空间，支持编程和软件开发', capacity: 50, location: '信息楼2楼', tags: ['计算机', '编程', '实训'], available: true, openTime: '08:00-21:00', equipment: '高性能电脑、投影仪、白板' },
+        { id: 'v15', type: 'lab', name: '物理实验室', icon: 'fa-atom', desc: '物理实验专用空间，配备各类实验仪器和安全设备', capacity: 30, location: '理学楼1楼', tags: ['物理', '实验', '科研'], available: true, openTime: '08:00-18:00', equipment: '实验仪器、安全设备、通风系统' },
+        { id: 'v16', type: 'lab', name: '电子实训室', icon: 'fa-microchip', desc: '电子电路实训空间，配备示波器和焊接工具', capacity: 40, location: '工学楼3楼', tags: ['电子', '电路', '焊接'], available: false, openTime: '08:00-18:00', equipment: '示波器、焊接工具、电源、防静电台' }
     ];
 
     var myBookings = loadBookings();
@@ -36,6 +41,7 @@
     }
 
     function init() {
+        initHeroSlider();
         animateStats();
         initCategoryCards();
         initFilterBtns();
@@ -44,6 +50,49 @@
         initModals();
         initBookingForm();
         setMinDate();
+    }
+
+    /* Hero 轮播 */
+    function initHeroSlider() {
+        var slides = document.querySelectorAll('.bk-hero-slide');
+        var dots = document.querySelectorAll('.bk-hero-dot');
+        if (!slides.length) return;
+        var current = 0;
+        var total = slides.length;
+        var timer = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            if (dots[current]) dots[current].classList.remove('active');
+            current = index % total;
+            slides[current].classList.add('active');
+            if (dots[current]) dots[current].classList.add('active');
+        }
+
+        function startAuto() {
+            stopAuto();
+            timer = setInterval(function() { goTo(current + 1); }, 5000);
+        }
+
+        function stopAuto() {
+            if (timer) { clearInterval(timer); timer = null; }
+        }
+
+        /* 点击指示器切换 */
+        dots.forEach(function(dot, i) {
+            dot.addEventListener('click', function() {
+                goTo(i);
+                startAuto();
+            });
+        });
+
+        var hero = document.querySelector('.bk-hero');
+        if (hero) {
+            hero.addEventListener('mouseenter', stopAuto);
+            hero.addEventListener('mouseleave', startAuto);
+        }
+
+        startAuto();
     }
 
     function animateStats() {
@@ -124,7 +173,7 @@
             list.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-secondary);"><i class="fas fa-calendar-times" style="font-size:48px;margin-bottom:16px;display:block;color:#cbd5e1;"></i><p>暂无预约记录</p></div>';
             return;
         }
-        var iconMap = { library: 'fa-book', activity: 'fa-users', stadium: 'fa-running', lab: 'fa-flask' };
+        var iconMap = { swimming: 'fa-swimmer', gym: 'fa-basketball-ball', library: 'fa-book', lab: 'fa-flask' };
         var statusMap = { confirmed: '已确认', pending: '待确认', cancelled: '已取消' };
         myBookings.forEach(function(booking) {
             var card = document.createElement('div');
@@ -233,7 +282,7 @@
     }
 
     function getTypeName(type) {
-        var map = { library: '图书馆', activity: '活动室', stadium: '操场/体育馆', lab: '实训室' };
+        var map = { swimming: '游泳馆', gym: '体育馆', library: '图书馆', lab: '实训室' };
         return map[type] || type;
     }
 

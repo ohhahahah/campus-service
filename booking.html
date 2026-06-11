@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -32,9 +32,22 @@
     </nav>
 
     <section class="bk-hero">
+        <div class="bk-hero-slides">
+            <div class="bk-hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1400&h=600&fit=crop')"></div>
+            <div class="bk-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=1400&h=600&fit=crop')"></div>
+            <div class="bk-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1400&h=600&fit=crop')"></div>
+            <div class="bk-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1568702846914-96b305d2ead1?w=1400&h=600&fit=crop')"></div>
+        </div>
+        <div class="bk-hero-overlay"></div>
+        <div class="bk-hero-dots">
+            <span class="bk-hero-dot active"></span>
+            <span class="bk-hero-dot"></span>
+            <span class="bk-hero-dot"></span>
+            <span class="bk-hero-dot"></span>
+        </div>
         <div class="bk-hero-content">
             <h1><i class="fas fa-calendar-check"></i> 校园场馆预约系统</h1>
-            <p>图书馆 · 活动室 · 操场 · 实训室 · 一键预约</p>
+            <p>游泳馆 · 体育馆 · 图书馆 · 实训室 · 一键预约</p>
             <div class="bk-hero-stats">
                 <div class="bk-stat">
                     <span class="bk-stat-num" data-target="24">0</span>
@@ -60,22 +73,22 @@
         <div class="bk-container">
             <h2 class="bk-section-title"><i class="fas fa-th-large"></i> 选择场馆类型</h2>
             <div class="bk-category-grid">
+                <div class="bk-category-card" data-type="swimming">
+                    <div class="bk-category-icon"><i class="fas fa-swimmer"></i></div>
+                    <h3>游泳馆</h3>
+                    <p>恒温泳池 · 训练池 · 休闲戏水</p>
+                    <span class="bk-category-count">6个可预约</span>
+                </div>
+                <div class="bk-category-card" data-type="gym">
+                    <div class="bk-category-icon"><i class="fas fa-basketball-ball"></i></div>
+                    <h3>体育馆</h3>
+                    <p>篮球场 · 羽毛球场 · 乒乓球室</p>
+                    <span class="bk-category-count">8个可预约</span>
+                </div>
                 <div class="bk-category-card" data-type="library">
                     <div class="bk-category-icon"><i class="fas fa-book"></i></div>
                     <h3>图书馆</h3>
                     <p>自习室 · 阅览室 · 研讨间</p>
-                    <span class="bk-category-count">8个可预约</span>
-                </div>
-                <div class="bk-category-card" data-type="activity">
-                    <div class="bk-category-icon"><i class="fas fa-users"></i></div>
-                    <h3>活动室</h3>
-                    <p>社团活动 · 会议厅 · 多功能厅</p>
-                    <span class="bk-category-count">6个可预约</span>
-                </div>
-                <div class="bk-category-card" data-type="stadium">
-                    <div class="bk-category-icon"><i class="fas fa-running"></i></div>
-                    <h3>操场/体育馆</h3>
-                    <p>篮球场 · 羽毛球场 · 乒乓球室</p>
                     <span class="bk-category-count">6个可预约</span>
                 </div>
                 <div class="bk-category-card" data-type="lab">
@@ -94,9 +107,9 @@
                 <h2 class="bk-section-title"><i class="fas fa-building"></i> 场馆列表</h2>
                 <div class="bk-venues-filter">
                     <button class="bk-filter-btn active" data-filter="all">全部</button>
+                    <button class="bk-filter-btn" data-filter="swimming">游泳馆</button>
+                    <button class="bk-filter-btn" data-filter="gym">体育馆</button>
                     <button class="bk-filter-btn" data-filter="library">图书馆</button>
-                    <button class="bk-filter-btn" data-filter="activity">活动室</button>
-                    <button class="bk-filter-btn" data-filter="stadium">操场</button>
                     <button class="bk-filter-btn" data-filter="lab">实训室</button>
                 </div>
             </div>

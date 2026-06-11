@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兼职详情 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/parttime.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link active">兼职互助</a>
+                <a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- 详情页顶部栏 -->
+    <div class="pt-detail-topbar">
+        <button class="pt-detail-back" id="detailBack"><i class="fas fa-arrow-left"></i> 返回列表</button>
+        <h2 class="pt-detail-topbar-title" id="detailTopTitle">兼职详情</h2>
+        <button class="pt-detail-share" id="detailShare"><i class="fas fa-share-alt"></i></button>
+    </div>
+
+    <!-- 详情内容区 -->
+    <div class="pt-detail-container" id="detailContainer">
+        <!-- 由 JS 动态渲染 -->
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="pt-detail-bottombar" id="detailBottombar">
+        <div class="pt-detail-bottombar-info">
+            <span class="pt-detail-bottombar-salary" id="bottomSalary">--</span>
+        </div>
+        <button class="pt-detail-apply-btn" id="detailApplyBtn"><i class="fas fa-paper-plane"></i> 申请兼职</button>
+    </div>
+
+    <!-- 申请确认弹窗 -->
+    <div class="pt-modal" id="applyModal">
+        <div class="pt-modal-content">
+            <div class="pt-modal-header">
+                <h3><i class="fas fa-paper-plane"></i> 确认申请</h3>
+                <button class="pt-modal-close" id="applyModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="pt-modal-body">
+                <div class="pt-apply-confirm">
+                    <div class="pt-apply-confirm-icon"><i class="fas fa-question-circle"></i></div>
+                    <p>确认申请该兼职？提交后发布人将收到您的申请信息。</p>
+                </div>
+                <div class="pt-form-group">
+                    <label>您的姓名</label>
+                    <input type="text" id="applyName" placeholder="请输入姓名">
+                </div>
+                <div class="pt-form-group">
+                    <label>联系方式</label>
+                    <input type="text" id="applyContact" placeholder="手机号或微信号">
+                </div>
+                <div class="pt-form-group">
+                    <label>自我介绍（选填）</label>
+                    <textarea id="applyNote" placeholder="简单介绍自己的优势和时间安排" rows="3"></textarea>
+                </div>
+                <button class="pt-submit-btn" id="applySubmitBtn"><i class="fas fa-check"></i> 提交申请</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="pt-toast" id="ptToast"></div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/parttime-detail.js"></script>
+    <script src="js/robot-assistant.js"></script>
+</body>
+</html>

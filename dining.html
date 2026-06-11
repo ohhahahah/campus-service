@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -35,10 +35,22 @@
         </div>
     </nav>
 
-    <section class="page-header">
+    <!-- 餐饮主题轮播图 -->
+    <section class="page-header dining-hero">
+        <div class="page-header-slides" id="heroSlides">
+            <div class="page-header-slide active" style="background-image:url('https://images.unsplash.com/photo-1567521464027-f127ff144326?w=1400&h=500&fit=crop')"></div>
+            <div class="page-header-slide" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&h=500&fit=crop')"></div>
+            <div class="page-header-slide" style="background-image:url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1400&h=500&fit=crop')"></div>
+        </div>
+        <div class="page-header-overlay dining-overlay"></div>
         <div class="header-content">
-            <h1>餐饮服务</h1>
-            <p>食堂菜单 · 消费账单 · 就餐记录</p>
+            <h1><i class="fas fa-utensils"></i> 餐饮服务</h1>
+            <p>食堂菜单 · 消费账单 · 在线点餐 · 订单配送</p>
+        </div>
+        <div class="hero-dots" id="heroDots">
+            <span class="hero-dot active" data-slide="0"></span>
+            <span class="hero-dot" data-slide="1"></span>
+            <span class="hero-dot" data-slide="2"></span>
         </div>
     </section>
 
@@ -126,7 +138,91 @@
         </div>
     </section>
 
-    <!-- 菜品详情弹窗（仅浏览，无加购） -->
+    <!-- 在线点餐功能模块 -->
+    <section class="content-section" id="orderSection">
+        <div class="section-header">
+            <h2><i class="fas fa-cart-plus" style="color:#f97316"></i> 在线点餐</h2>
+            <span class="recommend-hint">选择菜品加入购物车，一键下单</span>
+        </div>
+        <div class="order-filter-bar">
+            <div class="tab-group" id="orderCanteenTabs">
+                <button class="tab-btn active" data-canteen="1">一食堂</button>
+                <button class="tab-btn" data-canteen="2">二食堂</button>
+                <button class="tab-btn" data-canteen="3">三食堂</button>
+            </div>
+            <div class="tab-group" id="orderMealTabs">
+                <button class="tab-btn" data-meal="breakfast"><i class="fas fa-sun"></i> 早餐</button>
+                <button class="tab-btn active" data-meal="lunch"><i class="fas fa-cloud-sun"></i> 午餐</button>
+                <button class="tab-btn" data-meal="dinner"><i class="fas fa-moon"></i> 晚餐</button>
+            </div>
+        </div>
+        <div class="order-grid" id="orderGrid"></div>
+    </section>
+
+    <!-- 购物车悬浮面板 -->
+    <div class="floating-cart" id="floatingCart" style="display:none">
+        <div class="floating-cart-icon" id="cartIconBtn">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="floating-cart-badge" id="cartBadge">0</span>
+        </div>
+        <div class="floating-cart-info">
+            <span class="floating-cart-count" id="cartCount">0 件</span>
+            <span class="floating-cart-total" id="cartTotal">¥0.00</span>
+        </div>
+        <button class="floating-cart-btn" id="cartPanelBtn">去结算</button>
+    </div>
+
+    <!-- 购物车面板弹窗 -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <div class="cart-modal-header">
+                <h3><i class="fas fa-shopping-cart"></i> 购物车</h3>
+                <button class="cart-modal-close" id="cartModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-modal-body" id="cartModalBody">
+                <div class="cart-empty"><i class="fas fa-shopping-basket"></i><p>购物车是空的</p></div>
+            </div>
+            <div class="cart-modal-footer" id="cartModalFooter" style="display:none">
+                <div class="cart-delivery-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-truck"></i> 配送方式</label>
+                        <select id="deliveryType">
+                            <option value="dinein">堂食</option>
+                            <option value="delivery">校园配送</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="addressGroup" style="display:none">
+                        <label><i class="fas fa-map-marker-alt"></i> 配送地址</label>
+                        <select id="deliveryAddress">
+                            <option value="1号楼">1号楼</option>
+                            <option value="2号楼">2号楼</option>
+                            <option value="3号楼">3号楼</option>
+                            <option value="4号楼">4号楼</option>
+                            <option value="5号楼">5号楼</option>
+                            <option value="食堂自提点">食堂自提点</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cart-summary-row">
+                    <span>合计：<strong class="cart-summary-total" id="cartSummaryTotal">¥0.00</strong></span>
+                    <button class="checkout-btn" id="checkoutBtn"><i class="fas fa-check"></i> 提交订单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单配送功能模块 -->
+    <section class="content-section" id="deliverySection">
+        <div class="section-header">
+            <h2><i class="fas fa-shipping-fast" style="color:#3b82f6"></i> 我的订单</h2>
+            <span class="recommend-hint">实时跟踪订单状态</span>
+        </div>
+        <div class="order-list" id="orderList">
+            <div class="order-empty"><i class="fas fa-clipboard-list"></i><p>暂无订单</p></div>
+        </div>
+    </section>
+
+    <!-- 菜品详情弹窗（含加购功能） -->
     <div class="dish-modal" id="dishModal">
         <div class="dish-modal-content">
             <button class="dish-modal-close" id="dishModalClose"><i class="fas fa-times"></i></button>
@@ -151,8 +247,14 @@
                         <strong id="dishModalStock"></strong>
                     </div>
                 </div>
-                <div class="dish-modal-footer-view">
+                <div class="dish-modal-footer">
                     <span class="dish-modal-price" id="dishModalPrice"></span>
+                    <div class="dish-qty-control">
+                        <button class="dish-qty-btn" id="dishQtyMinus">-</button>
+                        <span class="dish-qty-num" id="dishQtyNum">1</span>
+                        <button class="dish-qty-btn" id="dishQtyPlus">+</button>
+                    </div>
+                    <button class="dish-add-cart-btn" id="dishAddCartBtn"><i class="fas fa-cart-plus"></i> 加入购物车</button>
                 </div>
             </div>
         </div>

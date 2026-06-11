@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -10,10 +10,10 @@
 <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
-    <nav class="navbar" id="navbar">
+    <nav class="navbar navbar-admin" id="navbar">
         <div class="nav-container">
             <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
-            <div class="nav-menu" id="navMenu">
+            <div class="nav-menu" id="navMenu" style="display:none">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link">二手市场</a>
                 <a href="life.html" class="nav-link">生活服务</a>
@@ -63,7 +63,7 @@
 
             <div class="adm-panel" id="panel-users">
                 <div class="adm-panel-header"><h2><i class="fas fa-users"></i> 用户管理</h2><div class="adm-panel-actions"><input type="text" id="userSearch" placeholder="搜索学号/姓名..."><button class="adm-btn-primary" id="addUserBtn"><i class="fas fa-user-plus"></i> 添加用户</button></div></div>
-                <div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>学号</th><th>姓名</th><th>院系</th><th>联系电话</th><th>注册时间</th><th>操作</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
+                <div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>头像</th><th>学号</th><th>姓名</th><th>院系</th><th>状态</th><th>封禁到期</th><th>注册时间</th><th>操作</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
             </div>
 
             <div class="adm-panel" id="panel-content">
@@ -128,6 +128,10 @@
                     <div class="adm-card-header"><h3>敏感词列表</h3><div class="adm-panel-actions"><input type="text" id="sensitiveSearch" placeholder="搜索敏感词..."><select id="sensitiveFilter"><option value="all">全部分类</option><option value="违禁词">违禁词</option><option value="侮辱词">侮辱词</option><option value="广告词">广告词</option><option value="政治敏感">政治敏感</option><option value="其他">其他</option></select></div></div>
                     <div class="adm-card-body" id="sensitiveList"></div>
                 </div>
+                <div class="adm-card" style="margin-top:20px">
+                    <div class="adm-card-header"><h3><i class="fas fa-exclamation-triangle" style="color:#ef4444;margin-right:6px"></i> 违规拦截记录</h3></div>
+                    <div class="adm-card-body" id="blockLogList"></div>
+                </div>
             </div>
 
             <div class="adm-panel" id="panel-settings">
@@ -163,6 +167,35 @@
         <div class="adm-modal-content">
             <div class="adm-modal-header"><h3 id="admModalTitle">操作</h3><button class="adm-modal-close" id="admModalClose"><i class="fas fa-times"></i></button></div>
             <div class="adm-modal-body" id="admModalBody"></div>
+        </div>
+    </div>
+
+    <!-- 封号弹窗 -->
+    <div class="adm-modal" id="banModal">
+        <div class="adm-modal-content" style="max-width:440px">
+            <div class="adm-modal-header"><h3><i class="fas fa-ban" style="color:#ef4444;margin-right:6px"></i> 限时封号</h3><button class="adm-modal-close" id="banModalClose"><i class="fas fa-times"></i></button></div>
+            <div class="adm-modal-body">
+                <div style="margin-bottom:16px">
+                    <p style="color:var(--text-secondary);margin-bottom:4px">用户：</p>
+                    <p style="font-weight:700;font-size:16px" id="banUserName">-</p>
+                </div>
+                <div style="margin-bottom:16px">
+                    <p style="color:var(--text-secondary);margin-bottom:4px">违规内容：</p>
+                    <p style="background:#fef2f2;padding:8px 12px;border-radius:6px;font-size:13px;color:#991b1b" id="banContent">-</p>
+                </div>
+                <div style="margin-bottom:16px">
+                    <p style="color:var(--text-secondary);margin-bottom:8px">封禁时长：</p>
+                    <div style="display:flex;gap:10px" id="banDurationGroup">
+                        <label style="flex:1;cursor:pointer"><input type="radio" name="banDuration" value="7" checked style="display:none"><span class="adm-ban-option active">7天</span></label>
+                        <label style="flex:1;cursor:pointer"><input type="radio" name="banDuration" value="30" style="display:none"><span class="adm-ban-option">30天</span></label>
+                        <label style="flex:1;cursor:pointer"><input type="radio" name="banDuration" value="permanent" style="display:none"><span class="adm-ban-option">永久</span></label>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:20px">
+                    <button class="adm-btn-primary" style="flex:1;background:linear-gradient(135deg,#dc2626,#ef4444)" id="confirmBanBtn"><i class="fas fa-ban"></i> 确认封号</button>
+                    <button class="adm-btn-primary" style="flex:1;background:var(--bg-secondary);color:var(--text-secondary)" id="cancelBanBtn">取消</button>
+                </div>
+            </div>
         </div>
     </div>
 

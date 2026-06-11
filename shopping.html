@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/life.css">
+    <link rel="stylesheet" href="css/express.css">
 <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
@@ -35,12 +36,28 @@
         </div>
     </nav>
 
-    <section class="page-header">
-        <div class="header-content">
+    <!-- 校园超市轮播横幅 -->
+    <div class="express-carousel">
+        <div class="express-carousel-track" id="shopCarouselTrack">
+            <div class="express-carousel-slide active" style="background-image:url('https://picsum.photos/1400/500?shop1')"></div>
+            <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?shop2')"></div>
+            <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?shop3')"></div>
+            <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?shop4')"></div>
+        </div>
+        <div class="express-carousel-overlay"></div>
+        <div class="express-carousel-title">
             <h1>校园超市</h1>
             <p>在线购物 · 送货上门 · 订单跟踪</p>
         </div>
-    </section>
+        <button class="express-carousel-arrow prev" id="shopCarouselPrev"><i class="fas fa-chevron-left"></i></button>
+        <button class="express-carousel-arrow next" id="shopCarouselNext"><i class="fas fa-chevron-right"></i></button>
+        <div class="express-carousel-dots" id="shopCarouselDots">
+            <span class="express-carousel-dot active" data-index="0"></span>
+            <span class="express-carousel-dot" data-index="1"></span>
+            <span class="express-carousel-dot" data-index="2"></span>
+            <span class="express-carousel-dot" data-index="3"></span>
+        </div>
+    </div>
 
     <div class="breadcrumb">
         <a href="life.html"><i class="fas fa-home"></i> 生活服务</a>

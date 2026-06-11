@@ -1,5 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
     /* ============================================================
+     * Hero 轮播
+     * ============================================================ */
+    (function initHeroSlider() {
+        var slides = document.querySelectorAll('.sh-hero-slide');
+        if (!slides.length) return;
+        var current = 0;
+        var total = slides.length;
+        var timer = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            current = index % total;
+            slides[current].classList.add('active');
+        }
+
+        function startAuto() {
+            stopAuto();
+            timer = setInterval(function() { goTo(current + 1); }, 5000);
+        }
+
+        function stopAuto() {
+            if (timer) { clearInterval(timer); timer = null; }
+        }
+
+        var hero = document.querySelector('.sh-hero');
+        if (hero) {
+            hero.addEventListener('mouseenter', stopAuto);
+            hero.addEventListener('mouseleave', startAuto);
+        }
+
+        startAuto();
+    })();
+
+    /* ============================================================
      * 工具函数
      * ============================================================ */
     function getCurrentUser() {
@@ -61,49 +95,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /* ============================================================
-     * 商品数据
+     * 商品数据（通过 API 获取）
      * ============================================================ */
-    var defaultProducts = [
-        { id:1,name:'MacBook Pro 14寸 M2',category:'数码',price:8999,originalPrice:14999,condition:'95新',desc:'95新，电池健康98%，带原装充电器，无磕碰划痕。',seller:'小明',sellerDept:'计算机学院',sellerPhone:'138****1234',views:123,likes:45,collects:12,location:'北区宿舍',time:'2小时前',status:'在售',tag:'hot',comments:[],reviewStatus:'approved' },
-        { id:2,name:'AirPods Pro 2代',category:'数码',price:1299,originalPrice:1899,condition:'99新',desc:'几乎全新，购买三个月，带发票和原装盒，降噪效果出色。',seller:'小李',sellerDept:'电子信息学院',sellerPhone:'139****5678',views:234,likes:67,collects:23,location:'南区宿舍',time:'3小时前',status:'在售',tag:'new',comments:[] },
-        { id:3,name:'考研英语真题全套',category:'书籍',price:50,originalPrice:120,condition:'8成新',desc:'2024年考研英语真题，有少量笔记标注，含答案解析。',seller:'学姐',sellerDept:'外国语学院',sellerPhone:'137****9012',views:89,likes:23,collects:8,location:'图书馆门口',time:'5小时前',status:'在售',tag:'',comments:[] },
-        { id:4,name:'小米台灯Pro',category:'小家电',price:60,originalPrice:169,condition:'9成新',desc:'护眼台灯，可调节亮度和色温，功能完好。',seller:'毕业生',sellerDept:'经济管理学院',sellerPhone:'136****3456',views:156,likes:34,collects:15,location:'东区宿舍',time:'1天前',status:'在售',tag:'',comments:[] },
-        { id:5,name:'羽毛球拍套装',category:'运动',price:180,originalPrice:350,condition:'9成新',desc:'尤尼克斯羽毛球拍，送球和球包，使用半年。',seller:'运动达人',sellerDept:'体育学院',sellerPhone:'135****7890',views:67,likes:12,collects:5,location:'体育馆',time:'1天前',status:'在售',tag:'rec',comments:[] },
-        { id:6,name:'高等数学教材上下册',category:'书籍',price:30,originalPrice:68,condition:'9成新',desc:'同济大学第七版，无笔记，保存完好。',seller:'学长',sellerDept:'数学与统计学院',sellerPhone:'134****2345',views:45,likes:8,collects:3,location:'教学楼',time:'2天前',status:'在售',tag:'',comments:[] },
-        { id:7,name:'机械键盘RGB青轴',category:'数码',price:399,originalPrice:699,condition:'95新',desc:'青轴，全键无冲，支持自定义灯效，带手托。',seller:'游戏玩家',sellerDept:'计算机学院',sellerPhone:'133****6789',views:189,likes:56,collects:20,location:'西区宿舍',time:'2天前',status:'在售',tag:'hot',comments:[] },
-        { id:8,name:'山地自行车21速',category:'运动',price:680,originalPrice:1500,condition:'8成新',desc:'21速碟刹，适合校园通勤，已保养。',seller:'大四学长',sellerDept:'机械工程学院',sellerPhone:'132****0123',views:389,likes:89,collects:35,location:'校门口',time:'3天前',status:'在售',tag:'new',comments:[] },
-        { id:9,name:'iPhone 14 Pro 256G',category:'数码',price:5999,originalPrice:8999,condition:'99新',desc:'256GB深空黑，国行正品，电池100%。',seller:'换新机',sellerDept:'艺术设计学院',sellerPhone:'131****4567',views:567,likes:234,collects:89,location:'北区宿舍',time:'3天前',status:'在售',tag:'hot',comments:[] },
-        { id:10,name:'膳魔师保温杯500ml',category:'生活用品',price:45,originalPrice:199,condition:'9成新',desc:'膳魔师保温杯，500ml，保温效果好。',seller:'闲置转让',sellerDept:'法学院',sellerPhone:'130****8901',views:78,likes:15,collects:6,location:'食堂门口',time:'4天前',status:'在售',tag:'',comments:[] },
-        { id:11,name:'斯伯丁篮球',category:'运动',price:120,originalPrice:259,condition:'8成新',desc:'室外用球，手感好，适合日常运动。',seller:'体育生',sellerDept:'体育学院',sellerPhone:'129****2345',views:234,likes:45,collects:18,location:'操场',time:'4天前',status:'在售',tag:'',comments:[] },
-        { id:12,name:'C语言程序设计谭浩强',category:'书籍',price:25,originalPrice:49,condition:'9成新',desc:'经典教材，无笔记，适合计算机专业入门。',seller:'计算机系',sellerDept:'计算机学院',sellerPhone:'128****6789',views:112,likes:28,collects:10,location:'教学楼',time:'5天前',status:'在售',tag:'',comments:[] },
-        { id:13,name:'电烙铁焊接套装',category:'实训工具',price:35,originalPrice:89,condition:'9成新',desc:'含焊锡丝、吸锡器等配件，适合电子实训。',seller:'电子系学长',sellerDept:'电子信息学院',sellerPhone:'127****0123',views:56,likes:12,collects:4,location:'实训楼',time:'5天前',status:'在售',tag:'',comments:[] },
-        { id:14,name:'戴森吹风机',category:'小家电',price:899,originalPrice:3190,condition:'95新',desc:'国行正品，带原装配件，使用半年。',seller:'学姐',sellerDept:'文学与传媒学院',sellerPhone:'126****4567',views:345,likes:89,collects:45,location:'南区宿舍',time:'6天前',status:'在售',tag:'rec',comments:[] },
-        { id:15,name:'床上书桌折叠款',category:'生活用品',price:40,originalPrice:99,condition:'8成新',desc:'折叠床上书桌，可调节角度，毕业转让。',seller:'毕业生',sellerDept:'经济管理学院',sellerPhone:'125****8901',views:98,likes:23,collects:9,location:'北区宿舍',time:'6天前',status:'在售',tag:'',comments:[] },
-        { id:16,name:'万用表数字式',category:'实训工具',price:55,originalPrice:128,condition:'9成新',desc:'优利德数字万用表，功能完好。',seller:'电气系',sellerDept:'电子信息学院',sellerPhone:'124****2345',views:67,likes:15,collects:5,location:'实训楼',time:'1周前',status:'在售',tag:'',comments:[] },
-        { id:17,name:'小米电风扇',category:'小家电',price:50,originalPrice:149,condition:'9成新',desc:'直流变频，静音运行，4档风力可调。',seller:'毕业转让',sellerDept:'数学与统计学院',sellerPhone:'123****6789',views:134,likes:34,collects:14,location:'东区宿舍',time:'1周前',status:'在售',tag:'',comments:[] },
-        { id:18,name:'瑜伽垫加厚款',category:'运动',price:35,originalPrice:89,condition:'9成新',desc:'加厚10mm，防滑，带收纳袋。',seller:'健身达人',sellerDept:'体育学院',sellerPhone:'122****0123',views:45,likes:8,collects:3,location:'体育馆',time:'1周前',status:'在售',tag:'',comments:[] }
-    ];
+    var products = []; // 本地缓存，由 API 填充
+    var isLoading = false;
 
     function getProducts() {
         if (window.CampusDB) return CampusDB.getSecondhand();
         try {
-            var stored = JSON.parse(localStorage.getItem('campus_secondhand') || '[]');
-            if (stored.length === 0) {
-                localStorage.setItem('campus_secondhand', JSON.stringify(defaultProducts));
-                return defaultProducts;
-            }
+            var stored = JSON.parse(localStorage.getItem('campus_secondhand_v2') || '[]');
+            if (stored.length === 0) return [];
             return stored;
-        } catch(e) {
-            return defaultProducts.map(function(p) { p.reviewStatus = 'approved'; return p; });
-        }
+        } catch(e) { return []; }
     }
 
     function saveProducts(list) {
         if (window.CampusDB) CampusDB.saveSecondhand(list);
-        else localStorage.setItem('campus_secondhand', JSON.stringify(list));
+        else localStorage.setItem('campus_secondhand_v2', JSON.stringify(list));
     }
-
-    var products = getProducts();
 
     /* ============================================================
      * 教材租用数据
@@ -201,75 +210,63 @@ document.addEventListener('DOMContentLoaded', function() {
     var currentCategory = 'all';
     var currentSort = 'latest';
     var currentSearchKeyword = '';
-    var displayedCount = 8;
     var currentChatProduct = null;
     var currentChatSellerId = null;
 
     /* ============================================================
-     * 统计数字动画 & 动态更新
+     * 统计数字动画 & 动态更新（通过 API）
      * ============================================================ */
     function updateStats() {
-        var onSale = products.filter(function(p) { return p.status !== '已下架' && p.reviewStatus !== 'rejected'; });
-        var filtered = onSale;
-        if (currentCategory !== 'all') {
-            filtered = onSale.filter(function(p) { return p.category === currentCategory; });
-        }
-        var onSaleCount = filtered.length;
-        var totalOnSale = onSale.length;
-        var successTrades = Math.round(totalOnSale * 0.53);
-        var activeUsers = Math.round(totalOnSale * 0.34);
-
-        var statNums = document.querySelectorAll('.sh-stat-num');
-        if (statNums.length >= 3) {
-            statNums[0].textContent = onSaleCount;
-            statNums[0].dataset.target = onSaleCount;
-            statNums[1].textContent = successTrades;
-            statNums[2].textContent = activeUsers;
-        }
-
-        /* 更新分类卡片在售数量 */
-        var cats = ['数码','书籍','生活用品','运动','实训工具','小家电','其他'];
-        var catCounts = {};
-        cats.forEach(function(c) { catCounts[c] = onSale.filter(function(p) { return p.category === c; }).length; });
-        document.querySelectorAll('.sh-category-card[data-cat]').forEach(function(card) {
-            var cat = card.dataset.cat;
-            var small = card.querySelector('small');
-            if (small && catCounts[cat] !== undefined) {
-                small.textContent = catCounts[cat] + '件在售';
+        if (!window.SecondhandAPI) return;
+        SecondhandAPI.getStats().then(function(stats) {
+            var statNums = document.querySelectorAll('.sh-stat-num');
+            if (statNums.length >= 3) {
+                animateNumber(statNums[0], stats.onSale);
+                animateNumber(statNums[1], stats.soldCount);
+                animateNumber(statNums[2], stats.activeUsers);
             }
+            /* 更新分类卡片在售数量 */
+            var catCounts = stats.categoryCounts || {};
+            document.querySelectorAll('.sh-category-card[data-cat]').forEach(function(card) {
+                var cat = card.dataset.cat;
+                var small = card.querySelector('small');
+                if (small && catCounts[cat] !== undefined) {
+                    small.textContent = catCounts[cat] + '件在售';
+                }
+            });
+            console.log('[二手市场] 统计数据更新:', stats);
+        }).catch(function(err) {
+            console.warn('[二手市场] 统计数据获取失败:', err);
         });
     }
 
-    function animateStats() {
-        document.querySelectorAll('.sh-stat-num').forEach(function(el) {
-            var target = parseInt(el.dataset.target);
-            var current = 0;
-            var step = Math.ceil(target / 60);
-            var timer = setInterval(function() {
-                current += step;
-                if (current >= target) { current = target; clearInterval(timer); }
-                el.textContent = current.toLocaleString();
-            }, 30);
-        });
+    function animateNumber(el, target) {
+        var current = 0;
+        var step = Math.ceil(target / 40);
+        var timer = setInterval(function() {
+            current += step;
+            if (current >= target) { current = target; clearInterval(timer); }
+            el.textContent = current.toLocaleString();
+        }, 30);
     }
-    animateStats();
+
+    updateStats();
 
     /* ============================================================
-     * 渲染热门好物（按浏览量排序，横向滚动）
+     * 渲染热门好物（通过 API 获取）
      * ============================================================ */
     function renderHotProducts() {
         var grid = document.getElementById('hotGrid');
-        if (!grid) return;
-        var onSale = products.filter(function(p) { return p.status !== '已下架' && p.reviewStatus !== 'rejected'; });
-        /* 按浏览量降序取前10 */
-        var hotList = onSale.slice().sort(function(a, b) { return (b.views + b.likes) - (a.views + a.likes); }).slice(0, 10);
-        if (hotList.length === 0) {
-            grid.parentElement.style.display = 'none';
-            return;
-        }
-        grid.parentElement.style.display = '';
-        grid.innerHTML = '';
-        hotList.forEach(function(p) {
+        if (!grid || !window.SecondhandAPI) return;
+
+        SecondhandAPI.getHotProducts(10).then(function(hotList) {
+            if (hotList.length === 0) {
+                grid.parentElement.style.display = 'none';
+                return;
+            }
+            grid.parentElement.style.display = '';
+            grid.innerHTML = '';
+            hotList.forEach(function(p) {
             var badgeClass = p.tag === 'hot' ? 'hot' : (p.tag === 'new' ? 'new' : 'rec');
             var badgeText = p.tag === 'hot' ? '热门' : (p.tag === 'new' ? '新上架' : '推荐');
             if (p.views >= 200) { badgeClass = 'hot'; badgeText = '热门'; }
@@ -280,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.addEventListener('click', function() { window.location.href = 'detail.html?id=' + p.id; });
             grid.appendChild(card);
         });
+        }).catch(function(err) { console.warn('[二手市场] 热门商品加载失败:', err); });
     }
 
     /* ============================================================
@@ -308,20 +306,18 @@ document.addEventListener('DOMContentLoaded', function() {
         var grid = document.getElementById('productsGrid');
         if (!grid) return;
         updateSectionTitle();
-        var toDisplay = filteredProducts.slice(0, displayedCount);
         grid.innerHTML = '';
-        if (toDisplay.length === 0) {
+        if (filteredProducts.length === 0) {
             var emptyMsg = currentCategory !== 'all' ? (categoryNames[currentCategory] || currentCategory) + '分类暂无在售商品' : '暂无相关商品，更换关键词试试';
             grid.innerHTML = '<div class="sh-empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary)"><i class="fas fa-box-open" style="font-size:48px;opacity:0.3;display:block;margin-bottom:15px"></i><p>' + emptyMsg + '</p></div>';
             return;
         }
-        toDisplay.forEach(function(p) {
+        filteredProducts.forEach(function(p) {
             var card = document.createElement('div');
             card.className = 'sh-product-card';
             var statusTag = p.status === '已售出' ? '<span class="sh-product-card-sold">已售</span>' : '';
             var imgUrl = getProductImage(p);
             card.innerHTML = '<div class="sh-product-card-img"><img src="' + imgUrl + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="sh-product-card-icon-fallback"><i class="' + (categoryIcons[p.category] || 'fas fa-box') + '"></i></div><span class="sh-product-card-tag">' + p.category + '</span>' + statusTag + '</div><div class="sh-product-card-body"><h3>' + p.name + '</h3><div class="sh-product-card-price">¥' + p.price + '</div><div class="sh-product-card-meta"><span><i class="fas fa-user"></i> ' + p.seller + '</span><span><i class="fas fa-eye"></i> ' + p.views + '</span></div><div class="sh-product-card-actions"><button class="sh-card-chat-btn" data-id="' + p.id + '"><i class="fas fa-comment-dots"></i> 私信</button><button class="sh-card-collect-btn ' + (isCollected(p.id) ? 'collected' : '') + '" data-id="' + p.id + '"><i class="' + (isCollected(p.id) ? 'fas' : 'far') + ' fa-heart"></i></button></div></div>';
-            /* 点击卡片跳转详情（排除按钮区域） */
             card.addEventListener('click', function(e) {
                 if (e.target.closest('.sh-card-chat-btn') || e.target.closest('.sh-card-collect-btn')) return;
                 window.location.href = 'detail.html?id=' + p.id;
@@ -334,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 var pid = parseInt(this.dataset.id);
-                var product = products.find(function(p) { return p.id === pid; });
+                var product = filteredProducts.find(function(p) { return p.id === pid; });
                 if (product) openChat(product);
             });
         });
@@ -344,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 var pid = parseInt(this.dataset.id);
-                var product = products.find(function(p) { return p.id === pid; });
+                var product = filteredProducts.find(function(p) { return p.id === pid; });
                 if (product) {
                     var collected = toggleCollect(product);
                     var icon = this.querySelector('i');
@@ -362,49 +358,86 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         var loadMoreBtn = document.getElementById('loadMore');
-        if (loadMoreBtn) loadMoreBtn.style.display = displayedCount >= filteredProducts.length ? 'none' : 'inline-flex';
+        if (loadMoreBtn) loadMoreBtn.style.display = 'none'; // 分页由 API 控制
     }
 
-    function getFilteredProducts() {
-        var filtered = products.filter(function(p) { return p.status !== '已下架' && p.reviewStatus !== 'rejected'; });
-        if (currentCategory !== 'all') {
-            filtered = filtered.filter(function(p) { return p.category === currentCategory; });
-        }
-        if (currentSearchKeyword) {
-            var kw = currentSearchKeyword.toLowerCase();
-            filtered = filtered.filter(function(p) {
-                return p.name.toLowerCase().includes(kw) || p.category.toLowerCase().includes(kw) || p.desc.toLowerCase().includes(kw);
-            });
-        }
-        switch (currentSort) {
-            case 'price-asc': filtered.sort(function(a, b) { return a.price - b.price; }); break;
-            case 'price-desc': filtered.sort(function(a, b) { return b.price - a.price; }); break;
-            case 'hot': filtered.sort(function(a, b) { return (b.views + b.likes) - (a.views + a.likes); }); break;
-            default: filtered.sort(function(a, b) { return b.id - a.id; });
-        }
-        return filtered;
-    }
+    /* 通过 API 加载商品列表 */
+    var totalProducts = 0;
 
-    /* ============================================================
-     * 渲染教材租用
-     * ============================================================ */
-    function renderRentalBooks() {
-        var grid = document.getElementById('rentalGrid');
-        if (!grid) return;
-        var books = getRentalBooks();
-        grid.innerHTML = '';
-        books.forEach(function(b) {
-            if (b.reviewStatus === 'rejected') return;
-            var card = document.createElement('div');
-            card.className = 'sh-rental-card';
-            card.innerHTML = '<div class="sh-rental-card-header"><h3>' + b.name + '</h3><span class="sh-rental-card-tag">' + (b.available ? '可租' : '已租') + '</span></div><div class="sh-rental-card-price">¥' + b.price + '<small>/' + b.period + '</small></div><div class="sh-rental-card-desc">' + b.desc + '</div><div class="sh-rental-card-meta"><span><i class="fas fa-user"></i> ' + b.seller + '</span><span><i class="fas fa-star"></i> ' + b.condition + '</span><span><i class="fas fa-clock"></i> ' + b.period + '</span></div>';
-            card.addEventListener('click', function() { window.location.href = 'rental-detail.html?id=' + b.id; });
-            grid.appendChild(card);
+    function loadProductsFromAPI(page) {
+        page = page || 1;
+        var grid = document.getElementById('productsGrid');
+        if (!grid || !window.SecondhandAPI) return;
+
+        isLoading = true;
+        if (page === 1) {
+            grid.innerHTML = '<div class="sh-loading-state" style="grid-column:1/-1;text-align:center;padding:60px 20px"><i class="fas fa-spinner fa-spin" style="font-size:32px;color:#3b82f6;display:block;margin-bottom:12px"></i><p style="color:var(--text-secondary)">加载中...</p></div>';
+        }
+
+        SecondhandAPI.getProducts({
+            category: currentCategory,
+            keyword: currentSearchKeyword,
+            sort: currentSort,
+            page: page,
+            pageSize: 8
+        }).then(function(result) {
+            isLoading = false;
+            if (page === 1) {
+                products = result.list;
+            } else {
+                products = products.concat(result.list);
+            }
+            totalProducts = result.total;
+            renderProducts(products);
+
+            var loadMoreBtn = document.getElementById('loadMore');
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = (products.length >= totalProducts) ? 'none' : 'inline-flex';
+            }
+
+            /* 搜索结果提示 */
+            var searchResultBar = document.getElementById('searchResultBar');
+            var searchResultText = document.getElementById('searchResultText');
+            if (currentSearchKeyword && searchResultBar && searchResultText) {
+                searchResultBar.style.display = 'flex';
+                searchResultText.textContent = '共匹配 ' + totalProducts + ' 件商品' + (currentCategory !== 'all' ? '（' + (categoryNames[currentCategory] || currentCategory) + '分类内）' : '');
+            }
+
+            console.log('[二手市场] 商品列表加载: 第', page, '页, 已加载', products.length, '/', totalProducts);
+        }).catch(function(err) {
+            isLoading = false;
+            console.warn('[二手市场] 商品列表加载失败:', err);
+            if (page === 1) {
+                grid.innerHTML = '<div class="sh-empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary)"><i class="fas fa-exclamation-circle" style="font-size:48px;opacity:0.3;display:block;margin-bottom:15px"></i><p>数据加载失败，请刷新重试</p></div>';
+            }
         });
     }
 
+    var currentPage = 1;
+
+    /* ============================================================
+     * 渲染教材租用（通过 API）
+     * ============================================================ */
+    function renderRentalBooks() {
+        var grid = document.getElementById('rentalGrid');
+        if (!grid || !window.SecondhandAPI) return;
+
+        SecondhandAPI.getRentalBooks().then(function(books) {
+            grid.innerHTML = '';
+            books.forEach(function(b) {
+                if (b.reviewStatus === 'rejected') return;
+                var card = document.createElement('div');
+                card.className = 'sh-rental-card';
+                card.innerHTML = '<div class="sh-rental-card-header"><h3>' + b.name + '</h3><span class="sh-rental-card-tag">' + (b.available ? '可租' : '已租') + '</span></div><div class="sh-rental-card-price">¥' + b.price + '<small>/' + b.period + '</small></div><div class="sh-rental-card-desc">' + b.desc + '</div><div class="sh-rental-card-meta"><span><i class="fas fa-user"></i> ' + b.seller + '</span><span><i class="fas fa-star"></i> ' + b.condition + '</span><span><i class="fas fa-clock"></i> ' + b.period + '</span></div>';
+                card.addEventListener('click', function() { window.location.href = 'rental-detail.html?id=' + b.id; });
+                grid.appendChild(card);
+            });
+        }).catch(function(err) { console.warn('[二手市场] 租用列表加载失败:', err); });
+    }
+
+    /* 初始化加载 */
     renderHotProducts();
-    renderProducts(getFilteredProducts());
+    loadProductsFromAPI(1);
     renderRentalBooks();
     updateStats();
 
@@ -425,12 +458,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         currentSearchKeyword = keyword;
-        displayedCount = 100;
-        var filtered = getFilteredProducts();
-        renderProducts(filtered);
-        searchResultBar.style.display = 'flex';
-        searchResultText.textContent = '共匹配 ' + filtered.length + ' 件商品' + (currentCategory !== 'all' ? '（' + (categoryNames[currentCategory] || currentCategory) + '分类内）' : '');
-        searchSuggest.style.display = 'none';
+        currentPage = 1;
+        loadProductsFromAPI(1);
         document.querySelector('.sh-products-section').scrollIntoView({ behavior: 'smooth' });
         updateStats();
     }
@@ -439,35 +468,32 @@ document.addEventListener('DOMContentLoaded', function() {
         currentSearchKeyword = '';
         searchInput.value = '';
         searchResultBar.style.display = 'none';
-        displayedCount = 8;
-        renderProducts(getFilteredProducts());
+        currentPage = 1;
+        loadProductsFromAPI(1);
         updateStats();
     }
 
     if (searchBtn) searchBtn.addEventListener('click', function() { doSearch(); });
     if (searchInput) searchInput.addEventListener('keyup', function(e) {
         if (e.key === 'Enter') { doSearch(); return; }
-        /* 实时搜索建议 */
+        /* 实时搜索建议（通过 API） */
         var val = this.value.trim().toLowerCase();
         if (!val) { searchSuggest.style.display = 'none'; return; }
-        var suggestions = [];
-        products.forEach(function(p) {
-            if (p.status === '已下架') return;
-            if (p.name.toLowerCase().includes(val) || p.category.toLowerCase().includes(val) || p.desc.toLowerCase().includes(val)) {
-                if (suggestions.length < 8) suggestions.push({ name: p.name, category: p.category, id: p.id });
-            }
-        });
-        if (suggestions.length === 0) { searchSuggest.style.display = 'none'; return; }
-        searchSuggest.innerHTML = suggestions.map(function(s) {
-            return '<div class="sh-suggest-item" data-id="' + s.id + '" data-name="' + s.name + '"><i class="fas fa-search"></i><span>' + s.name + '</span><small>' + s.category + '</small></div>';
-        }).join('');
-        searchSuggest.style.display = 'block';
-        searchSuggest.querySelectorAll('.sh-suggest-item').forEach(function(item) {
-            item.addEventListener('click', function() {
-                searchInput.value = this.dataset.name;
-                doSearch(this.dataset.name);
+        if (!window.SecondhandAPI) return;
+
+        SecondhandAPI.searchSuggest(val).then(function(suggestions) {
+            if (suggestions.length === 0) { searchSuggest.style.display = 'none'; return; }
+            searchSuggest.innerHTML = suggestions.map(function(s) {
+                return '<div class="sh-suggest-item" data-id="' + s.id + '" data-name="' + s.name + '"><i class="fas fa-search"></i><span>' + s.name + '</span><small>' + s.category + '</small></div>';
+            }).join('');
+            searchSuggest.style.display = 'block';
+            searchSuggest.querySelectorAll('.sh-suggest-item').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    searchInput.value = this.dataset.name;
+                    doSearch(this.dataset.name);
+                });
             });
-        });
+        }).catch(function() { searchSuggest.style.display = 'none'; });
     });
 
     /* 点击外部关闭建议 */
@@ -491,10 +517,9 @@ document.addEventListener('DOMContentLoaded', function() {
             currentSearchKeyword = '';
             searchInput.value = '';
             searchResultBar.style.display = 'none';
-            displayedCount = 8;
-            renderProducts(getFilteredProducts());
+            currentPage = 1;
+            loadProductsFromAPI(1);
             updateStats();
-            /* 跳转到商品列表区 */
             document.querySelector('.sh-products-section').scrollIntoView({ behavior: 'smooth' });
         });
     });
@@ -507,13 +532,12 @@ document.addEventListener('DOMContentLoaded', function() {
             currentSearchKeyword = '';
             searchInput.value = '';
             searchResultBar.style.display = 'none';
-            displayedCount = 8;
+            currentPage = 1;
             filterTags.forEach(function(t) { t.classList.remove('active'); });
             var target = document.querySelector('.sh-filter-tag[data-category="' + cat + '"]');
             if (target) target.classList.add('active');
-            renderProducts(getFilteredProducts());
+            loadProductsFromAPI(1);
             updateStats();
-            /* 跳转到商品列表区 */
             document.querySelector('.sh-products-section').scrollIntoView({ behavior: 'smooth' });
         });
     });
@@ -533,13 +557,12 @@ document.addEventListener('DOMContentLoaded', function() {
             filterTags.forEach(function(t) { t.classList.remove('active'); });
             var allTag = document.querySelector('.sh-filter-tag[data-category="all"]');
             if (allTag) allTag.classList.add('active');
-            /* 切换排序为最热门 */
             currentSort = 'hot';
             sortBtns.forEach(function(b) { b.classList.remove('active'); });
             var hotSortBtn = document.querySelector('.sh-sort-btn[data-sort="hot"]');
             if (hotSortBtn) hotSortBtn.classList.add('active');
-            displayedCount = 100;
-            renderProducts(getFilteredProducts());
+            currentPage = 1;
+            loadProductsFromAPI(1);
             updateStats();
             document.querySelector('.sh-products-section').scrollIntoView({ behavior: 'smooth' });
         });
@@ -550,18 +573,20 @@ document.addEventListener('DOMContentLoaded', function() {
             sortBtns.forEach(function(b) { b.classList.remove('active'); });
             this.classList.add('active');
             currentSort = this.dataset.sort;
-            renderProducts(getFilteredProducts());
+            currentPage = 1;
+            loadProductsFromAPI(1);
         });
     });
 
     /* ============================================================
-     * 加载更多
+     * 加载更多（分页）
      * ============================================================ */
     var loadMoreBtn = document.getElementById('loadMore');
     if (loadMoreBtn) {
         loadMoreBtn.addEventListener('click', function() {
-            displayedCount += 6;
-            renderProducts(getFilteredProducts());
+            if (isLoading) return;
+            currentPage++;
+            loadProductsFromAPI(currentPage);
         });
     }
 
@@ -798,20 +823,44 @@ document.addEventListener('DOMContentLoaded', function() {
             var location = document.getElementById('pubLocation').value;
             if (!name || !category || !price || !condition || !desc) { showToast('请填写完整商品信息'); return; }
             var user = getCurrentUser();
-            var newProduct = {
-                id: Date.now(), name: name, category: category, price: parseInt(price), originalPrice: parseInt(price) * 2,
-                condition: condition, desc: desc, seller: user ? user.name : '我', sellerDept: user ? user.dept || '' : '',
-                sellerPhone: user ? user.phone || '' : '', views: 0, likes: 0, collects: 0, location: location || '校内当面交易',
-                time: '刚刚', status: '在售', tag: 'new', comments: [], reviewStatus: 'pending'
-            };
-            products.push(newProduct);
-            saveProducts(products);
-            this.reset();
-            if (publishModal) publishModal.classList.remove('active');
-            renderProducts(getFilteredProducts());
-            renderHotProducts();
-            updateStats();
-            showToast('商品发布成功，等待审核');
+
+            if (window.SecondhandAPI) {
+                SecondhandAPI.publishProduct({
+                    name: name, category: category, price: parseInt(price), condition: condition,
+                    desc: desc, location: location || '校内当面交易',
+                    seller: user ? user.name : '我', sellerDept: user ? user.dept || '' : '',
+                    sellerPhone: user ? user.phone || '' : ''
+                }).then(function(newProduct) {
+                    if (publishModal) publishModal.classList.remove('active');
+                    publishForm.reset();
+                    currentPage = 1;
+                    loadProductsFromAPI(1);
+                    renderHotProducts();
+                    updateStats();
+                    showToast('商品发布成功！');
+                    console.log('[二手市场] 新商品发布:', newProduct.name);
+                }).catch(function(err) {
+                    showToast('发布失败，请重试');
+                    console.warn('[二手市场] 发布失败:', err);
+                });
+            } else {
+                /* 降级：直接写入本地 */
+                var newProduct = {
+                    id: Date.now(), name: name, category: category, price: parseInt(price), originalPrice: parseInt(price) * 2,
+                    condition: condition, desc: desc, seller: user ? user.name : '我', sellerDept: user ? user.dept || '' : '',
+                    sellerPhone: user ? user.phone || '' : '', views: 0, likes: 0, collects: 0, location: location || '校内当面交易',
+                    time: '刚刚', status: '在售', tag: 'new', comments: [], reviewStatus: 'approved'
+                };
+                products.push(newProduct);
+                saveProducts(products);
+                if (publishModal) publishModal.classList.remove('active');
+                publishForm.reset();
+                currentPage = 1;
+                loadProductsFromAPI(1);
+                renderHotProducts();
+                updateStats();
+                showToast('商品发布成功');
+            }
         });
     }
 

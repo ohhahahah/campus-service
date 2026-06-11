@@ -1,5 +1,5 @@
 (function(window) {
-    var DB_VERSION = '2.0';
+    var DB_VERSION = '3.1';
     var DB_INIT_KEY = 'campus_db_initialized';
 
     var tables = {
@@ -18,7 +18,8 @@
         cart: 'campus_cart',
         sensitiveWords: 'campus_sensitive_words',
         blockLog: 'campus_block_log',
-        visitCount: 'campus_visit_count'
+        visitCount: 'campus_visit_count',
+        pets: 'campus_pets'
     };
 
     function _get(key, defaultVal) {
@@ -49,7 +50,9 @@
         { stuId: '2024002', name: '李四', password: '123456', dept: '电子信息学院', phone: '13800138002', grade: '2024级', reputation: '优秀', regTime: '2026-03-02T09:00:00.000Z' },
         { stuId: '2024003', name: '王五', password: '123456', dept: '经济管理学院', phone: '13800138003', grade: '2023级', reputation: '良好', regTime: '2026-02-15T10:00:00.000Z' },
         { stuId: '2024004', name: '赵六', password: '123456', dept: '艺术设计学院', phone: '13800138004', grade: '2024级', reputation: '一般', regTime: '2026-03-05T11:00:00.000Z' },
-        { stuId: '2024005', name: '孙七', password: '123456', dept: '机械工程学院', phone: '13800138005', grade: '2023级', reputation: '良好', regTime: '2026-02-20T14:00:00.000Z' }
+        { stuId: '2024005', name: '孙七', password: '123456', dept: '机械工程学院', phone: '13800138005', grade: '2023级', reputation: '良好', regTime: '2026-02-20T14:00:00.000Z' },
+        { stuId: '2024006', name: '周违规', password: '123456', dept: '法学院', phone: '13800138006', grade: '2024级', reputation: '较差', regTime: '2026-04-10T09:00:00.000Z', status: 'banned', banExpiry: '2026-07-10T00:00:00.000Z', banReason: '发布违规内容：赌博、代开发票', banTime: '2026-06-01T14:30:00.000Z' },
+        { stuId: '2024007', name: '吴永久', password: '123456', dept: '外国语学院', phone: '13800138007', grade: '2023级', reputation: '差', regTime: '2026-01-15T10:00:00.000Z', status: 'banned', banExpiry: 'permanent', banReason: '多次发布严重违规内容', banTime: '2026-05-20T16:00:00.000Z' }
     ];
 
     var defaultSecondhand = [
@@ -70,7 +73,9 @@
         { id: 15, name: '床上书桌折叠款', category: '生活用品', price: 40, originalPrice: 99, condition: '8成新', desc: '折叠床上书桌，可调节角度，毕业转让。', seller: '毕业生', sellerDept: '经济管理学院', sellerPhone: '125****8901', views: 98, likes: 23, collects: 9, location: '北区宿舍', time: '6天前', status: '在售', buyTime: '2023年3月', useDuration: '1年', warranty: '无', accessories: '无', tag: '', comments: [], reviewStatus: 'approved' },
         { id: 16, name: '万用表数字式', category: '实训工具', price: 55, originalPrice: 128, condition: '9成新', desc: '优利德数字万用表，功能完好，适合电工实训。', seller: '电气系', sellerDept: '电子信息学院', sellerPhone: '124****2345', views: 67, likes: 15, collects: 5, location: '实训楼', time: '1周前', status: '在售', buyTime: '2023年9月', useDuration: '1学期', warranty: '在保', accessories: '表笔、电池', tag: '', comments: [], reviewStatus: 'approved' },
         { id: 17, name: '小米电风扇', category: '小家电', price: 50, originalPrice: 149, condition: '9成新', desc: '直流变频，静音运行，4档风力可调，夏日必备。', seller: '毕业转让', sellerDept: '数学与统计学院', sellerPhone: '123****6789', views: 134, likes: 34, collects: 14, location: '东区宿舍', time: '1周前', status: '在售', buyTime: '2023年5月', useDuration: '1年', warranty: '无', accessories: '电源线', tag: '', comments: [], reviewStatus: 'approved' },
-        { id: 18, name: '瑜伽垫加厚款', category: '运动', price: 35, originalPrice: 89, condition: '9成新', desc: '加厚10mm，防滑，带收纳袋，适合健身瑜伽。', seller: '健身达人', sellerDept: '体育学院', sellerPhone: '122****0123', views: 45, likes: 8, collects: 3, location: '体育馆', time: '1周前', status: '在售', buyTime: '2023年9月', useDuration: '半年', warranty: '无', accessories: '收纳袋', tag: '', comments: [], reviewStatus: 'approved' }
+        { id: 18, name: '瑜伽垫加厚款', category: '运动', price: 35, originalPrice: 89, condition: '9成新', desc: '加厚10mm，防滑，带收纳袋，适合健身瑜伽。', seller: '健身达人', sellerDept: '体育学院', sellerPhone: '122****0123', views: 45, likes: 8, collects: 3, location: '体育馆', time: '1周前', status: '在售', buyTime: '2023年9月', useDuration: '半年', warranty: '无', accessories: '收纳袋', tag: '', comments: [], reviewStatus: 'approved' },
+        { id: 19, name: '罗技G502有线鼠标', category: '数码', price: 199, originalPrice: 399, condition: '9成新', desc: '罗技G502游戏鼠标，11个可编程按键，配重可调，使用半年。', seller: '电竞选手', sellerDept: '计算机学院', sellerPhone: '138****9900', views: 78, likes: 22, collects: 9, location: '西区宿舍', time: '2小时前', status: '在售', buyTime: '2025年12月', useDuration: '半年', warranty: '在保', accessories: '原装配重、说明书', tag: 'new', comments: [], reviewStatus: 'pending' },
+        { id: 20, name: '四六级真题合集', category: '书籍', price: 20, originalPrice: 80, condition: '有笔记', desc: '近五年四六级真题，含听力光盘，已过级转让。', seller: '过级达人', sellerDept: '外国语学院', sellerPhone: '137****8800', views: 56, likes: 15, collects: 7, location: '南区宿舍', time: '5小时前', status: '在售', buyTime: '2025年9月', useDuration: '1学期', warranty: '无', accessories: '听力光盘', tag: '', comments: [], reviewStatus: 'pending' }
     ];
 
     var defaultRentalBooks = [
@@ -100,12 +105,140 @@
     ];
 
     var defaultAnnouncements = [
-        { id: 'a1', title: '关于2026年春季学期开学注册的通知', content: '各位同学，2026年春季学期将于2月24日正式开学，请同学们按时返校注册。', author: '教务处', time: '2026-02-15', type: 'important' },
-        { id: 'a2', title: '图书馆开放时间调整通知', content: '因装修需要，图书馆3楼自习区将于3月1日至3月15日暂停开放。', author: '图书馆', time: '2026-02-28', type: 'normal' },
-        { id: 'a3', title: '校园网络升级维护通知', content: '信息中心将于本周末进行网络升级维护，届时校园网可能出现短暂中断。', author: '信息中心', time: '2026-03-05', type: 'important' }
+        { id: 'a1', title: '关于2026年春季学期开学注册的通知', content: '各位同学，2026年春季学期将于2月24日正式开学，请同学们按时返校注册。', author: '教务处', time: '2026-02-15', type: 'important', cat: '教务通知', pinned: true },
+        { id: 'a2', title: '图书馆开放时间调整通知', content: '因装修需要，图书馆3楼自习区将于3月1日至3月15日暂停开放。', author: '图书馆', time: '2026-02-28', type: 'normal', cat: '后勤公告', pinned: false },
+        { id: 'a3', title: '校园网络升级维护通知', content: '信息中心将于本周末进行网络升级维护，届时校园网可能出现短暂中断。', author: '信息中心', time: '2026-03-05', type: 'important', cat: '安全提示', pinned: false },
+        { id: 'a4', title: '二手交易平台上线公告', content: '智慧校园二手交易平台已正式上线，欢迎同学们发布闲置物品，绿色共享。发布商品请遵守平台规则，禁止发布违禁品。', author: '平台管理员', time: '2026-06-01', type: 'normal', cat: '校园活动', pinned: true },
+        { id: 'a5', title: '暑期留校申请通知', content: '需要暑期留校的同学，请于6月20日前在系统中提交申请，经辅导员审批后方可留校。', author: '学生处', time: '2026-06-05', type: 'important', cat: '教务通知', pinned: false }
+    ];
+
+    var defaultBlockLog = [
+        { id: 1001, text: '出售赌博软件，联系微信xxx，代开发票请联系', words: ['赌博', '代开发票'], source: '周违规(2024006)', time: '2026-06-01T14:25:00.000Z' },
+        { id: 1002, text: '刷单日赚500，轻松兼职，加微信了解', words: ['刷单'], source: '匿名用户', time: '2026-06-02T10:15:00.000Z' },
+        { id: 1003, text: '你是个傻逼吧，这都不会', words: ['傻逼'], source: '吴永久(2024007)', time: '2026-05-20T15:50:00.000Z' }
     ];
 
     var defaultSensitiveWords = ['违规', '虚假', '诈骗', '传销'];
+
+    var defaultPets = [
+        {
+            id: 'p1', name: '小橘', breed: '橘猫', age: '约2岁', gender: '公',
+            neutered: true, vaccinated: true,
+            health: '已驱虫、已打疫苗，身体健康，性格亲人',
+            location: '2号宿舍楼下', contact: '138****3333',
+            personality: '小橘是一只非常亲人的橘猫，喜欢在2号宿舍楼下晒太阳。每次有人经过都会主动蹭腿，特别黏人。吃饭的时候会发出呼噜声，吃饱了就翻肚皮让人摸。虽然体型微胖，但动作灵活，喜欢追逗猫棒。',
+            adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','接受志愿者定期回访','签署领养协议','不弃养承诺'],
+            images: [
+                'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1583795128727-6ec3642408f8?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p2', name: '花花', breed: '三花猫', age: '约1岁', gender: '母',
+            neutered: false, vaccinated: false,
+            health: '已驱虫，待打疫苗，活泼好动',
+            location: '食堂后门', contact: '139****4444',
+            personality: '花花是食堂后门的常客，毛色漂亮，黑白橙三色分明。性格活泼好动，喜欢在花丛中追逐蝴蝶。虽然有点怕生，但熟悉后会用头蹭你的手。适合有耐心的领养人。',
+            adoptInfo: ['需安排绝育手术','需补打疫苗','需提供稳定住所证明','签署领养协议','接受志愿者定期回访'],
+            images: [
+                'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p3', name: '黑豆', breed: '黑猫', age: '约3岁', gender: '公',
+            neutered: true, vaccinated: true,
+            health: '已绝育、已驱虫、已打疫苗，安静乖巧',
+            location: '图书馆花坛', contact: '137****5555',
+            personality: '黑豆是一只安静优雅的黑猫，全身漆黑发亮，眼睛是漂亮的金色。喜欢在图书馆花坛旁安静地坐着，像一个小小的守护者。性格温顺，不吵不闹，适合喜欢安静的家庭。',
+            adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','接受志愿者定期回访','签署领养协议','室内饲养，不散养'],
+            images: [
+                'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1513245543132-31f507417b26?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p4', name: '小白', breed: '白猫', age: '约6个月', gender: '母',
+            neutered: false, vaccinated: false,
+            health: '幼猫，已做初步驱虫，需定期检查',
+            location: '教学楼B座', contact: '136****6666',
+            personality: '小白是一只纯白色的小奶猫，眼睛一蓝一绿，非常漂亮。因为还是幼猫，好奇心很强，喜欢探索新事物。会用小爪子拍你的手指玩，非常可爱。需要耐心照顾和陪伴。',
+            adoptInfo: ['幼猫需特别照顾','需安排绝育手术（6月龄后）','需补打疫苗','签署领养协议','接受志愿者定期回访'],
+            images: [
+                'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1494256997604-768d1f608cac?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p5', name: '奶牛', breed: '奶牛猫', age: '约1.5岁', gender: '公',
+            neutered: true, vaccinated: true,
+            health: '已绝育、已驱虫、已打疫苗，粘人爱玩',
+            location: '操场旁', contact: '135****7777',
+            personality: '奶牛是一只黑白花色的猫，像穿着小西装的绅士。性格粘人爱玩，喜欢在操场上追逐飞虫。会主动跳到人腿上求抚摸，是出了名的"社交达人"。和谁都能相处融洽。',
+            adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','接受志愿者定期回访','签署领养协议','不弃养承诺'],
+            images: [
+                'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p6', name: '狸花', breed: '狸花猫', age: '约2岁', gender: '母',
+            neutered: true, vaccinated: true,
+            health: '已绝育、已驱虫、已打疫苗，独立自主',
+            location: '宿舍5号楼', contact: '134****8888',
+            personality: '狸花是一只漂亮的中华狸花猫，虎斑纹路清晰漂亮。性格独立自主，不黏人但也不怕人。喜欢在宿舍楼下巡视自己的"领地"，偶尔会让人摸摸头。适合喜欢独立性格猫咪的人。',
+            adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','接受志愿者定期回访','签署领养协议','室内饲养，不散养'],
+            images: [
+                'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p7', name: '大橘', breed: '橘猫', age: '约4岁', gender: '公',
+            neutered: true, vaccinated: true,
+            health: '已绝育、已驱虫、已打疫苗，体型偏胖，性格温顺',
+            location: '一食堂门口', contact: '133****9999',
+            personality: '大橘是校园里最有名的猫，体型圆润，是公认的"校猫"。每天准时在一食堂门口蹲守，同学们都认识它。性格极其温顺，怎么摸都不生气，是治愈系猫咪的代表。',
+            adoptInfo: ['需控制饮食，帮助减重','需提供稳定住所证明','承诺科学喂养、定期体检','签署领养协议','接受志愿者定期回访'],
+            images: [
+                'https://images.unsplash.com/photo-1583795128727-6ec3642408f8?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p8', name: '小灰', breed: '狸花猫', age: '约8个月', gender: '公',
+            neutered: false, vaccinated: false,
+            health: '幼猫，已驱虫，待打疫苗，胆小但亲人',
+            location: '实验楼C座', contact: '132****0000',
+            personality: '小灰是一只灰色的狸花幼猫，胆子比较小，刚见到人会躲起来。但只要耐心等待，它会慢慢靠近你，用小脑袋蹭你的手。需要温柔的领养人给它足够的安全感。',
+            adoptInfo: ['幼猫需特别照顾','需安排绝育手术','需补打疫苗','签署领养协议','需要耐心和温柔对待'],
+            images: [
+                'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=450&fit=crop'
+            ]
+        },
+        {
+            id: 'p9', name: '咪咪', breed: '三花猫', age: '约3岁', gender: '母',
+            neutered: true, vaccinated: true,
+            health: '已绝育、已驱虫、已打疫苗，喜欢被抚摸',
+            location: '行政楼花园', contact: '131****1111',
+            personality: '咪咪是一只优雅的三花猫，毛色柔和美丽。最喜欢在行政楼花园的长椅旁晒太阳，看到熟悉的人会主动走过来蹭腿。喜欢被抚摸下巴和耳朵后面，会发出满足的呼噜声。',
+            adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','接受志愿者定期回访','签署领养协议','不弃养承诺'],
+            images: [
+                'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&h=450&fit=crop',
+                'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&h=450&fit=crop'
+            ]
+        }
+    ];
 
     function initDatabase() {
         var initFlag = _get(DB_INIT_KEY, null);
@@ -125,8 +258,9 @@
             _ensureTable(tables.cart, []);
             _ensureTable(tables.rentalCollected, []);
             _ensureTable(tables.sensitiveWords, []);
-            _ensureTable(tables.blockLog, []);
+            _ensureTable(tables.blockLog, defaultBlockLog);
             _ensureTable(tables.visitCount, 0);
+            _ensureTable(tables.pets, []);
             return;
         }
 
@@ -162,8 +296,9 @@
         _ensureTable(tables.cart, []);
         _ensureTable(tables.rentalCollected, []);
         _ensureTable(tables.sensitiveWords, defaultSensitiveWords);
-        _ensureTable(tables.blockLog, []);
+        _ensureTable(tables.blockLog, defaultBlockLog);
         _ensureTable(tables.visitCount, 0);
+        _ensureTable(tables.pets, defaultPets);
 
         _set(DB_INIT_KEY, { version: DB_VERSION, initTime: new Date().toISOString() });
     }
@@ -560,7 +695,8 @@
                 chatSessions: Object.keys(this.getChat()).length,
                 avatars: Object.keys(this.getAvatars()).length,
                 announcements: this.getAnnouncements().length,
-                visitCount: this.getVisitCount()
+                visitCount: this.getVisitCount(),
+                pets: this.getPets().length
             };
         },
 
@@ -585,6 +721,42 @@
                 _remove(tables[name]);
             });
             _remove(DB_INIT_KEY);
+        },
+
+        getPets: function() {
+            return _get(tables.pets, []);
+        },
+
+        savePets: function(list) {
+            return _set(tables.pets, list);
+        },
+
+        findPet: function(id) {
+            var list = this.getPets();
+            return list.find(function(p) { return p.id === id; }) || null;
+        },
+
+        addPet: function(pet) {
+            var list = this.getPets();
+            list.unshift(pet);
+            return this.savePets(list);
+        },
+
+        updatePet: function(id, updates) {
+            var list = this.getPets();
+            var idx = list.findIndex(function(p) { return p.id === id; });
+            if (idx !== -1) {
+                Object.assign(list[idx], updates);
+                this.savePets(list);
+                return list[idx];
+            }
+            return null;
+        },
+
+        deletePet: function(id) {
+            var list = this.getPets();
+            var filtered = list.filter(function(p) { return p.id !== id; });
+            return this.savePets(filtered);
         }
     };
 

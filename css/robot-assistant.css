@@ -2,14 +2,15 @@
 .robot-assistant{position:fixed;z-index:99999;user-select:none;font-family:'Microsoft YaHei','PingFang SC',sans-serif}
 
 /* 悬浮图标 */
-.robot-float{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#3b82f6);display:flex;align-items:center;justify-content:center;cursor:grab;box-shadow:0 4px 20px rgba(59,130,246,.45);transition:transform .2s,box-shadow .2s;position:relative}
-.robot-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(59,130,246,.6)}
+.robot-float{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#165DFF,#4080FF);display:flex;align-items:center;justify-content:center;cursor:grab;box-shadow:0 4px 20px rgba(22,93,255,.4);transition:transform .25s,box-shadow .25s;position:relative}
+.robot-float:hover{transform:scale(1.12);box-shadow:0 6px 28px rgba(22,93,255,.6)}
 .robot-float:active{cursor:grabbing}
 .robot-float .robot-icon{font-size:28px;color:#fff}
-.robot-float .robot-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:#3b82f6;white-space:nowrap;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.1)}
+.robot-float .robot-label{position:absolute;right:68px;top:50%;transform:translateY(-50%);font-size:13px;color:#165DFF;white-space:nowrap;font-weight:600;background:#fff;padding:6px 14px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.1);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.robot-float:hover .robot-label{opacity:1;transform:translateY(-50%) translateX(0)}
 
 /* 呼吸灯动画 */
-@keyframes robotBreathe{0%,100%{box-shadow:0 4px 20px rgba(59,130,246,.45)}50%{box-shadow:0 4px 30px rgba(59,130,246,.75),0 0 0 8px rgba(59,130,246,.12)}}
+@keyframes robotBreathe{0%,100%{box-shadow:0 4px 20px rgba(22,93,255,.4)}50%{box-shadow:0 4px 30px rgba(22,93,255,.7),0 0 0 8px rgba(22,93,255,.1)}}
 .robot-float.breathing{animation:robotBreathe 2.5s ease-in-out infinite}
 
 /* 未读消息红点 */
@@ -23,7 +24,7 @@
 @keyframes chatSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
 /* 聊天头部 */
-.robot-chat-header{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.robot-chat-header{background:linear-gradient(135deg,#0E42D2,#165DFF);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .robot-chat-header .header-left{display:flex;align-items:center;gap:10px}
 .robot-chat-header .header-left i{font-size:22px}
 .robot-chat-header .header-left .header-info h3{font-size:16px;font-weight:600;margin:0}
@@ -42,12 +43,12 @@
 .robot-msg.user{align-self:flex-end;flex-direction:row-reverse}
 
 .robot-msg .msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.robot-msg.bot .msg-avatar{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff}
+.robot-msg.bot .msg-avatar{background:linear-gradient(135deg,#0E42D2,#165DFF);color:#fff}
 .robot-msg.user .msg-avatar{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
 
 .robot-msg .msg-bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.6;word-break:break-word}
 .robot-msg.bot .msg-bubble{background:#fff;color:#1e293b;border-top-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.robot-msg.user .msg-bubble{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;border-top-right-radius:4px}
+.robot-msg.user .msg-bubble{background:linear-gradient(135deg,#0E42D2,#165DFF);color:#fff;border-top-right-radius:4px}
 
 /* 打字动画 */
 .robot-typing{display:flex;gap:4px;padding:4px 0}
@@ -58,16 +59,16 @@
 
 /* 快捷问题 */
 .robot-quick-questions{padding:8px 16px 4px;display:flex;flex-wrap:wrap;gap:6px;background:#f8fafc;border-top:1px solid #e2e8f0}
-.robot-quick-btn{padding:5px 12px;border-radius:16px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap}
-.robot-quick-btn:hover{background:#dbeafe;border-color:#93c5fd}
+.robot-quick-btn{padding:5px 12px;border-radius:16px;border:1px solid #bfdbfe;background:#F0F5FF;color:#165DFF;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.robot-quick-btn:hover{background:#dbeafe;border-color:#4080FF}
 
 /* 输入区域 */
 .robot-chat-input{padding:12px 16px;border-top:1px solid #e2e8f0;display:flex;gap:8px;align-items:center;background:#fff;flex-shrink:0}
 .robot-chat-input input{flex:1;padding:10px 14px;border:1px solid #e2e8f0;border-radius:20px;font-size:13.5px;outline:none;transition:border-color .2s;background:#f8fafc}
-.robot-chat-input input:focus{border-color:#3b82f6;background:#fff}
+.robot-chat-input input:focus{border-color:#165DFF;background:#fff}
 .robot-chat-input input::placeholder{color:#94a3b8}
-.robot-chat-input .send-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;flex-shrink:0}
-.robot-chat-input .send-btn:hover{transform:scale(1.08);box-shadow:0 3px 12px rgba(59,130,246,.4)}
+.robot-chat-input .send-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#0E42D2,#165DFF);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;flex-shrink:0}
+.robot-chat-input .send-btn:hover{transform:scale(1.08);box-shadow:0 3px 12px rgba(22,93,255,.4)}
 .robot-chat-input .send-btn:active{transform:scale(.95)}
 
 /* 响应式 */

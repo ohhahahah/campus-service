@@ -33,6 +33,7 @@
     ];
 
     function init() {
+        initHeroSlider();
         animateStats();
         initTabs();
         renderJobs('all');
@@ -41,6 +42,49 @@
         initFilters();
         initModals();
         initForms();
+    }
+
+    function initHeroSlider() {
+        var slides = document.querySelectorAll('.pt-hero-slide');
+        var dots = document.querySelectorAll('.pt-hero-dot');
+        if (!slides.length) return;
+        var current = 0;
+        var total = slides.length;
+        var timer = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            if (dots[current]) dots[current].classList.remove('active');
+            current = index % total;
+            slides[current].classList.add('active');
+            if (dots[current]) dots[current].classList.add('active');
+        }
+
+        function next() { goTo(current + 1); }
+
+        function startAuto() {
+            stopAuto();
+            timer = setInterval(next, 4500);
+        }
+
+        function stopAuto() {
+            if (timer) { clearInterval(timer); timer = null; }
+        }
+
+        dots.forEach(function(dot, i) {
+            dot.addEventListener('click', function() {
+                goTo(i);
+                startAuto();
+            });
+        });
+
+        var hero = document.querySelector('.pt-hero');
+        if (hero) {
+            hero.addEventListener('mouseenter', stopAuto);
+            hero.addEventListener('mouseleave', startAuto);
+        }
+
+        startAuto();
     }
 
     function animateStats() {
@@ -85,11 +129,29 @@
         filtered.forEach(function(job) {
             var card = document.createElement('div');
             card.className = 'pt-job-card';
-            card.innerHTML = '<div class="pt-job-icon cat-' + job.cat + '"><i class="fas ' + job.icon + '"></i></div><div class="pt-job-info"><h4>' + job.title + '</h4><p>' + job.desc + '</p><div class="pt-job-meta"><span class="pt-job-tag salary">' + job.salary + '</span><span class="pt-job-tag cat">' + job.cat + '</span><span class="pt-job-tag time"><i class="fas fa-clock"></i> ' + job.time + '</span></div><div class="pt-job-actions"><button class="pt-apply-btn" data-id="' + job.id + '"><i class="fas fa-paper-plane"></i> 申请</button></div></div>';
+            card.innerHTML = '<div class="pt-job-icon cat-' + job.cat + '"><i class="fas ' + job.icon + '"></i></div><div class="pt-job-info"><h4>' + job.title + '</h4><p>' + job.desc + '</p><div class="pt-job-meta"><span class="pt-job-tag salary">' + job.salary + '</span><span class="pt-job-tag cat">' + job.cat + '</span><span class="pt-job-tag time"><i class="fas fa-clock"></i> ' + job.time + '</span></div><div class="pt-job-actions"><button class="pt-apply-btn" data-id="' + job.id + '"><i class="fas fa-paper-plane"></i> 申请</button><button class="pt-detail-link-btn" data-id="' + job.id + '"><i class="fas fa-eye"></i> 查看详情</button></div></div>';
             list.appendChild(card);
         });
+        // 卡片点击跳转详情
+        list.querySelectorAll('.pt-job-card').forEach(function(card) {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.pt-apply-btn') || e.target.closest('.pt-detail-link-btn')) return;
+                var jobId = card.querySelector('.pt-apply-btn').getAttribute('data-id');
+                location.href = 'parttime-detail.html?id=' + jobId;
+            });
+        });
+        list.querySelectorAll('.pt-detail-link-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                location.href = 'parttime-detail.html?id=' + btn.getAttribute('data-id');
+            });
+        });
         list.querySelectorAll('.pt-apply-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() { showToast('申请已发送，请等待联系！'); });
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                location.href = 'parttime-detail.html?id=' + btn.getAttribute('data-id');
+            });
         });
     }
 

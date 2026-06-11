@@ -37,8 +37,11 @@
 .lg-options{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px}
 .lg-remember{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.6);cursor:pointer}
 .lg-remember input{accent-color:#3b82f6}
-.lg-forgot{color:#38bdf8;text-decoration:none;transition:color 0.3s}
+.lg-options-right{display:flex;align-items:center;gap:12px}
+.lg-forgot{color:#38bdf8;text-decoration:none;transition:color 0.3s;font-size:13px}
 .lg-forgot:hover{color:#7dd3fc}
+.lg-register-link{color:rgba(255,255,255,0.5);text-decoration:none;font-size:13px;transition:color 0.3s}
+.lg-register-link:hover{color:#38bdf8}
 .lg-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1e40af,#3b82f6);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px}
 .lg-submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,64,175,0.4)}
 .lg-submit-btn.admin{background:linear-gradient(135deg,#7c3aed,#8b5cf6)}

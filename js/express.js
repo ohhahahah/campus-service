@@ -1,4 +1,53 @@
 (function() {
+    /* ===== 轮播图逻辑 ===== */
+    (function initCarousel() {
+        var slides = document.querySelectorAll('.express-carousel-slide');
+        var dots = document.querySelectorAll('.express-carousel-dot');
+        var prevBtn = document.getElementById('expressCarouselPrev');
+        var nextBtn = document.getElementById('expressCarouselNext');
+        if (!slides.length) return;
+        var current = 0;
+        var total = slides.length;
+        var timer = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = (index + total) % total;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+        }
+
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        function startAuto() {
+            stopAuto();
+            timer = setInterval(next, 3000);
+        }
+        function stopAuto() {
+            if (timer) { clearInterval(timer); timer = null; }
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function() { prev(); startAuto(); });
+        if (nextBtn) nextBtn.addEventListener('click', function() { next(); startAuto(); });
+        dots.forEach(function(dot) {
+            dot.addEventListener('click', function() {
+                goTo(parseInt(this.getAttribute('data-index')));
+                startAuto();
+            });
+        });
+
+        var carousel = document.querySelector('.express-carousel');
+        if (carousel) {
+            carousel.addEventListener('mouseenter', stopAuto);
+            carousel.addEventListener('mouseleave', startAuto);
+        }
+
+        startAuto();
+    })();
+
+    /* ===== 快递服务原有逻辑 ===== */
     var CURRENT_USER = 'currentUser';
     var ORDERS_KEY = 'express_orders';
     var CHATS_KEY = 'express_chats_';
@@ -82,14 +131,14 @@
             {
                 id: 'DEMO001',
                 publisher: '同学A',
-                station: '菜鸟驿站（北门）',
+                station: '南门驿站',
                 pickupCode: '5-2-8134',
                 packageSize: '小件',
                 packageWeight: '轻',
-                receiverName: '张同学',
-                receiverPhone: '138****1234',
-                building: '3号楼',
-                room: '512',
+                receiverName: '张同学 138****1234',
+                receiverPhone: '',
+                building: '3号宿舍楼',
+                room: '',
                 fee: 3,
                 note: '下课后来取即可',
                 status: 'pending',
@@ -100,14 +149,14 @@
             {
                 id: 'DEMO002',
                 publisher: '同学B',
-                station: '快递柜A区（东门）',
+                station: '北门驿站',
                 pickupCode: 'A-16-6291',
                 packageSize: '中件',
                 packageWeight: '一般',
-                receiverName: '李同学',
-                receiverPhone: '139****5678',
-                building: '1号楼',
-                room: '203',
+                receiverName: '李同学 139****5678',
+                receiverPhone: '',
+                building: '1号宿舍楼',
+                room: '',
                 fee: 5,
                 note: '易碎品，请小心',
                 status: 'pending',
@@ -118,14 +167,14 @@
             {
                 id: 'DEMO003',
                 publisher: '同学C',
-                station: '顺丰网点（西门）',
+                station: '一食堂旁驿站',
                 pickupCode: 'SF2024122090',
                 packageSize: '大件',
                 packageWeight: '重',
-                receiverName: '王同学',
-                receiverPhone: '137****9012',
-                building: '5号楼',
-                room: '101',
+                receiverName: '王同学 137****9012',
+                receiverPhone: '',
+                building: '2号宿舍楼',
+                room: '',
                 fee: 8,
                 note: '大件物品，需要送到楼下',
                 status: 'accepted',
@@ -304,7 +353,8 @@
         saveOrders(orders);
         renderHallOrders();
         renderMyOrders();
-        showToast('订单发布成功！');
+        updateMyOrderStats();
+        alert('订单发布成功！');
     }
 
     function acceptOrder(orderId) {
@@ -332,6 +382,7 @@
 
         renderHallOrders();
         renderMyOrders();
+        updateMyOrderStats();
         showToast('接单成功！已建立对话窗口');
     }
 
@@ -361,6 +412,7 @@
         saveOrders(orders);
         renderHallOrders();
         renderMyOrders();
+        updateMyOrderStats();
         showToast('订单已取消');
     }
 
@@ -388,6 +440,7 @@
 
         renderHallOrders();
         renderMyOrders();
+        updateMyOrderStats();
     }
 
     function openChat(orderId) {
@@ -493,11 +546,25 @@
         }
     }
 
+    function updateMyOrderStats() {
+        var orders = getOrders();
+        var published = orders.filter(function(o) { return o.publisher === currentUser; }).length;
+        var accepted = orders.filter(function(o) { return o.acceptor === currentUser; }).length;
+        var pending = orders.filter(function(o) { return o.publisher === currentUser && o.status === 'pending'; }).length;
+        var el1 = document.getElementById('myPublishedCount');
+        var el2 = document.getElementById('myAcceptedCount');
+        var el3 = document.getElementById('myPendingCount');
+        if (el1) el1.textContent = published;
+        if (el2) el2.textContent = accepted;
+        if (el3) el3.textContent = pending;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         ensureUser();
         initDemoOrders();
         renderHallOrders();
         renderMyOrders();
+        updateMyOrderStats();
 
         document.getElementById('publishForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -505,14 +572,13 @@
             var pickupCode = document.getElementById('pickupCode').value.trim();
             var packageSize = document.getElementById('packageSize').value;
             var packageWeight = document.getElementById('packageWeight').value;
-            var receiverName = document.getElementById('receiverName').value.trim();
-            var receiverPhone = document.getElementById('receiverPhone').value.trim();
             var building = document.getElementById('deliveryBuilding').value;
-            var room = document.getElementById('deliveryRoom').value.trim();
+            var receiverInfo = document.getElementById('receiverInfo').value.trim();
             var fee = document.getElementById('orderFee').value;
             var note = document.getElementById('orderNote').value.trim();
+            var deadline = document.getElementById('pickupDeadline').value;
 
-            if (!station || !pickupCode || !receiverName || !receiverPhone || !building || !room || !fee) {
+            if (!station || !pickupCode || !building || !receiverInfo || !fee) {
                 showToast('请填写完整的订单信息');
                 return;
             }
@@ -522,16 +588,24 @@
                 pickupCode: pickupCode,
                 packageSize: packageSize,
                 packageWeight: packageWeight,
-                receiverName: receiverName,
-                receiverPhone: receiverPhone,
+                receiverName: receiverInfo,
+                receiverPhone: '',
                 building: building,
-                room: room,
+                room: '',
                 fee: fee,
-                note: note
+                note: note,
+                deadline: deadline
             });
 
             this.reset();
             document.getElementById('orderFee').value = '3';
+        });
+
+        /* 重置表单按钮 */
+        document.getElementById('resetFormBtn').addEventListener('click', function() {
+            document.getElementById('publishForm').reset();
+            document.getElementById('orderFee').value = '3';
+            showToast('表单已重置');
         });
 
         document.getElementById('hallSort').addEventListener('click', function(e) {

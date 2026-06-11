@@ -39,6 +39,7 @@
         initStudentRegister();
         initForgotPassword();
         initToLoginLink();
+        initRegisterLink();
         checkUrlParam();
     }
 
@@ -78,6 +79,28 @@
             var students = getStudents();
             var found = students.find(function(s) { return s.stuId === stuId && s.password === pwd; });
             if (!found) { showToast('学号或密码错误，请检查后重试', 'error'); return; }
+            /* 检查用户是否被封禁 */
+            if (found.status === 'banned') {
+                /* 检查是否已到期自动解封 */
+                if (found.banExpiry && found.banExpiry !== 'permanent') {
+                    var expiry = new Date(found.banExpiry);
+                    if (new Date() >= expiry) {
+                        /* 自动解封 */
+                        found.status = 'normal';
+                        found.banExpiry = null;
+                        found.banReason = '';
+                        found.banTime = null;
+                        saveStudents(students);
+                    } else {
+                        var remainDays = Math.ceil((expiry - new Date()) / (1000 * 60 * 60 * 24));
+                        showToast('该账号已被封禁，剩余' + remainDays + '天解封', 'error');
+                        return;
+                    }
+                } else if (found.banExpiry === 'permanent') {
+                    showToast('该账号已被永久封禁，无法登录', 'error');
+                    return;
+                }
+            }
             var remember = document.getElementById('stuRemember').checked;
             setCurrentUser({ role: 'student', stuId: found.stuId, name: found.name, dept: found.dept, phone: found.phone, remember: remember });
             showToast('登录成功！欢迎回来，' + found.name, 'success');
@@ -147,6 +170,15 @@
         if (toLoginLink) {
             toLoginLink.addEventListener('click', function() {
                 switchTab('studentLogin');
+            });
+        }
+    }
+
+    function initRegisterLink() {
+        var regLink = document.getElementById('stuToRegister');
+        if (regLink) {
+            regLink.addEventListener('click', function() {
+                switchTab('studentRegister');
             });
         }
     }

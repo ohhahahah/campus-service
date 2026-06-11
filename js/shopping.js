@@ -1,4 +1,43 @@
 (function() {
+    /* ===== 校园超市轮播图 ===== */
+    (function initShopCarousel() {
+        var slides = document.querySelectorAll('#shopCarouselTrack .express-carousel-slide');
+        var dots = document.querySelectorAll('#shopCarouselDots .express-carousel-dot');
+        var prevBtn = document.getElementById('shopCarouselPrev');
+        var nextBtn = document.getElementById('shopCarouselNext');
+        if (!slides.length) return;
+        var current = 0;
+        var total = slides.length;
+        var timer = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = (index + total) % total;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+        }
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+        function startAuto() { stopAuto(); timer = setInterval(next, 3000); }
+        function stopAuto() { if (timer) { clearInterval(timer); timer = null; } }
+
+        if (prevBtn) prevBtn.addEventListener('click', function() { prev(); startAuto(); });
+        if (nextBtn) nextBtn.addEventListener('click', function() { next(); startAuto(); });
+        dots.forEach(function(dot) {
+            dot.addEventListener('click', function() {
+                goTo(parseInt(this.getAttribute('data-index')));
+                startAuto();
+            });
+        });
+        var carousel = document.querySelector('.express-carousel');
+        if (carousel) {
+            carousel.addEventListener('mouseenter', stopAuto);
+            carousel.addEventListener('mouseleave', startAuto);
+        }
+        startAuto();
+    })();
+
     var products = {
         snack: [
             { name: '乐事薯片', price: 8.5, img: 'https://via.placeholder.com/200x140/fef3c7/92400e?text=薯片' },

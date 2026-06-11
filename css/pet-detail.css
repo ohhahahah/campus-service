@@ -1,0 +1,106 @@
+/* ========== 猫咪详情页 ========== */
+
+/* 面包屑 */
+.pet-detail-breadcrumb{padding:90px 20px 16px;background:var(--bg-primary);border-bottom:1px solid var(--border-color)}
+.pet-detail-breadcrumb a{color:var(--text-secondary);text-decoration:none;font-size:14px;transition:color .2s}
+.pet-detail-breadcrumb a:hover{color:#f59e0b}
+.breadcrumb-sep{margin:0 8px;color:var(--text-secondary);font-size:14px}
+#breadcrumbName{font-size:14px;color:var(--text-primary);font-weight:500}
+
+/* 加载 */
+.pet-detail-loading{text-align:center;padding:120px 20px;font-size:18px;color:var(--text-secondary)}
+.pet-detail-loading i{margin-right:8px;color:#f59e0b}
+
+/* 主体布局 */
+.pet-detail-main{padding:30px 20px 60px;background:var(--bg-primary);min-height:60vh}
+.pet-detail-wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+
+/* 图片区 */
+.pet-detail-gallery{position:relative}
+.pet-detail-main-img{width:100%;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#f3f4f6;position:relative}
+.pet-detail-main-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.pet-detail-main-img:hover img{transform:scale(1.03)}
+.pet-detail-thumbs{display:flex;gap:10px;margin-top:12px;overflow-x:auto;padding-bottom:4px}
+.pet-detail-thumb{width:80px;height:60px;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0;opacity:.6}
+.pet-detail-thumb:hover{opacity:.9}
+.pet-detail-thumb.active{border-color:#f59e0b;opacity:1}
+.pet-detail-thumb img{width:100%;height:100%;object-fit:cover}
+.pet-detail-img-count{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.5);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;backdrop-filter:blur(4px)}
+
+/* 信息区 */
+.pet-detail-info{display:flex;flex-direction:column;gap:20px}
+.pet-detail-name{font-size:28px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:12px}
+.pet-detail-name .pet-gender-icon{font-size:20px}
+.pet-detail-name .pet-gender-icon.male{color:#3b82f6}
+.pet-detail-name .pet-gender-icon.female{color:#ec4899}
+.pet-detail-breed{font-size:15px;color:var(--text-secondary);margin-top:-12px}
+.pet-detail-tags{display:flex;gap:8px;flex-wrap:wrap}
+.pet-detail-tag{padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500}
+.pet-detail-tag.neutered{background:#dcfce7;color:#16a34a}
+.pet-detail-tag.not-neutered{background:#fef3c7;color:#d97706}
+.pet-detail-tag.vaccinated{background:#dbeafe;color:#2563eb}
+.pet-detail-tag.not-vaccinated{background:#fee2e2;color:#dc2626}
+.pet-detail-tag.gender-tag{background:#fce7f3;color:#db2777}
+
+/* 信息网格 */
+.pet-detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pet-meta-item{background:var(--bg-secondary);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px}
+.pet-meta-item i{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.pet-meta-item .meta-label{font-size:12px;color:var(--text-secondary)}
+.pet-meta-item .meta-value{font-size:14px;font-weight:600;color:var(--text-primary)}
+
+/* 性格介绍 */
+.pet-detail-personality{background:var(--bg-secondary);border-radius:16px;padding:20px;border:1px solid var(--border-color)}
+.pet-detail-personality h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.pet-detail-personality h3 i{color:#f59e0b}
+.pet-detail-personality p{font-size:14px;color:var(--text-secondary);line-height:1.8}
+
+/* 健康状态 */
+.pet-detail-health{background:var(--bg-secondary);border-radius:16px;padding:20px;border:1px solid var(--border-color)}
+.pet-detail-health h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.pet-detail-health h3 i{color:#10b981}
+.pet-health-list{display:flex;flex-direction:column;gap:8px}
+.pet-health-item{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-secondary)}
+.pet-health-item i.fa-check-circle{color:#10b981}
+.pet-health-item i.fa-times-circle{color:#ef4444}
+.pet-health-item i.fa-clock{color:#f59e0b}
+
+/* 领养说明 */
+.pet-detail-adopt-info{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-radius:16px;padding:20px;border:1px solid #fde68a}
+.pet-detail-adopt-info h3{font-size:16px;font-weight:600;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.pet-detail-adopt-info h3 i{color:#f59e0b}
+.pet-detail-adopt-info ul{list-style:none;padding:0;margin:0}
+.pet-detail-adopt-info li{font-size:13px;color:#92400e;padding:6px 0;padding-left:20px;position:relative;line-height:1.6}
+.pet-detail-adopt-info li::before{content:'•';position:absolute;left:4px;color:#f59e0b;font-weight:700}
+
+/* 操作按钮 */
+.pet-detail-actions{display:flex;gap:12px}
+.pet-adopt-btn{flex:1;padding:14px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pet-adopt-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.3)}
+.pet-contact-btn{padding:14px 24px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;color:var(--text-primary);font-size:16px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pet-contact-btn:hover{border-color:#f59e0b;color:#f59e0b}
+
+/* 联系人信息 */
+.pet-detail-contact{background:var(--bg-secondary);border-radius:16px;padding:20px;border:1px solid var(--border-color)}
+.pet-detail-contact h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.pet-detail-contact h3 i{color:#3b82f6}
+.pet-contact-info{display:flex;align-items:center;gap:12px}
+.pet-contact-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.pet-contact-text .contact-name{font-size:15px;font-weight:600;color:var(--text-primary)}
+.pet-contact-text .contact-phone{font-size:13px;color:var(--text-secondary)}
+
+/* checkbox label */
+.checkbox-label{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-secondary);line-height:1.5;cursor:pointer}
+.checkbox-label input{margin-top:2px;accent-color:#f59e0b}
+
+/* 响应式 */
+@media(max-width:768px){
+    .pet-detail-wrap{grid-template-columns:1fr;gap:24px}
+    .pet-detail-name{font-size:22px}
+    .pet-detail-meta{grid-template-columns:1fr 1fr}
+    .pet-detail-actions{flex-direction:column}
+}
+@media(max-width:480px){
+    .pet-detail-meta{grid-template-columns:1fr}
+    .pet-detail-main-img{aspect-ratio:1/1}
+}

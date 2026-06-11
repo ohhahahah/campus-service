@@ -1,13 +1,13 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学生生活服务大厅 - 智慧校园</title>
+    <title>生活服务 - 智慧校园</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/life.css">
-<link rel="stylesheet" href="css/robot-assistant.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
     <!-- 导航栏 -->
@@ -22,7 +22,8 @@
                 <a href="secondhand.html" class="nav-link">二手市场</a>
                 <a href="life.html" class="nav-link active">生活服务</a>
                 <a href="booking.html" class="nav-link">场馆预约</a>
-                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a>
+                <a href="pets.html" class="nav-link">流浪猫寄养</a>
             </div>
             <div class="nav-right">
                 <button class="theme-toggle" id="themeToggle">
@@ -36,158 +37,108 @@
         </div>
     </nav>
 
-    <!-- 页面标题 -->
-    <section class="page-header">
-        <div class="header-content">
-            <h1>学生生活服务大厅</h1>
-            <p>一站式校园生活服务平台</p>
+    <!-- 顶部全屏轮播Banner -->
+    <section class="life-banner">
+        <div class="life-banner-slides" id="bannerSlides">
+            <div class="life-banner-slide active" style="background-image:url('https://images.unsplash.com/photo-1562774053-701939374585?w=1400&h=400&fit=crop')"></div>
+            <div class="life-banner-slide" style="background-image:url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1400&h=400&fit=crop')"></div>
+            <div class="life-banner-slide" style="background-image:url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1400&h=400&fit=crop')"></div>
+        </div>
+        <div class="life-banner-overlay"></div>
+        <div class="life-banner-content">
+            <h1>生活服务</h1>
+            <p>校园一站式生活服务平台</p>
+        </div>
+        <div class="life-banner-dots" id="bannerDots">
+            <span class="life-banner-dot active" data-slide="0"></span>
+            <span class="life-banner-dot" data-slide="1"></span>
+            <span class="life-banner-dot" data-slide="2"></span>
         </div>
     </section>
 
-    <!-- 服务卡片 -->
-    <section class="services-grid">
-        <div class="service-card" onclick="location.href='dining.html'">
-            <div class="service-icon">
-                <i class="fas fa-utensils"></i>
-            </div>
-            <h3>餐饮服务</h3>
-            <p>食堂菜单、就餐消费</p>
+    <!-- 服务入口卡片区 -->
+    <section class="life-services-section">
+        <div class="life-section-title">
+            <h2><i class="fas fa-th-large"></i> 服务入口</h2>
+            <p>点击卡片进入对应服务</p>
         </div>
-        <div class="service-card" onclick="location.href='dormitory.html'">
-            <div class="service-icon">
-                <i class="fas fa-home"></i>
-            </div>
-            <h3>宿舍管理</h3>
-            <p>宿舍报修、卫生检查</p>
-        </div>
-        <div class="service-card" onclick="location.href='express.html'">
-            <div class="service-icon">
-                <i class="fas fa-truck"></i>
-            </div>
-            <h3>快递服务</h3>
-            <p>快递查询、代取服务</p>
-        </div>
-        <div class="service-card" onclick="location.href='shopping.html'">
-            <div class="service-icon">
-                <i class="fas fa-shopping-bag"></i>
-            </div>
-            <h3>校园超市</h3>
-            <p>在线购物、送货上门</p>
-        </div>
-    </section>
-
-    <!-- 食堂菜单模块 -->
-    <section class="content-section">
-        <div class="section-header">
-            <h2>今日菜单</h2>
-            <div class="canteen-tabs">
-                <button class="canteen-tab active">一食堂</button>
-                <button class="canteen-tab">二食堂</button>
-                <button class="canteen-tab">三食堂</button>
-            </div>
-        </div>
-        <div class="menu-grid">
-            <div class="menu-item">
-                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=braised%20pork%20belly%20chinese%20food&image_size=square" alt="菜品">
-                <div class="menu-info">
-                    <h4>红烧肉</h4>
-                    <p>肥而不腻，入口即化</p>
-                    <span class="menu-price">¥18</span>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=kung%20pao%20chicken&image_size=square" alt="菜品">
-                <div class="menu-info">
-                    <h4>宫保鸡丁</h4>
-                    <p>香辣可口，下饭首选</p>
-                    <span class="menu-price">¥15</span>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=steamed%20fish%20chinese%20style&image_size=square" alt="菜品">
-                <div class="menu-info">
-                    <h4>清蒸鲈鱼</h4>
-                    <p>鲜嫩多汁，营养健康</p>
-                    <span class="menu-price">¥28</span>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=garlic%20broccoli&image_size=square" alt="菜品">
-                <div class="menu-info">
-                    <h4>蒜蓉西兰花</h4>
-                    <p>清爽可口，绿色健康</p>
-                    <span class="menu-price">¥12</span>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=tomato%20egg%20soup&image_size=square" alt="菜品">
-                <div class="menu-info">
-                    <h4>番茄鸡蛋汤</h4>
-                    <p>酸甜可口，开胃解腻</p>
-                    <span class="menu-price">¥8</span>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=beef%20noodles%20chinese&image_size=square" alt="菜品">
-                <div class="menu-info">
-                    <h4>牛肉面</h4>
-                    <p>劲道爽滑，牛肉软烂</p>
-                    <span class="menu-price">¥22</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 消费记录 -->
-    <section class="content-section">
-        <div class="section-header">
-            <h2>消费记录</h2>
-            <select id="recordMonth">
-                <option>本月</option>
-                <option>上月</option>
-                <option>上上月</option>
-            </select>
-        </div>
-        <div class="record-list">
-            <div class="record-item">
-                <div class="record-icon">
+        <div class="life-cards-grid">
+            <div class="life-card" onclick="location.href='dining.html'">
+                <div class="life-card-icon life-card-icon-dining">
                     <i class="fas fa-utensils"></i>
                 </div>
-                <div class="record-info">
-                    <span class="record-title">一食堂</span>
-                    <span class="record-time">2024-02-28 12:30</span>
+                <div class="life-card-body">
+                    <h3>餐饮服务</h3>
+                    <p>食堂菜单 · 在线点餐 · 消费账单</p>
                 </div>
-                <span class="record-amount">-¥18.50</span>
+                <div class="life-card-arrow"><i class="fas fa-chevron-right"></i></div>
             </div>
-            <div class="record-item">
-                <div class="record-icon">
+            <div class="life-card" onclick="location.href='express.html'">
+                <div class="life-card-icon life-card-icon-express">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="life-card-body">
+                    <h3>快递服务</h3>
+                    <p>快递查询 · 代取服务 · 驿站位置</p>
+                </div>
+                <div class="life-card-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+            <div class="life-card" onclick="location.href='shopping.html'">
+                <div class="life-card-icon life-card-icon-shop">
                     <i class="fas fa-shopping-bag"></i>
                 </div>
-                <div class="record-info">
-                    <span class="record-title">校园超市</span>
-                    <span class="record-time">2024-02-28 10:15</span>
+                <div class="life-card-body">
+                    <h3>校园超市</h3>
+                    <p>在线购物 · 送货上门 · 商品分类</p>
                 </div>
-                <span class="record-amount">-¥35.00</span>
+                <div class="life-card-arrow"><i class="fas fa-chevron-right"></i></div>
             </div>
-            <div class="record-item">
-                <div class="record-icon">
-                    <i class="fas fa-credit-card"></i>
-                </div>
-                <div class="record-info">
-                    <span class="record-title">充值</span>
-                    <span class="record-time">2024-02-27 14:00</span>
-                </div>
-                <span class="record-amount plus">+¥200.00</span>
+        </div>
+    </section>
+
+    <!-- 服务简介 -->
+    <section class="life-intro-section">
+        <div class="life-intro-card">
+            <div class="life-intro-icon"><i class="fas fa-concierge-bell"></i></div>
+            <h3>服务简介</h3>
+            <p>智慧校园生活服务平台是面向全校师生的综合服务入口，涵盖餐饮美食、快递驿站、校园商超等核心生活场景。所有服务均可在线办理，让您足不出户即可享受便捷校园生活。点击上方服务卡片，即可进入对应功能页面。</p>
+        </div>
+    </section>
+
+    <!-- 校园服务概览 -->
+    <section class="life-overview-section">
+        <div class="life-section-title">
+            <h2><i class="fas fa-compass"></i> 校园服务概览</h2>
+        </div>
+        <div class="life-overview-grid">
+            <div class="life-overview-item">
+                <div class="life-overview-icon" style="background:linear-gradient(135deg,#f97316,#fb923c)"><i class="fas fa-utensils"></i></div>
+                <span>餐饮美食</span>
             </div>
-            <div class="record-item">
-                <div class="record-icon">
-                    <i class="fas fa-utensils"></i>
-                </div>
-                <div class="record-info">
-                    <span class="record-title">二食堂</span>
-                    <span class="record-time">2024-02-27 18:20</span>
-                </div>
-                <span class="record-amount">-¥22.00</span>
+            <div class="life-overview-item">
+                <div class="life-overview-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa)"><i class="fas fa-box"></i></div>
+                <span>快递驿站</span>
+            </div>
+            <div class="life-overview-item">
+                <div class="life-overview-icon" style="background:linear-gradient(135deg,#10b981,#34d399)"><i class="fas fa-shopping-cart"></i></div>
+                <span>校园商超</span>
+            </div>
+            <div class="life-overview-item">
+                <div class="life-overview-icon" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)"><i class="fas fa-hands-helping"></i></div>
+                <span>便民服务</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 温馨提示 -->
+    <section class="life-tips-section">
+        <div class="life-tips-card">
+            <div class="life-tips-icon"><i class="fas fa-info-circle"></i></div>
+            <h3>温馨提示</h3>
+            <div class="life-tips-list">
+                <div class="life-tips-item"><i class="fas fa-clock"></i> 服务时间：工作日 08:00 – 22:00</div>
+                <div class="life-tips-item"><i class="fas fa-phone-alt"></i> 客服热线：010-12345678</div>
+                <div class="life-tips-item"><i class="fas fa-shield-alt"></i> 所有交易均受平台保障</div>
             </div>
         </div>
     </section>
@@ -214,13 +165,13 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 智慧校园综合服务平台 | 大学生网页设计大赛参赛作品</p>
+            <p>&copy; 2026 智慧校园综合服务平台</p>
         </div>
     </footer>
 
     <script src="js/db.js"></script>
     <script src="js/main.js"></script>
     <script src="js/life.js"></script>
-<script src="js/robot-assistant.js"></script>
+    <script src="js/robot-assistant.js"></script>
 </body>
 </html>

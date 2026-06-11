@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫咪详情 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pets.css">
+    <link rel="stylesheet" href="css/pet-detail.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a>
+                <a href="pets.html" class="nav-link active">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- 面包屑 -->
+    <div class="pet-detail-breadcrumb">
+        <div class="pets-container">
+            <a href="pets.html"><i class="fas fa-home"></i> 流浪猫寄养</a>
+            <span class="breadcrumb-sep">/</span>
+            <span id="breadcrumbName">猫咪详情</span>
+        </div>
+    </div>
+
+    <!-- 详情主体 -->
+    <div class="pet-detail-main" id="petDetailMain">
+        <!-- 加载中占位 -->
+        <div class="pet-detail-loading">
+            <i class="fas fa-spinner fa-spin"></i> 加载中...
+        </div>
+    </div>
+
+    <!-- 领养申请弹窗 -->
+    <div class="pets-modal" id="adoptModal">
+        <div class="pets-modal-content">
+            <div class="pets-modal-header"><h3>申请领养</h3><button class="pets-modal-close" data-modal="adoptModal"><i class="fas fa-times"></i></button></div>
+            <div class="pets-modal-body">
+                <form id="adoptForm">
+                    <div class="pets-form-group"><label>您的姓名</label><input type="text" id="adoptName" placeholder="请输入姓名" required></div>
+                    <div class="pets-form-row">
+                        <div class="pets-form-group"><label>联系电话</label><input type="tel" id="adoptPhone" placeholder="手机号" required></div>
+                        <div class="pets-form-group"><label>微信号</label><input type="text" id="adoptWechat" placeholder="微信号"></div>
+                    </div>
+                    <div class="pets-form-group"><label>居住地址</label><input type="text" id="adoptAddress" placeholder="校内宿舍或校外住址" required></div>
+                    <div class="pets-form-group"><label>养猫经验</label><select id="adoptExperience" required><option value="">请选择</option><option>有养猫经验</option><option>没有但了解相关知识</option><option>完全没有经验</option></select></div>
+                    <div class="pets-form-group"><label>领养理由</label><textarea id="adoptReason" placeholder="请简述您想领养这只猫的原因" rows="3" required></textarea></div>
+                    <div class="pets-form-group"><label class="checkbox-label"><input type="checkbox" id="adoptAgree" required> 我已阅读并同意《领养协议》，承诺科学喂养、定期疫苗、不弃养</label></div>
+                    <button type="submit" class="pets-submit-btn"><i class="fas fa-hand-holding-heart"></i> 提交领养申请</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pets-toast" id="petsToast"></div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>智慧校园</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="secondhand.html">二手市场</a></li><li><a href="parttime.html">兼职互助</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：XX大学信息中心</p><p>电话：010-12345678</p><p>邮箱：support@campus.edu</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 智慧校园综合服务平台</p></div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/pet-detail.js"></script>
+    <script src="js/robot-assistant.js"></script>
+</body>
+</html>

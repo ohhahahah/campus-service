@@ -206,6 +206,54 @@
     var currentBillDate = todayStr;
     var nextBillId = 17;
 
+    /* 购物车数据 */
+    var cart = [];
+    /* 订单数据 */
+    var orders = [];
+    var nextOrderId = 1;
+    /* 当前弹窗菜品 */
+    var currentDishItem = null;
+    var dishQty = 1;
+
+    /* ============================================================
+     * 轮播图
+     * ============================================================ */
+    var heroIndex = 0;
+    var heroTimer = null;
+
+    function initHeroSlider() {
+        var slides = document.querySelectorAll('#heroSlides .page-header-slide');
+        var dots = document.querySelectorAll('#heroDots .hero-dot');
+        if (slides.length === 0) return;
+
+        function goToSlide(idx) {
+            heroIndex = idx;
+            slides.forEach(function(s, i) { s.classList.toggle('active', i === idx); });
+            dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+        }
+
+        dots.forEach(function(dot) {
+            dot.addEventListener('click', function() {
+                goToSlide(parseInt(this.getAttribute('data-slide')));
+                resetHeroTimer();
+            });
+        });
+
+        function autoSlide() {
+            heroTimer = setInterval(function() {
+                goToSlide((heroIndex + 1) % slides.length);
+            }, 4000);
+        }
+
+        function resetHeroTimer() {
+            clearInterval(heroTimer);
+            autoSlide();
+        }
+
+        autoSlide();
+        console.log('[餐饮服务] 轮播图初始化完成，共', slides.length, '张');
+    }
+
     /* ============================================================
      * 渲染推荐菜品（横向滚动卡片）
      * ============================================================ */
@@ -223,10 +271,11 @@
                 '<span class="recommend-price">¥' + item.price + '</span>' +
                 '</div></div>';
         }).join('');
+        console.log('[餐饮服务] 推荐菜品渲染，食堂:', currentCanteen, '时段:', currentMeal, '数量:', items.length);
     }
 
     /* ============================================================
-     * 渲染菜品卡片列表（纯浏览，无点餐按钮）
+     * 渲染菜品卡片列表（浏览+详情）
      * ============================================================ */
     function renderMenu() {
         var grid = document.getElementById('menuGrid');
@@ -246,7 +295,6 @@
                 '</div></div></div>';
         }).join('');
 
-        /* 点击卡片打开详情弹窗 */
         grid.querySelectorAll('.menu-item').forEach(function(card) {
             card.addEventListener('click', function() {
                 var idx = parseInt(this.getAttribute('data-idx'));
@@ -257,9 +305,307 @@
     }
 
     /* ============================================================
-     * 菜品详情弹窗（仅浏览，无加购功能）
+     * 在线点餐菜品渲染
+     * ============================================================ */
+    function renderOrderGrid() {
+        var grid = document.getElementById('orderGrid');
+        var canteen = canteenData[currentCanteen];
+        if (!canteen) return;
+        var items = canteen[currentMeal] || [];
+
+        grid.innerHTML = items.map(function(item, idx) {
+            var inCart = cart.find(function(c) { return c.name === item.name && c.canteen === currentCanteen; });
+            var qty = inCart ? inCart.qty : 0;
+            return '<div class="order-item" data-idx="' + idx + '">' +
+                '<div class="order-item-img">' +
+                '<img src="' + item.img + '" alt="' + item.name + '" onerror="this.src=\'https://via.placeholder.com/400x300/e2e8f0/64748b?text=' + encodeURIComponent(item.name) + '\'">' +
+                (item.stock <= 5 ? '<span class="order-item-badge">库存紧张</span>' : '') +
+                '</div>' +
+                '<div class="order-item-info">' +
+                '<h4>' + item.name + '</h4>' +
+                '<p>' + item.desc + '</p>' +
+                '<div class="order-item-bottom">' +
+                '<span class="order-item-price">¥' + item.price + '</span>' +
+                (qty > 0 ?
+                    '<div class="order-qty-ctrl"><button class="order-qty-btn order-qty-minus" data-idx="' + idx + '"><i class="fas fa-minus"></i></button><span class="order-qty-num">' + qty + '</span><button class="order-qty-btn order-qty-plus" data-idx="' + idx + '"><i class="fas fa-plus"></i></button></div>' :
+                    '<button class="order-add-btn" data-idx="' + idx + '"><i class="fas fa-plus"></i> 加入</button>'
+                ) +
+                '</div></div></div>';
+        }).join('');
+
+        grid.querySelectorAll('.order-add-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idx = parseInt(this.getAttribute('data-idx'));
+                var item = canteenData[currentCanteen][currentMeal][idx];
+                addToCart(item);
+            });
+        });
+        grid.querySelectorAll('.order-qty-minus').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idx = parseInt(this.getAttribute('data-idx'));
+                var item = canteenData[currentCanteen][currentMeal][idx];
+                changeCartQty(item, -1);
+            });
+        });
+        grid.querySelectorAll('.order-qty-plus').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var idx = parseInt(this.getAttribute('data-idx'));
+                var item = canteenData[currentCanteen][currentMeal][idx];
+                changeCartQty(item, 1);
+            });
+        });
+        console.log('[餐饮服务] 点餐列表渲染，食堂:', currentCanteen, '时段:', currentMeal);
+    }
+
+    /* ============================================================
+     * 购物车操作
+     * ============================================================ */
+    function addToCart(item) {
+        var existing = cart.find(function(c) { return c.name === item.name && c.canteen === currentCanteen; });
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            cart.push({ name: item.name, price: item.price, qty: 1, canteen: currentCanteen, img: item.img });
+        }
+        updateCartUI();
+        renderOrderGrid();
+        showToast('已加入购物车', 'success');
+        console.log('[餐饮服务] 加入购物车:', item.name);
+    }
+
+    function changeCartQty(item, delta) {
+        var existing = cart.find(function(c) { return c.name === item.name && c.canteen === currentCanteen; });
+        if (!existing) return;
+        existing.qty += delta;
+        if (existing.qty <= 0) {
+            cart = cart.filter(function(c) { return !(c.name === item.name && c.canteen === currentCanteen); });
+        }
+        updateCartUI();
+        renderOrderGrid();
+    }
+
+    function updateCartUI() {
+        var floatCart = document.getElementById('floatingCart');
+        var totalQty = cart.reduce(function(s, c) { return s + c.qty; }, 0);
+        var totalPrice = cart.reduce(function(s, c) { return s + c.price * c.qty; }, 0);
+        floatCart.style.display = totalQty > 0 ? 'flex' : 'none';
+        document.getElementById('cartBadge').textContent = totalQty;
+        document.getElementById('cartCount').textContent = totalQty + ' 件';
+        document.getElementById('cartTotal').textContent = '¥' + totalPrice.toFixed(2);
+    }
+
+    /* ============================================================
+     * 购物车面板
+     * ============================================================ */
+    function openCartModal() {
+        var body = document.getElementById('cartModalBody');
+        var footer = document.getElementById('cartModalFooter');
+
+        if (cart.length === 0) {
+            body.innerHTML = '<div class="cart-empty"><i class="fas fa-shopping-basket"></i><p>购物车是空的</p></div>';
+            footer.style.display = 'none';
+        } else {
+            var html = '';
+            cart.forEach(function(item, idx) {
+                html += '<div class="cart-item">' +
+                    '<img src="' + item.img + '" alt="' + item.name + '" class="cart-item-img" onerror="this.src=\'https://via.placeholder.com/60x60/e2e8f0/64748b?text=\'">' +
+                    '<div class="cart-item-info"><span class="cart-item-name">' + item.name + '</span><span class="cart-item-price">¥' + item.price + '</span></div>' +
+                    '<div class="cart-qty">' +
+                    '<button class="cart-qty-btn" data-idx="' + idx + '" data-action="minus"><i class="fas fa-minus"></i></button>' +
+                    '<span>' + item.qty + '</span>' +
+                    '<button class="cart-qty-btn" data-idx="' + idx + '" data-action="plus"><i class="fas fa-plus"></i></button>' +
+                    '</div></div>';
+            });
+            body.innerHTML = html;
+            footer.style.display = 'block';
+
+            body.querySelectorAll('.cart-qty-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var idx = parseInt(this.getAttribute('data-idx'));
+                    var action = this.getAttribute('data-action');
+                    if (action === 'plus') {
+                        cart[idx].qty += 1;
+                    } else {
+                        cart[idx].qty -= 1;
+                        if (cart[idx].qty <= 0) cart.splice(idx, 1);
+                    }
+                    updateCartUI();
+                    renderOrderGrid();
+                    openCartModal();
+                });
+            });
+
+            var totalPrice = cart.reduce(function(s, c) { return s + c.price * c.qty; }, 0);
+            document.getElementById('cartSummaryTotal').textContent = '¥' + totalPrice.toFixed(2);
+        }
+
+        document.getElementById('cartModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        console.log('[餐饮服务] 打开购物车，商品数:', cart.length);
+    }
+
+    function closeCartModal() {
+        document.getElementById('cartModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    /* ============================================================
+     * 提交订单
+     * ============================================================ */
+    function submitOrder() {
+        if (cart.length === 0) {
+            showToast('购物车为空', 'error');
+            return;
+        }
+        var deliveryType = document.getElementById('deliveryType').value;
+        var address = '';
+        if (deliveryType === 'delivery') {
+            address = document.getElementById('deliveryAddress').value;
+        }
+        var totalPrice = cart.reduce(function(s, c) { return s + c.price * c.qty; }, 0);
+        var canteenNames = { '1': '一食堂', '2': '二食堂', '3': '三食堂' };
+        var order = {
+            id: nextOrderId++,
+            items: cart.map(function(c) { return { name: c.name, price: c.price, qty: c.qty }; }),
+            canteen: canteenNames[cart[0].canteen] || '一食堂',
+            deliveryType: deliveryType,
+            address: address,
+            totalPrice: totalPrice,
+            status: 'pending',
+            statusText: '待接单',
+            createTime: new Date().toLocaleString('zh-CN'),
+            estimatedTime: deliveryType === 'dinein' ? '15-20分钟' : '25-35分钟'
+        };
+        orders.unshift(order);
+        cart = [];
+        updateCartUI();
+        renderOrderGrid();
+        closeCartModal();
+        renderOrders();
+        showToast('订单提交成功！', 'success');
+        console.log('[餐饮服务] 订单提交:', order);
+        simulateOrderProgress(order.id);
+    }
+
+    /* 模拟订单状态自动推进 */
+    function simulateOrderProgress(orderId) {
+        var statusFlow = [
+            { status: 'cooking', text: '制作中', delay: 8000 },
+            { status: 'delivering', text: '配送中', delay: 15000 },
+            { status: 'delivered', text: '已送达', delay: 25000 }
+        ];
+        var currentStep = 0;
+        function advance() {
+            if (currentStep >= statusFlow.length) return;
+            var order = orders.find(function(o) { return o.id === orderId; });
+            if (!order || order.status === 'cancelled') return;
+            order.status = statusFlow[currentStep].status;
+            order.statusText = statusFlow[currentStep].text;
+            renderOrders();
+            console.log('[餐饮服务] 订单', orderId, '状态更新:', order.statusText);
+            currentStep++;
+            if (currentStep < statusFlow.length) {
+                setTimeout(advance, statusFlow[currentStep].delay - statusFlow[currentStep - 1].delay);
+            }
+        }
+        setTimeout(advance, statusFlow[0].delay);
+    }
+
+    /* ============================================================
+     * 渲染订单列表
+     * ============================================================ */
+    function renderOrders() {
+        var container = document.getElementById('orderList');
+        if (orders.length === 0) {
+            container.innerHTML = '<div class="order-empty"><i class="fas fa-clipboard-list"></i><p>暂无订单</p></div>';
+            return;
+        }
+        var html = '';
+        orders.forEach(function(order) {
+            var statusClass = '', statusIcon = '';
+            switch (order.status) {
+                case 'pending': statusClass = 'order-status-pending'; statusIcon = 'fa-clock'; break;
+                case 'cooking': statusClass = 'order-status-cooking'; statusIcon = 'fa-fire'; break;
+                case 'delivering': statusClass = 'order-status-delivering'; statusIcon = 'fa-truck'; break;
+                case 'delivered': statusClass = 'order-status-delivered'; statusIcon = 'fa-check-circle'; break;
+                case 'cancelled': statusClass = 'order-status-cancelled'; statusIcon = 'fa-times-circle'; break;
+            }
+            var progressSteps = ['pending', 'cooking', 'delivering', 'delivered'];
+            var progressPercent = 0;
+            var currentIdx = progressSteps.indexOf(order.status);
+            if (order.status === 'cancelled') { progressPercent = 0; }
+            else if (currentIdx >= 0) { progressPercent = Math.round((currentIdx / (progressSteps.length - 1)) * 100); }
+
+            var itemsStr = order.items.map(function(it) { return it.name + ' x' + it.qty; }).join('、');
+            var deliveryStr = order.deliveryType === 'dinein' ? '堂食' : '配送至' + order.address;
+
+            html += '<div class="order-card">' +
+                '<div class="order-card-header">' +
+                '<div class="order-card-id">订单 #' + order.id + '</div>' +
+                '<div class="order-card-status ' + statusClass + '"><i class="fas ' + statusIcon + '"></i> ' + order.statusText + '</div>' +
+                '</div>' +
+                '<div class="order-card-body">' +
+                '<div class="order-card-info"><span><i class="fas fa-store"></i> ' + order.canteen + '</span><span><i class="fas fa-truck"></i> ' + deliveryStr + '</span></div>' +
+                '<div class="order-card-items">' + itemsStr + '</div>' +
+                '<div class="order-card-progress">' +
+                '<div class="order-progress-bar"><div class="order-progress-fill" style="width:' + progressPercent + '%"></div></div>' +
+                '<div class="order-progress-labels"><span>待接单</span><span>制作中</span><span>配送中</span><span>已送达</span></div>' +
+                '</div>' +
+                '<div class="order-card-meta">' +
+                '<span><i class="fas fa-clock"></i> ' + order.createTime + '</span>' +
+                '<span><i class="fas fa-hourglass-half"></i> 预计 ' + order.estimatedTime + '</span>' +
+                '</div></div>' +
+                '<div class="order-card-footer">' +
+                '<span class="order-card-total">¥' + order.totalPrice.toFixed(2) + '</span>' +
+                '<div class="order-card-actions">';
+
+            if (order.status === 'pending' || order.status === 'cooking') {
+                html += '<button class="order-action-btn order-cancel-btn" data-id="' + order.id + '"><i class="fas fa-times"></i> 取消订单</button>';
+            }
+            if (order.status === 'delivering') {
+                html += '<button class="order-action-btn order-contact-btn" data-id="' + order.id + '"><i class="fas fa-phone"></i> 联系骑手</button>';
+            }
+            if (order.status === 'delivered') {
+                html += '<button class="order-action-btn order-reorder-btn" data-id="' + order.id + '"><i class="fas fa-redo"></i> 再来一单</button>';
+            }
+            html += '</div></div></div>';
+        });
+        container.innerHTML = html;
+
+        container.querySelectorAll('.order-cancel-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = parseInt(this.getAttribute('data-id'));
+                var order = orders.find(function(o) { return o.id === id; });
+                if (order) {
+                    order.status = 'cancelled';
+                    order.statusText = '已取消';
+                    renderOrders();
+                    showToast('订单已取消', 'error');
+                    console.log('[餐饮服务] 订单取消:', id);
+                }
+            });
+        });
+        container.querySelectorAll('.order-contact-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                showToast('骑手电话：138****5678', 'info');
+            });
+        });
+        container.querySelectorAll('.order-reorder-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                showToast('已将商品加入购物车', 'success');
+            });
+        });
+    }
+
+    /* ============================================================
+     * 菜品详情弹窗（含加购）
      * ============================================================ */
     function openDishModal(item) {
+        currentDishItem = item;
+        dishQty = 1;
         document.getElementById('dishModalImg').innerHTML = '<img src="' + item.img + '" alt="' + item.name + '" onerror="this.src=\'https://via.placeholder.com/600x400/e2e8f0/64748b?text=' + encodeURIComponent(item.name) + '\'">';
         document.getElementById('dishModalName').textContent = item.name;
         document.getElementById('dishModalDesc').textContent = item.desc;
@@ -267,6 +613,7 @@
         document.getElementById('dishModalCalories').textContent = item.calories;
         document.getElementById('dishModalStock').textContent = item.stock > 0 ? '剩余 ' + item.stock + ' 份' : '已售罄';
         document.getElementById('dishModalPrice').textContent = '¥' + item.price;
+        document.getElementById('dishQtyNum').textContent = '1';
         document.getElementById('dishModal').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -274,6 +621,7 @@
     function closeDishModal() {
         document.getElementById('dishModal').classList.remove('active');
         document.body.style.overflow = '';
+        currentDishItem = null;
     }
 
     /* ============================================================
@@ -283,8 +631,6 @@
         var tbody = document.getElementById('billTableBody');
         var emptyEl = document.getElementById('billEmpty');
         var summaryEl = document.getElementById('billSummary');
-
-        /* 按日期筛选 */
         var filtered = billData.filter(function(b) { return b.date === currentBillDate; });
 
         if (filtered.length === 0) {
@@ -293,46 +639,42 @@
             summaryEl.style.display = 'none';
             return;
         }
-
         emptyEl.style.display = 'none';
         summaryEl.style.display = 'flex';
-
-        var totalCount = 0;
-        var totalAmount = 0;
-
+        var totalCount = 0, totalAmount = 0;
         tbody.innerHTML = filtered.map(function(b) {
             var subtotal = b.price * b.qty;
             totalCount += 1;
             totalAmount += subtotal;
             return '<tr>' +
-                '<td>' + b.date + '</td>' +
-                '<td>' + b.canteen + '</td>' +
-                '<td>' + b.dish + '</td>' +
-                '<td>¥' + b.price.toFixed(2) + '</td>' +
-                '<td>' + b.qty + '</td>' +
+                '<td>' + b.date + '</td><td>' + b.canteen + '</td><td>' + b.dish + '</td>' +
+                '<td>¥' + b.price.toFixed(2) + '</td><td>' + b.qty + '</td>' +
                 '<td class="bill-subtotal">¥' + subtotal.toFixed(2) + '</td>' +
-                '<td><button class="bill-delete-btn" data-id="' + b.id + '"><i class="fas fa-trash-alt"></i></button></td>' +
-                '</tr>';
+                '<td><button class="bill-delete-btn" data-id="' + b.id + '"><i class="fas fa-trash-alt"></i></button></td></tr>';
         }).join('');
-
         document.getElementById('billTotalCount').textContent = totalCount + ' 笔';
         document.getElementById('billTotalAmount').textContent = '¥' + totalAmount.toFixed(2);
 
-        /* 单条删除 */
         tbody.querySelectorAll('.bill-delete-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 var id = parseInt(this.getAttribute('data-id'));
                 billData = billData.filter(function(b) { return b.id !== id; });
                 renderBill();
-                showToast('已删除该条账单记录');
+                showToast('已删除该条账单记录', 'success');
             });
         });
     }
 
     /* Toast 提示 */
-    function showToast(msg) {
+    function showToast(msg, type) {
+        var bgMap = {
+            success: 'linear-gradient(135deg, #059669, #10b981)',
+            error: 'linear-gradient(135deg, #dc2626, #ef4444)',
+            info: 'linear-gradient(135deg, #f97316, #fb923c)',
+            default: 'linear-gradient(135deg, #1e40af, #3b82f6)'
+        };
         var toast = document.createElement('div');
-        toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:99999;animation:fadeInUp 0.3s ease';
+        toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:' + (bgMap[type] || bgMap.default) + ';color:#fff;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:99999;animation:fadeInUp 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.15)';
         toast.textContent = msg;
         document.body.appendChild(toast);
         setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, 1500);
@@ -343,15 +685,19 @@
      * 事件绑定
      * ============================================================ */
     document.addEventListener('DOMContentLoaded', function() {
-        /* 初始化日期选择器 */
+        console.log('[餐饮服务] 页面初始化开始');
+        initHeroSlider();
+
         var dateInput = document.getElementById('billDateInput');
         dateInput.value = todayStr;
 
         renderRecommend();
         renderMenu();
+        renderOrderGrid();
         renderBill();
+        renderOrders();
 
-        /* 食堂切换 */
+        /* 食堂切换（菜单浏览区） */
         document.getElementById('canteenTabs').addEventListener('click', function(e) {
             if (e.target.classList.contains('tab-btn')) {
                 document.querySelectorAll('#canteenTabs .tab-btn').forEach(function(t) { t.classList.remove('active'); });
@@ -359,10 +705,16 @@
                 currentCanteen = e.target.getAttribute('data-canteen');
                 renderRecommend();
                 renderMenu();
+                renderOrderGrid();
+                /* 同步点餐区食堂标签 */
+                document.querySelectorAll('#orderCanteenTabs .tab-btn').forEach(function(t) {
+                    t.classList.toggle('active', t.getAttribute('data-canteen') === currentCanteen);
+                });
+                console.log('[餐饮服务] 食堂切换 →', currentCanteen);
             }
         });
 
-        /* 时段切换 */
+        /* 时段切换（菜单浏览区） */
         document.getElementById('mealTabs').addEventListener('click', function(e) {
             var btn = e.target.closest('.tab-btn');
             if (!btn) return;
@@ -371,6 +723,42 @@
             currentMeal = btn.getAttribute('data-meal');
             renderRecommend();
             renderMenu();
+            renderOrderGrid();
+            /* 同步点餐区时段标签 */
+            document.querySelectorAll('#orderMealTabs .tab-btn').forEach(function(t) {
+                t.classList.toggle('active', t.getAttribute('data-meal') === currentMeal);
+            });
+            console.log('[餐饮服务] 时段切换 →', currentMeal);
+        });
+
+        /* 食堂切换（在线点餐区） */
+        document.getElementById('orderCanteenTabs').addEventListener('click', function(e) {
+            if (e.target.classList.contains('tab-btn')) {
+                document.querySelectorAll('#orderCanteenTabs .tab-btn').forEach(function(t) { t.classList.remove('active'); });
+                e.target.classList.add('active');
+                currentCanteen = e.target.getAttribute('data-canteen');
+                renderRecommend();
+                renderMenu();
+                renderOrderGrid();
+                document.querySelectorAll('#canteenTabs .tab-btn').forEach(function(t) {
+                    t.classList.toggle('active', t.getAttribute('data-canteen') === currentCanteen);
+                });
+            }
+        });
+
+        /* 时段切换（在线点餐区） */
+        document.getElementById('orderMealTabs').addEventListener('click', function(e) {
+            var btn = e.target.closest('.tab-btn');
+            if (!btn) return;
+            document.querySelectorAll('#orderMealTabs .tab-btn').forEach(function(t) { t.classList.remove('active'); });
+            btn.classList.add('active');
+            currentMeal = btn.getAttribute('data-meal');
+            renderRecommend();
+            renderMenu();
+            renderOrderGrid();
+            document.querySelectorAll('#mealTabs .tab-btn').forEach(function(t) {
+                t.classList.toggle('active', t.getAttribute('data-meal') === currentMeal);
+            });
         });
 
         /* 日期筛选 */
@@ -383,12 +771,12 @@
         document.getElementById('billClearAllBtn').addEventListener('click', function() {
             var filtered = billData.filter(function(b) { return b.date === currentBillDate; });
             if (filtered.length === 0) {
-                showToast('当日暂无账单记录');
+                showToast('当日暂无账单记录', 'info');
                 return;
             }
             billData = billData.filter(function(b) { return b.date !== currentBillDate; });
             renderBill();
-            showToast('已清空 ' + currentBillDate + ' 的全部账单');
+            showToast('已清空 ' + currentBillDate + ' 的全部账单', 'success');
         });
 
         /* 菜品详情弹窗：关闭 */
@@ -396,5 +784,48 @@
         document.getElementById('dishModal').addEventListener('click', function(e) {
             if (e.target === this) closeDishModal();
         });
+
+        /* 弹窗内数量加减 */
+        document.getElementById('dishQtyMinus').addEventListener('click', function() {
+            if (dishQty > 1) { dishQty--; document.getElementById('dishQtyNum').textContent = dishQty; }
+        });
+        document.getElementById('dishQtyPlus').addEventListener('click', function() {
+            if (dishQty < 99) { dishQty++; document.getElementById('dishQtyNum').textContent = dishQty; }
+        });
+
+        /* 弹窗内加入购物车 */
+        document.getElementById('dishAddCartBtn').addEventListener('click', function() {
+            if (!currentDishItem) return;
+            for (var i = 0; i < dishQty; i++) {
+                var existing = cart.find(function(c) { return c.name === currentDishItem.name && c.canteen === currentCanteen; });
+                if (existing) { existing.qty += 1; }
+                else { cart.push({ name: currentDishItem.name, price: currentDishItem.price, qty: 1, canteen: currentCanteen, img: currentDishItem.img }); }
+            }
+            updateCartUI();
+            renderOrderGrid();
+            closeDishModal();
+            showToast('已加入购物车 x' + dishQty, 'success');
+            console.log('[餐饮服务] 详情弹窗加购:', currentDishItem.name, 'x' + dishQty);
+        });
+
+        /* 购物车悬浮栏：点击图标/去结算 */
+        document.getElementById('cartIconBtn').addEventListener('click', openCartModal);
+        document.getElementById('cartPanelBtn').addEventListener('click', openCartModal);
+
+        /* 购物车弹窗：关闭 */
+        document.getElementById('cartModalClose').addEventListener('click', closeCartModal);
+        document.getElementById('cartModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCartModal();
+        });
+
+        /* 配送方式切换 */
+        document.getElementById('deliveryType').addEventListener('change', function() {
+            document.getElementById('addressGroup').style.display = this.value === 'delivery' ? 'block' : 'none';
+        });
+
+        /* 提交订单 */
+        document.getElementById('checkoutBtn').addEventListener('click', submitOrder);
+
+        console.log('[餐饮服务] 页面初始化完成');
     });
 })();

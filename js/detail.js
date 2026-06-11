@@ -263,6 +263,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getProducts() {
+        /* 优先使用 SecondhandAPI 的数据源 */
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try {
+            var v = localStorage.getItem(STORAGE_KEY);
+            if (v) return JSON.parse(v);
+        } catch(e) {}
         if (window.CampusDB) return CampusDB.getSecondhand();
         try {
             return JSON.parse(localStorage.getItem('campus_secondhand') || '[]');
@@ -272,6 +278,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function saveProducts(list) {
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
         if (window.CampusDB) return CampusDB.saveSecondhand(list);
         localStorage.setItem('campus_secondhand', JSON.stringify(list));
     }

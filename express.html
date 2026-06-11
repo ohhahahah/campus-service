@@ -1,4 +1,4 @@
-﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/life.css">
+    <link rel="stylesheet" href="css/express.css">
 <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
@@ -36,12 +37,28 @@
         </div>
     </nav>
 
-    <section class="page-header">
-        <div class="header-content">
+    <!-- 快递服务轮播横幅（标题叠加在轮播图上） -->
+    <div class="express-carousel">
+        <div class="express-carousel-track" id="expressCarouselTrack">
+            <div class="express-carousel-slide active" style="background-image:url('https://picsum.photos/1400/500?express1')"></div>
+            <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?express2')"></div>
+            <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?express3')"></div>
+            <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?express4')"></div>
+        </div>
+        <div class="express-carousel-overlay"></div>
+        <div class="express-carousel-title">
             <h1>快递服务</h1>
             <p>发布代取 · 自由接单 · 实时沟通</p>
         </div>
-    </section>
+        <button class="express-carousel-arrow prev" id="expressCarouselPrev"><i class="fas fa-chevron-left"></i></button>
+        <button class="express-carousel-arrow next" id="expressCarouselNext"><i class="fas fa-chevron-right"></i></button>
+        <div class="express-carousel-dots" id="expressCarouselDots">
+            <span class="express-carousel-dot active" data-index="0"></span>
+            <span class="express-carousel-dot" data-index="1"></span>
+            <span class="express-carousel-dot" data-index="2"></span>
+            <span class="express-carousel-dot" data-index="3"></span>
+        </div>
+    </div>
 
     <div class="breadcrumb">
         <a href="life.html"><i class="fas fa-home"></i> 生活服务</a>
@@ -59,17 +76,17 @@
         </div>
         <div class="form-card">
             <form id="publishForm">
+                <!-- 取件信息 -->
                 <h3><i class="fas fa-box"></i> 取件信息</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>快递驿站</label>
                         <select id="stationName" required>
                             <option value="">请选择驿站</option>
-                            <option>菜鸟驿站（北门）</option>
-                            <option>快递柜A区（东门）</option>
-                            <option>快递柜B区（南门）</option>
-                            <option>顺丰网点（西门）</option>
-                            <option>京东快递点（北门）</option>
+                            <option>南门驿站</option>
+                            <option>北门驿站</option>
+                            <option>一食堂旁驿站</option>
+                            <option>二食堂旁驿站</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -96,50 +113,112 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top:25px"><i class="fas fa-map-marker-alt"></i> 送达信息</h3>
+                <!-- 收件信息 -->
+                <h3 style="margin-top:25px"><i class="fas fa-map-marker-alt"></i> 收件信息</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>收件人姓名</label>
-                        <input type="text" id="receiverName" placeholder="请输入收件人姓名" required>
-                    </div>
-                    <div class="form-group">
-                        <label>联系电话</label>
-                        <input type="tel" id="receiverPhone" placeholder="请输入联系电话" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>宿舍楼栋</label>
+                        <label>收件地址</label>
                         <select id="deliveryBuilding" required>
-                            <option value="">请选择楼栋</option>
-                            <option>1号楼</option>
-                            <option>2号楼</option>
-                            <option>3号楼</option>
-                            <option>4号楼</option>
-                            <option>5号楼</option>
-                            <option>6号楼</option>
+                            <option value="">请选择收件地址</option>
+                            <option>1号宿舍楼</option>
+                            <option>2号宿舍楼</option>
+                            <option>3号宿舍楼</option>
+                            <option>教学区</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>房间号</label>
-                        <input type="text" id="deliveryRoom" placeholder="如：301" required>
+                        <label>联系方式</label>
+                        <input type="tel" id="receiverInfo" placeholder="请填写你的手机号（仅接单者可见）" required>
                     </div>
                 </div>
 
-                <h3 style="margin-top:25px"><i class="fas fa-yen-sign"></i> 费用设置</h3>
+                <!-- 代取设置 -->
+                <h3 style="margin-top:25px"><i class="fas fa-cog"></i> 代取设置</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>代取费用（元）</label>
-                        <input type="number" id="orderFee" placeholder="请输入代取费用" min="1" max="50" step="0.5" value="3" required>
+                        <label>代取截止时间</label>
+                        <input type="time" id="pickupDeadline">
                     </div>
                     <div class="form-group">
-                        <label>附加要求</label>
-                        <input type="text" id="orderNote" placeholder="如：需要送到楼下、易碎品小心轻放">
+                        <label>代取酬金（元）</label>
+                        <input type="number" id="orderFee" placeholder="请输入代取费用（单位：元）" min="1" max="50" step="0.5" value="3" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1">
+                        <label>备注信息</label>
+                        <textarea id="orderNote" rows="3" placeholder="补充说明（如大件、易碎、需冷藏等）"></textarea>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn" style="width:100%;text-align:center"><i class="fas fa-paper-plane"></i> 立即发布订单</button>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> 发布订单</button>
+                    <button type="button" class="reset-btn" id="resetFormBtn"><i class="fas fa-undo"></i> 重置表单</button>
+                </div>
             </form>
+        </div>
+    </section>
+
+    <!-- 驿站分布 & 我的订单入口 -->
+    <section class="content-section">
+        <div class="express-aux-grid">
+            <div class="express-aux-card">
+                <div class="express-aux-card-header">
+                    <h3><i class="fas fa-map-marked-alt"></i> 驿站分布</h3>
+                </div>
+                <div class="express-station-list">
+                    <div class="express-station-item">
+                        <div class="station-icon"><i class="fas fa-store"></i></div>
+                        <div class="station-info">
+                            <h4>南门驿站</h4>
+                            <p>南门入口左侧 · 8:00-21:00</p>
+                        </div>
+                    </div>
+                    <div class="express-station-item">
+                        <div class="station-icon"><i class="fas fa-store"></i></div>
+                        <div class="station-info">
+                            <h4>北门驿站</h4>
+                            <p>北门快递中心 · 8:00-22:00</p>
+                        </div>
+                    </div>
+                    <div class="express-station-item">
+                        <div class="station-icon"><i class="fas fa-store"></i></div>
+                        <div class="station-info">
+                            <h4>一食堂旁驿站</h4>
+                            <p>一食堂东侧20米 · 9:00-20:00</p>
+                        </div>
+                    </div>
+                    <div class="express-station-item">
+                        <div class="station-icon"><i class="fas fa-store"></i></div>
+                        <div class="station-info">
+                            <h4>二食堂旁驿站</h4>
+                            <p>二食堂北侧15米 · 9:00-20:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="express-aux-card">
+                <div class="express-aux-card-header">
+                    <h3><i class="fas fa-clipboard-list"></i> 我的订单</h3>
+                </div>
+                <div class="express-myorder-entry">
+                    <div class="myorder-stat">
+                        <div class="myorder-stat-item">
+                            <span class="myorder-stat-num" id="myPublishedCount">0</span>
+                            <span class="myorder-stat-label">已发布</span>
+                        </div>
+                        <div class="myorder-stat-item">
+                            <span class="myorder-stat-num" id="myAcceptedCount">0</span>
+                            <span class="myorder-stat-label">已接单</span>
+                        </div>
+                        <div class="myorder-stat-item">
+                            <span class="myorder-stat-num" id="myPendingCount">0</span>
+                            <span class="myorder-stat-label">待接单</span>
+                        </div>
+                    </div>
+                    <p class="myorder-hint">查看我发布/接单的订单</p>
+                </div>
+            </div>
         </div>
     </section>
 
