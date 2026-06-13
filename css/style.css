@@ -391,6 +391,7 @@ body::before {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    pointer-events: none;
 }
 
 .hero-particles::before {
@@ -1330,6 +1331,85 @@ body::before {
     color: var(--text-secondary);
     font-size: 14px;
     margin-bottom: 8px;
+}
+
+/* ========== 公告系统样式 ========== */
+
+/* 导航栏公告铃铛按钮 */
+.nav-icon-btn{position:relative;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+.nav-icon-btn:hover{background:rgba(255,255,255,0.3);transform:scale(1.05)}
+.nav-icon-btn .ann-badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e40af;line-height:1}
+[data-theme="dark"] .nav-icon-btn .ann-badge{border-color:#1e3a8a}
+
+/* 公告弹窗通用 */
+.ann-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:20px}
+.ann-overlay.active{display:flex}
+.ann-modal{background:#fff;border-radius:18px;max-width:600px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:annModalIn 0.3s ease;overflow:hidden}
+[data-theme="dark"] .ann-modal{background:#1e293b;color:#e2e8f0}
+@keyframes annModalIn{from{opacity:0;transform:scale(0.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.ann-modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #e2e8f0}
+[data-theme="dark"] .ann-modal-header{border-color:#334155}
+.ann-modal-header h3{font-size:16px;font-weight:600;color:#1e293b;display:flex;align-items:center;gap:8px;flex:1;margin:0}
+[data-theme="dark"] .ann-modal-header h3{color:#e2e8f0}
+.ann-modal-close{width:32px;height:32px;border-radius:50%;border:none;background:#f1f5f9;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;font-size:12px;flex-shrink:0}
+.ann-modal-close:hover{background:#fee2e2;color:#ef4444}
+[data-theme="dark"] .ann-modal-close{background:#334155;color:#94a3b8}
+
+/* 类型标签 */
+.ann-type-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;margin-right:6px;vertical-align:middle;display:inline-flex;align-items:center;gap:3px}
+.ann-type-pinned{background:#fff7ed;color:#c2410c}
+[data-theme="dark"] .ann-type-pinned{background:#431407;color:#fb923c}
+
+/* 强制阅读弹窗 */
+.ann-force-modal{max-width:600px}
+.ann-force-meta{display:flex;gap:16px;padding:8px 20px;font-size:13px;color:#64748b;flex-wrap:wrap}
+.ann-force-meta span{display:flex;align-items:center;gap:4px}
+[data-theme="dark"] .ann-force-meta{color:#94a3b8}
+.ann-force-body{padding:16px 20px;font-size:14px;line-height:1.8;color:#334155;max-height:300px;overflow-y:auto}
+[data-theme="dark"] .ann-force-body{color:#cbd5e1}
+.ann-force-footer{padding:16px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:center}
+[data-theme="dark"] .ann-force-footer{border-color:#334155}
+.ann-btn{padding:12px 32px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
+.ann-btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+.ann-btn-primary:hover{box-shadow:0 6px 20px rgba(59,130,246,0.4);transform:translateY(-1px)}
+
+/* 公告列表弹窗 */
+.ann-list-modal{max-width:500px;max-height:80vh;display:flex;flex-direction:column}
+.ann-list-body{flex:1;overflow-y:auto;padding:12px;max-height:60vh}
+.ann-list-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:#94a3b8}
+.ann-list-empty i{font-size:36px;margin-bottom:12px}
+.ann-list-empty p{font-size:14px}
+.ann-list-item{padding:14px 16px;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-bottom:8px;border:1px solid transparent}
+.ann-list-item:hover{background:#f8fafc;border-color:#e2e8f0}
+[data-theme="dark"] .ann-list-item:hover{background:#334155;border-color:#475569}
+.ann-list-item.ann-item-unread{background:#eff6ff;border-color:#bfdbfe}
+[data-theme="dark"] .ann-list-item.ann-item-unread{background:#1e3a5f;border-color:#2563eb}
+.ann-item-header{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.ann-item-title{font-size:14px;color:#1e293b;flex:1}
+.ann-item-unread .ann-item-title{font-weight:700}
+.ann-item-read .ann-item-title{font-weight:400;color:#64748b}
+.ann-unread-dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;flex-shrink:0;margin-left:auto}
+.ann-read-tag{font-size:11px;color:#94a3b8;background:#f1f5f9;padding:1px 6px;border-radius:4px;flex-shrink:0;margin-left:auto}
+[data-theme="dark"] .ann-read-tag{background:#334155;color:#64748b}
+[data-theme="dark"] .ann-item-title{color:#e2e8f0}
+[data-theme="dark"] .ann-item-read .ann-item-title{color:#94a3b8}
+[data-theme="dark"] .ann-unread-dot{background:#60a5fa}
+.ann-item-meta{display:flex;gap:12px;font-size:12px;color:#94a3b8}
+.ann-item-meta span{display:flex;align-items:center;gap:3px}
+
+/* 公告详情弹窗 */
+.ann-detail-modal{max-width:600px;max-height:80vh;display:flex;flex-direction:column}
+.ann-detail-meta{display:flex;gap:16px;padding:8px 20px;font-size:13px;color:#64748b;flex-wrap:wrap;border-bottom:1px solid #e2e8f0}
+[data-theme="dark"] .ann-detail-meta{color:#94a3b8;border-color:#334155}
+.ann-detail-meta span{display:flex;align-items:center;gap:4px}
+.ann-detail-body{padding:20px;font-size:14px;line-height:1.8;color:#334155;overflow-y:auto;max-height:50vh}
+[data-theme="dark"] .ann-detail-body{color:#cbd5e1}
+
+/* 移动端适配 */
+@media(max-width:480px){
+    .ann-modal{max-width:calc(100vw - 32px);border-radius:14px}
+    .ann-force-body,.ann-detail-body{max-height:40vh}
+    .ann-btn{width:100%;justify-content:center}
 }
 
 .footer-section p i {

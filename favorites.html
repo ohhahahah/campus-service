@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -28,8 +28,6 @@
                     <i class="fas fa-moon"></i>
                 </button>
                 <div class="sh-nav-links">
-                    <a href="messages.html" class="sh-nav-link" title="我的私信"><i class="fas fa-comment-dots"></i></a>
-                    <a href="favorites.html" class="sh-nav-link" title="我的收藏" style="color:var(--primary-light)"><i class="fas fa-heart"></i></a>
                     <a href="orders.html" class="sh-nav-link" title="我的订单"><i class="fas fa-receipt"></i></a>
                 </div>
                 <a href="login.html" class="login-btn">登录</a>
@@ -40,8 +38,14 @@
         </div>
     </nav>
 
-    <div class="sh-page-container">
-        <h1 class="sh-page-title"><i class="fas fa-heart"></i> 我的收藏</h1>
+    <div class="sh-page-container" style="padding-top:90px">
+        <div class="sh-fav-header">
+            <div class="sh-fav-header-left">
+                <h1 class="sh-page-title" style="margin-bottom:0"><i class="fas fa-heart" style="color:#f97316"></i> 我的收藏</h1>
+                <span id="favCount" class="sh-fav-count"></span>
+            </div>
+            <a href="secondhand.html" class="sh-fav-go-btn"><i class="fas fa-shopping-bag"></i> 去逛逛</a>
+        </div>
         <div id="favList" class="sh-fav-list"></div>
     </div>
 
@@ -58,10 +62,12 @@
             if (window.CampusDB) return CampusDB.getCurrentUser();
             try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
         }
-        function showToast(msg) {
+        function showToast(msg, type) {
             var toast = document.getElementById('toast');
+            var icon = toast.querySelector('i');
             document.getElementById('toastMsg').textContent = msg;
-            toast.classList.add('show');
+            icon.className = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+            toast.className = 'sh-toast ' + (type || 'success') + ' show';
             setTimeout(function() { toast.classList.remove('show'); }, 2500);
         }
         function getCollected() {
@@ -73,18 +79,25 @@
 
         var user = getCurrentUser();
         var listEl = document.getElementById('favList');
+        var countEl = document.getElementById('favCount');
+
+        function updateCount() {
+            var list = getCollected();
+            countEl.textContent = '共 ' + list.length + ' 件收藏';
+        }
 
         function renderFavorites() {
             var list = getCollected();
+            updateCount();
             if (list.length === 0) {
-                listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1"><i class="fas fa-heart-broken"></i><p>暂无收藏商品，去二手市场逛逛吧</p></div>';
+                listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px"><i class="far fa-heart" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">暂无收藏商品</p><a href="secondhand.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去二手市场逛逛</a></div>';
                 return;
             }
             listEl.innerHTML = '';
             list.forEach(function(item) {
                 var card = document.createElement('div');
                 card.className = 'sh-fav-card';
-                card.innerHTML = '<div class="sh-fav-card-img"><img src="' + item.img + '" alt="' + item.name + '" onerror="this.style.display=\'none\'"></div><div class="sh-fav-card-body"><h3>' + item.name + '</h3><div class="sh-fav-card-meta"><i class="fas fa-tag"></i> ' + item.category + ' · ' + item.condition + ' · ' + item.seller + '</div><div class="sh-fav-card-price">¥' + item.price + '</div><div class="sh-fav-card-actions"><button class="sh-fav-view" data-id="' + item.productId + '"><i class="fas fa-eye"></i> 查看详情</button><button class="sh-fav-remove" data-id="' + item.productId + '"><i class="fas fa-trash-alt"></i> 取消收藏</button></div></div>';
+                card.innerHTML = '<div class="sh-fav-card-img"><img src="' + item.img + '" alt="' + item.name + '" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<div style=\\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-secondary)\\\'><i class=\\\'fas fa-image\\\' style=\\\'font-size:24px\\\'></i></div>\'"></div><div class="sh-fav-card-body"><h3>' + item.name + '</h3><div class="sh-fav-card-meta"><i class="fas fa-tag"></i> ' + (item.category || '其他') + ' · ' + (item.condition || '未填写') + ' · ' + item.seller + '</div><div class="sh-fav-card-price">¥' + item.price + '</div><div class="sh-fav-card-actions"><button class="sh-fav-view" data-id="' + item.productId + '"><i class="fas fa-eye"></i> 查看详情</button><button class="sh-fav-remove" data-id="' + item.productId + '"><i class="fas fa-heart-broken"></i> 取消收藏</button></div></div>';
                 listEl.appendChild(card);
             });
 
@@ -113,7 +126,8 @@
         }
 
         if (!user || user.role !== 'student') {
-            listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1"><i class="fas fa-lock"></i><p>请先<a href="login.html" style="color:var(--primary-light)">登录</a>后查看收藏</p></div>';
+            listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px"><i class="fas fa-lock" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">请先登录后查看收藏</p><a href="login.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去登录</a></div>';
+            countEl.textContent = '';
             return;
         }
 

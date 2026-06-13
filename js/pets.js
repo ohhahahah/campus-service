@@ -8,7 +8,28 @@
             pets = window.CampusDB.getPets();
         }
         if (!pets || pets.length === 0) {
+            try {
+                pets = JSON.parse(localStorage.getItem('campus_pets') || '[]');
+            } catch(e) {}
+        }
+        if (!pets || pets.length === 0) {
             pets = getDefaultPets();
+        }
+        /* 去重 + 字段补全 */
+        var seen = {};
+        var deduped = [];
+        pets.forEach(function(p) {
+            if (!p.reviewStatus) p.reviewStatus = 'approved';
+            if (!seen[p.id]) {
+                seen[p.id] = true;
+                deduped.push(p);
+            }
+        });
+        if (deduped.length !== pets.length) {
+            pets = deduped;
+            try { localStorage.setItem('campus_pets', JSON.stringify(pets)); } catch(e) {}
+        } else {
+            pets = deduped;
         }
     }
 
@@ -24,7 +45,8 @@
                     'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1583795128727-6ec3642408f8?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p2', name: '花花', breed: '三花猫', age: '约1岁', gender: '母',
@@ -36,7 +58,8 @@
                     'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p3', name: '黑豆', breed: '黑猫', age: '约3岁', gender: '公',
@@ -48,7 +71,8 @@
                     'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1513245543132-31f507417b26?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p4', name: '小白', breed: '白猫', age: '约6个月', gender: '母',
@@ -60,7 +84,8 @@
                     'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1494256997604-768d1f608cac?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p5', name: '奶牛', breed: '奶牛猫', age: '约1.5岁', gender: '公',
@@ -72,7 +97,8 @@
                     'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p6', name: '狸花', breed: '狸花猫', age: '约2岁', gender: '母',
@@ -84,7 +110,8 @@
                     'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p7', name: '大橘', breed: '橘猫', age: '约4岁', gender: '公',
@@ -96,7 +123,8 @@
                     'https://images.unsplash.com/photo-1583795128727-6ec3642408f8?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p8', name: '小灰', breed: '狸花猫', age: '约8个月', gender: '公',
@@ -108,7 +136,8 @@
                     'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             },
             {
                 id: 'p9', name: '咪咪', breed: '三花猫', age: '约3岁', gender: '母',
@@ -120,7 +149,8 @@
                     'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&h=450&fit=crop',
                     'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'approved'
             }
         ];
     }
@@ -196,6 +226,8 @@
             if (cat === '其他') return !['橘猫','狸花猫','三花猫','黑猫','白猫'].includes(p.breed);
             return p.breed === cat;
         });
+        /* 只展示已审核通过的流浪猫 */
+        filtered = filtered.filter(function(p) { return p.reviewStatus === 'approved'; });
         if (filtered.length === 0) {
             grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-secondary)"><i class="fas fa-cat" style="font-size:48px;margin-bottom:12px;display:block;color:#f59e0b"></i>暂无该品种的猫咪信息</div>';
             return;
@@ -259,34 +291,89 @@
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+    var isSubmitting = false; /* 提交锁，防止重复提交 */
+
     function initForm() {
         document.getElementById('petForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            if (isSubmitting) return; /* 正在提交中，忽略重复点击 */
+            var name = document.getElementById('petName').value.trim();
+            var location = document.getElementById('petLocation').value.trim();
+            var contact = document.getElementById('petContact').value.trim();
+            if (!name || !location) { showToast('请填写完整信息'); return; }
+
+            /* 幂等性校验：同一用户1分钟内不能提交名称+位置+联系人完全相同的流浪猫 */
+            try {
+                var stored = JSON.parse(localStorage.getItem('campus_pets') || '[]');
+                var now = Date.now();
+                var duplicate = stored.find(function(p) {
+                    if (p.name !== name || p.location !== location) return false;
+                    if (contact && p.contact && p.contact !== contact) return false;
+                    if (!p.publishTime) return false;
+                    var t = new Date(p.publishTime.replace(' ', 'T')).getTime();
+                    if (isNaN(t)) return false; /* 解析失败则跳过 */
+                    return (now - t) < 60000; /* 1分钟内 */
+                });
+                if (duplicate) { showToast('请勿重复提交相同信息'); return; }
+            } catch(e) {}
+
+            isSubmitting = true;
+            /* 禁用提交按钮，防止重复点击 */
+            var submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; submitBtn.style.cursor = 'not-allowed'; }
+
             var newPet = {
                 id: 'p' + Date.now(),
-                name: document.getElementById('petName').value,
+                name: name,
                 breed: document.getElementById('petBreed').value,
                 age: document.getElementById('petAge').value,
                 gender: document.getElementById('petGender').value,
                 neutered: document.getElementById('petNeutered').value === '已绝育',
                 vaccinated: false,
                 health: document.getElementById('petHealth').value,
-                location: document.getElementById('petLocation').value,
-                contact: document.getElementById('petContact').value,
+                location: location,
+                contact: contact,
                 personality: '待补充',
                 adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','签署领养协议','接受志愿者定期回访','不弃养承诺'],
                 images: [
                     'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=450&fit=crop'
-                ]
+                ],
+                reviewStatus: 'pending', /* 强制待审核，禁止直接通过 */
+                publishTime: new Date().toISOString().replace('T', ' ').substring(0, 16)
             };
+            /* 持久化到 localStorage */
+            try {
+                var stored2 = JSON.parse(localStorage.getItem('campus_pets') || '[]');
+                /* 二次幂等校验：写入前再检查一次，防止并发写入 */
+                var now2 = Date.now();
+                var dup2 = stored2.find(function(p) {
+                    if (p.name !== name || p.location !== location) return false;
+                    if (contact && p.contact && p.contact !== contact) return false;
+                    if (!p.publishTime) return false;
+                    var t2 = new Date(p.publishTime.replace(' ', 'T')).getTime();
+                    if (isNaN(t2)) return false;
+                    return (now2 - t2) < 60000;
+                });
+                if (dup2) {
+                    isSubmitting = false;
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; submitBtn.style.cursor = ''; }
+                    showToast('请勿重复提交相同信息');
+                    return;
+                }
+                stored2.unshift(newPet);
+                localStorage.setItem('campus_pets', JSON.stringify(stored2));
+            } catch(e) {}
+            /* 不再调用 CampusDB.addPet，避免与直接写 localStorage 重复 */
             pets.unshift(newPet);
-            if (window.CampusDB) {
-                window.CampusDB.addPet(newPet);
-            }
             renderPets('all');
             closeModal('petModal');
             this.reset();
-            showToast('流浪猫登记成功！');
+            /* 延迟恢复提交按钮，防止快速重复点击 */
+            setTimeout(function() {
+                isSubmitting = false;
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; submitBtn.style.cursor = ''; }
+            }, 2000);
+            showToast('流浪猫登记成功，等待管理员审核！');
         });
     }
 

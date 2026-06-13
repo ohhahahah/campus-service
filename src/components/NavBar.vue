@@ -17,6 +17,11 @@
         <button class="theme-toggle" @click="toggleTheme">
           <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
         </button>
+        <!-- 公告铃铛（仅学生登录后显示） -->
+        <button v-if="user && user.role === 'student'" class="nav-icon-btn" title="公告通知" @click="openAnnList">
+          <i class="fas fa-bell"></i>
+          <span v-if="annUnreadCount > 0" class="ann-badge">{{ annUnreadCount > 99 ? '99+' : annUnreadCount }}</span>
+        </button>
         <!-- 已登录用户 -->
         <div v-if="user" class="nav-user" @click="dropdownOpen = !dropdownOpen">
           <div class="nav-user-avatar" :style="{ background: user.role === 'admin' ? '#8b5cf6' : '#3b82f6' }">
@@ -66,6 +71,7 @@ const menuOpen = ref(false)
 const dropdownOpen = ref(false)
 const user = ref(null)
 const currentPage = ref('index')
+const annUnreadCount = ref(0)
 
 function handleScroll() {
   isScrolled.value = window.scrollY > 50
@@ -88,6 +94,43 @@ function handleClickOutside(e) {
   }
 }
 
+function updateAnnUnreadCount() {
+  if (!user.value || user.value.role !== 'student') { annUnreadCount.value = 0; return }
+  if (window.CampusDB) {
+    annUnreadCount.value = CampusDB.getUnreadAnnouncementCount(user.value.stuId)
+  } else {
+    try {
+      var all = JSON.parse(localStorage.getItem('campus_announcements') || '[]')
+      var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}')
+      var readIds = readMap[user.value.stuId] || []
+      annUnreadCount.value = all.filter(function(a) {
+        return readIds.findIndex(function(rid) { return String(rid) === String(a.id) }) === -1
+      }).length
+    } catch(e) { annUnreadCount.value = 0 }
+  }
+}
+
+function openAnnList() {
+  if (typeof _openAnnouncementList === 'function') _openAnnouncementList()
+}
+
+/* 监听公告状态变化事件，实时同步未读数 */
+let _annSyncTimer = null
+function onAnnSync() {
+  updateAnnUnreadCount()
+}
+function startAnnSync() {
+  window.addEventListener('announcement-read', onAnnSync)
+  window.addEventListener('announcement-badge-update', onAnnSync)
+  /* 兜底：定时轮询 */
+  _annSyncTimer = setInterval(updateAnnUnreadCount, 5000)
+}
+function stopAnnSync() {
+  window.removeEventListener('announcement-read', onAnnSync)
+  window.removeEventListener('announcement-badge-update', onAnnSync)
+  if (_annSyncTimer) { clearInterval(_annSyncTimer); _annSyncTimer = null }
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
   document.addEventListener('click', handleClickOutside)
@@ -104,6 +147,10 @@ onMounted(() => {
     user.value = null
   }
 
+  // 公告未读数
+  updateAnnUnreadCount()
+  startAnnSync()
+
   // 当前页面
   const path = window.location.pathname
   if (path.includes('secondhand')) currentPage.value = 'secondhand'
@@ -117,9 +164,13 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   document.removeEventListener('click', handleClickOutside)
+  stopAnnSync()
 })
 </script>
 
 <style scoped>
 /* 导航组件样式继承全局，此处仅补充 */
+.nav-icon-btn{position:relative;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+.nav-icon-btn:hover{background:rgba(255,255,255,0.3);transform:scale(1.05)}
+.ann-badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e40af;line-height:1}
 </style>

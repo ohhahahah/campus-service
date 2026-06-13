@@ -1563,27 +1563,34 @@
     color: #fff;
 }
 .sh-card-collect-btn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--border-color);
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--border-color);
     background: transparent;
     color: var(--text-secondary);
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
-}
-.sh-card-collect-btn.collected {
-    color: #ef4444;
-    border-color: #ef4444;
-    background: rgba(239,68,68,0.08);
+    font-size: 14px;
 }
 .sh-card-collect-btn:hover {
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: #f97316;
+    color: #f97316;
+    transform: scale(1.15);
+}
+.sh-card-collect-btn.collected {
+    color: #fff;
+    border-color: #f97316;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    box-shadow: 0 3px 12px rgba(249,115,22,0.4);
+    transform: scale(1.1);
+}
+.sh-card-collect-btn.collected:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 16px rgba(249,115,22,0.5);
 }
 
 /* ============================================================
@@ -1597,20 +1604,22 @@
 }
 .sh-nav-link {
     position: relative;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    color: var(--text-secondary);
-    font-size: 16px;
-    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s ease;
     text-decoration: none;
 }
 .sh-nav-link:hover {
-    color: var(--primary-light);
-    background: rgba(16,185,129,0.08);
+    color: white;
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08);
 }
 .sh-nav-badge {
     position: absolute;
@@ -1909,24 +1918,61 @@
 }
 
 /* 收藏列表 */
+.sh-fav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.sh-fav-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+.sh-fav-count {
+    background: rgba(249,115,22,0.1);
+    color: #f97316;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+.sh-fav-go-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s;
+    box-shadow: 0 3px 10px rgba(59,130,246,0.3);
+}
+.sh-fav-go-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59,130,246,0.4);
+}
 .sh-fav-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 .sh-fav-card {
     background: var(--bg-card);
     border-radius: 16px;
     border: 1px solid var(--border-color);
     overflow: hidden;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    position: relative;
 }
 .sh-fav-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
 }
 .sh-fav-card-img {
-    height: 160px;
+    height: 180px;
     overflow: hidden;
     position: relative;
 }
@@ -1934,15 +1980,19 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s;
+}
+.sh-fav-card:hover .sh-fav-card-img img {
+    transform: scale(1.05);
 }
 .sh-fav-card-body {
-    padding: 14px 16px;
+    padding: 16px 18px 18px;
 }
 .sh-fav-card-body h3 {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1950,13 +2000,24 @@
 .sh-fav-card-meta {
     font-size: 13px;
     color: var(--text-secondary);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.sh-fav-card-meta i {
+    color: #f97316;
 }
 .sh-fav-card-price {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     color: #ef4444;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
+}
+.sh-fav-card-price::before {
+    content: '¥';
+    font-size: 14px;
+    font-weight: 600;
 }
 .sh-fav-card-actions {
     display: flex;
@@ -1964,22 +2025,33 @@
 }
 .sh-fav-card-actions button {
     flex: 1;
-    padding: 7px 10px;
-    border-radius: 20px;
-    font-size: 12px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid var(--border-color);
+    transition: all 0.25s;
+    border: 1.5px solid var(--border-color);
     background: transparent;
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
 }
-.sh-fav-card-actions button:hover {
-    border-color: var(--primary-light);
-    color: var(--primary-light);
+.sh-fav-card-actions .sh-fav-view {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #3b82f6;
+    color: #fff;
+}
+.sh-fav-card-actions .sh-fav-view:hover {
+    box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+    transform: translateY(-1px);
 }
 .sh-fav-card-actions .sh-fav-remove:hover {
     border-color: #ef4444;
     color: #ef4444;
+    background: rgba(239,68,68,0.06);
 }
 
 /* 订单列表 */
@@ -1992,21 +2064,23 @@
     background: var(--bg-card);
     border-radius: 16px;
     border: 1px solid var(--border-color);
-    padding: 18px 20px;
+    padding: 20px;
     display: flex;
-    gap: 16px;
-    align-items: center;
-    transition: all 0.2s;
+    gap: 18px;
+    align-items: flex-start;
+    transition: all 0.25s;
 }
 .sh-order-card:hover {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
 }
 .sh-order-img {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 12px;
     overflow: hidden;
     flex-shrink: 0;
+    background: var(--bg-secondary);
 }
 .sh-order-img img {
     width: 100%;
@@ -2018,10 +2092,10 @@
     min-width: 0;
 }
 .sh-order-info h3 {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -2029,26 +2103,40 @@
 .sh-order-meta {
     font-size: 13px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.8;
+}
+.sh-order-meta i {
+    width: 16px;
+    text-align: center;
+    color: var(--primary-light);
+    margin-right: 4px;
 }
 .sh-order-status {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 700;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
 }
 .sh-order-status.pending {
-    background: rgba(245,158,11,0.1);
-    color: #f59e0b;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #b45309;
+    border: 1px solid #fcd34d;
 }
 .sh-order-status.shipped {
-    background: rgba(16,185,129,0.1);
-    color: #10b981;
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
 }
 .sh-order-status.completed {
-    background: rgba(16,185,129,0.1);
-    color: #10b981;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #047857;
+    border: 1px solid #6ee7b7;
 }
 
 /* 响应式补充 */

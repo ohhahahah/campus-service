@@ -58,16 +58,16 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     var productCoverImages = {
-        1:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=400&fit=crop',
-        2:'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600&h=400&fit=crop',
-        3:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&h=400&fit=crop',
-        4:'https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=600&h=400&fit=crop',
-        5:'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&h=400&fit=crop',
-        6:'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&h=400&fit=crop',
-        7:'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&h=400&fit=crop',
-        8:'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=600&h=400&fit=crop',
+        1:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop',
+        2:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&h=400&fit=crop',
+        3:'https://images.unsplash.com/photo-1592656034223-8f862b5b4946?w=600&h=400&fit=crop',
+        4:'https://images.unsplash.com/photo-1586953208270-767fc2b4be75?w=600&h=400&fit=crop',
+        5:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&h=400&fit=crop',
+        6:'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&h=400&fit=crop',
+        7:'https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&h=400&fit=crop',
+        8:'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600&h=400&fit=crop',
         9:'https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600&h=400&fit=crop',
-        10:'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&h=400&fit=crop',
+        10:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&h=400&fit=crop',
         11:'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=600&h=400&fit=crop',
         12:'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop',
         13:'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop',
@@ -75,7 +75,22 @@ document.addEventListener('DOMContentLoaded', function() {
         15:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&h=400&fit=crop',
         16:'https://images.unsplash.com/photo-1530124566582-a45a7e3e29f0?w=600&h=400&fit=crop',
         17:'https://images.unsplash.com/photo-1570222094114-d054a816e5e4?w=600&h=400&fit=crop',
-        18:'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=400&fit=crop'
+        18:'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=400&fit=crop',
+        19:'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=600&h=400&fit=crop',
+        20:'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop',
+        21:'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&h=400&fit=crop',
+        22:'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&h=400&fit=crop',
+        23:'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&h=400&fit=crop',
+        24:'https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=600&h=400&fit=crop',
+        25:'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?w=600&h=400&fit=crop',
+        26:'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=400&fit=crop',
+        27:'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&h=400&fit=crop',
+        28:'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=400&fit=crop',
+        29:'https://images.unsplash.com/photo-1585771724684-38269d6639db?w=600&h=400&fit=crop',
+        30:'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&h=400&fit=crop',
+        31:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop',
+        32:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop',
+        33:'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=600&h=400&fit=crop'
     };
 
     var categoryFallbackImages = {
@@ -129,15 +144,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function getRentalBooks() {
         if (window.CampusDB) return CampusDB.getRentalBooks();
         try {
-            var stored = JSON.parse(localStorage.getItem('campus_rental_books') || '[]');
-            if (stored.length === 0) { localStorage.setItem('campus_rental_books', JSON.stringify(rentalBooks)); return rentalBooks; }
+            var stored = JSON.parse(localStorage.getItem('campus_rental_books_v2') || '[]');
+            if (stored.length === 0) {
+                /* 兼容旧键 */
+                var old = JSON.parse(localStorage.getItem('campus_rental_books') || '[]');
+                if (old.length > 0) { localStorage.setItem('campus_rental_books_v2', JSON.stringify(old)); return old; }
+                localStorage.setItem('campus_rental_books_v2', JSON.stringify(rentalBooks));
+                return rentalBooks;
+            }
             return stored;
         } catch(e) { return rentalBooks; }
     }
 
     function saveRentalBooks(list) {
         if (window.CampusDB) CampusDB.saveRentalBooks(list);
-        else localStorage.setItem('campus_rental_books', JSON.stringify(list));
+        else {
+            localStorage.setItem('campus_rental_books_v2', JSON.stringify(list));
+            localStorage.setItem('campus_rental_books', JSON.stringify(list)); /* 双写兼容 */
+        }
     }
 
     /* ============================================================
@@ -307,6 +331,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!grid) return;
         updateSectionTitle();
         grid.innerHTML = '';
+        /* 只展示已审核通过的商品 */
+        filteredProducts = filteredProducts.filter(function(p) { return p.reviewStatus === 'approved'; });
         if (filteredProducts.length === 0) {
             var emptyMsg = currentCategory !== 'all' ? (categoryNames[currentCategory] || currentCategory) + '分类暂无在售商品' : '暂无相关商品，更换关键词试试';
             grid.innerHTML = '<div class="sh-empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary)"><i class="fas fa-box-open" style="font-size:48px;opacity:0.3;display:block;margin-bottom:15px"></i><p>' + emptyMsg + '</p></div>';
@@ -316,8 +342,9 @@ document.addEventListener('DOMContentLoaded', function() {
             var card = document.createElement('div');
             card.className = 'sh-product-card';
             var statusTag = p.status === '已售出' ? '<span class="sh-product-card-sold">已售</span>' : '';
+            var reviewTag = p.reviewStatus === 'pending' ? '<span class="sh-product-card-review" style="position:absolute;top:8px;right:8px;background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;z-index:2">审核中</span>' : (p.reviewStatus === 'rejected' ? '<span class="sh-product-card-review" style="position:absolute;top:8px;right:8px;background:#ef4444;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;z-index:2">已拒绝</span>' : '');
             var imgUrl = getProductImage(p);
-            card.innerHTML = '<div class="sh-product-card-img"><img src="' + imgUrl + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="sh-product-card-icon-fallback"><i class="' + (categoryIcons[p.category] || 'fas fa-box') + '"></i></div><span class="sh-product-card-tag">' + p.category + '</span>' + statusTag + '</div><div class="sh-product-card-body"><h3>' + p.name + '</h3><div class="sh-product-card-price">¥' + p.price + '</div><div class="sh-product-card-meta"><span><i class="fas fa-user"></i> ' + p.seller + '</span><span><i class="fas fa-eye"></i> ' + p.views + '</span></div><div class="sh-product-card-actions"><button class="sh-card-chat-btn" data-id="' + p.id + '"><i class="fas fa-comment-dots"></i> 私信</button><button class="sh-card-collect-btn ' + (isCollected(p.id) ? 'collected' : '') + '" data-id="' + p.id + '"><i class="' + (isCollected(p.id) ? 'fas' : 'far') + ' fa-heart"></i></button></div></div>';
+            card.innerHTML = '<div class="sh-product-card-img"><img src="' + imgUrl + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="sh-product-card-icon-fallback"><i class="' + (categoryIcons[p.category] || 'fas fa-box') + '"></i></div><span class="sh-product-card-tag">' + p.category + '</span>' + statusTag + reviewTag + '</div><div class="sh-product-card-body"><h3>' + p.name + '</h3><div class="sh-product-card-price">¥' + p.price + '</div><div class="sh-product-card-meta"><span><i class="fas fa-user"></i> ' + p.seller + '</span><span><i class="fas fa-eye"></i> ' + p.views + '</span></div><div class="sh-product-card-actions"><button class="sh-card-chat-btn" data-id="' + p.id + '"><i class="fas fa-comment-dots"></i> 私信</button><button class="sh-card-collect-btn ' + (isCollected(p.id) ? 'collected' : '') + '" data-id="' + p.id + '"><i class="' + (isCollected(p.id) ? 'fas' : 'far') + ' fa-heart"></i></button></div></div>';
             card.addEventListener('click', function(e) {
                 if (e.target.closest('.sh-card-chat-btn') || e.target.closest('.sh-card-collect-btn')) return;
                 window.location.href = 'detail.html?id=' + p.id;
@@ -339,6 +366,13 @@ document.addEventListener('DOMContentLoaded', function() {
         grid.querySelectorAll('.sh-card-collect-btn').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
+                /* 登录校验 */
+                var user = getCurrentUser();
+                if (!user) {
+                    showToast('请先登录后再收藏', 'error');
+                    setTimeout(function() { window.location.href = 'login.html'; }, 1200);
+                    return;
+                }
                 var pid = parseInt(this.dataset.id);
                 var product = filteredProducts.find(function(p) { return p.id === pid; });
                 if (product) {
@@ -425,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
         SecondhandAPI.getRentalBooks().then(function(books) {
             grid.innerHTML = '';
             books.forEach(function(b) {
-                if (b.reviewStatus === 'rejected') return;
+                if (b.reviewStatus !== 'approved') return;
                 var card = document.createElement('div');
                 card.className = 'sh-rental-card';
                 card.innerHTML = '<div class="sh-rental-card-header"><h3>' + b.name + '</h3><span class="sh-rental-card-tag">' + (b.available ? '可租' : '已租') + '</span></div><div class="sh-rental-card-price">¥' + b.price + '<small>/' + b.period + '</small></div><div class="sh-rental-card-desc">' + b.desc + '</div><div class="sh-rental-card-meta"><span><i class="fas fa-user"></i> ' + b.seller + '</span><span><i class="fas fa-star"></i> ' + b.condition + '</span><span><i class="fas fa-clock"></i> ' + b.period + '</span></div>';
@@ -725,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (chatInput) chatInput.addEventListener('keyup', function(e) { if (e.key === 'Enter') sendChatMessage(); });
 
     /* ============================================================
-     * 一键租用弹窗
+     * 立即购买弹窗
      * ============================================================ */
     var rentOrderModal = document.getElementById('rentOrderModal');
     var closeRentOrderModal = document.getElementById('closeRentOrderModal');
@@ -738,17 +772,19 @@ document.addEventListener('DOMContentLoaded', function() {
         rentOrderForm.addEventListener('submit', function(e) {
             e.preventDefault();
             var user = getCurrentUser();
-            if (!user || user.role !== 'student') {
-                showToast('请先登录后再提交租用订单');
+            if (!user) {
+                showToast('请先登录后再提交购买订单');
+                setTimeout(function() { window.location.href = 'login.html'; }, 1200);
                 return;
             }
             var productId = parseInt(document.getElementById('rentOrderProductId').value);
-            var days = document.getElementById('rentOrderDays').value;
             var building = document.getElementById('rentOrderBuilding').value;
             var note = document.getElementById('rentOrderNote').value;
 
             var product = products.find(function(p) { return p.id === productId; });
             if (!product) { showToast('商品不存在'); return; }
+
+            var now = new Date();
 
             var orders = getOrders();
             orders.unshift({
@@ -757,28 +793,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 productName: product.name,
                 productImg: getProductImage(product),
                 price: product.price,
-                days: days,
+                totalPrice: product.price,
                 building: building,
                 note: note,
                 seller: product.seller,
                 sellerDept: product.sellerDept || '',
                 buyer: user.name,
                 buyerStuId: user.stuId,
-                status: '待配送',
-                time: new Date().toLocaleString()
+                status: '待确认',
+                time: now.toLocaleString()
             });
             saveOrders(orders);
             rentOrderModal.classList.remove('active');
             this.reset();
-            showToast('租用订单提交成功！');
+            showToast('购买订单提交成功！');
         });
     }
 
-    /* 全局函数：打开租用弹窗 */
+    /* 全局函数：打开购买弹窗 */
     window.openRentOrder = function(productId) {
         var user = getCurrentUser();
-        if (!user || user.role !== 'student') {
-            showToast('请先登录后再租用');
+        if (!user) {
+            showToast('请先登录后再购买');
+            setTimeout(function() { window.location.href = 'login.html'; }, 1200);
             return;
         }
         document.getElementById('rentOrderProductId').value = productId;
@@ -812,9 +849,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     var publishForm = document.getElementById('publishForm');
+    var _publishSubmitting = false;
     if (publishForm) {
         publishForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            if (_publishSubmitting) return;
             var name = document.getElementById('pubName').value;
             var category = document.getElementById('pubCategory').value;
             var price = document.getElementById('pubPrice').value;
@@ -823,43 +862,37 @@ document.addEventListener('DOMContentLoaded', function() {
             var location = document.getElementById('pubLocation').value;
             if (!name || !category || !price || !condition || !desc) { showToast('请填写完整商品信息'); return; }
             var user = getCurrentUser();
+            _publishSubmitting = true;
 
             if (window.SecondhandAPI) {
                 SecondhandAPI.publishProduct({
                     name: name, category: category, price: parseInt(price), condition: condition,
                     desc: desc, location: location || '校内当面交易',
-                    seller: user ? user.name : '我', sellerDept: user ? user.dept || '' : '',
+                    seller: user ? user.name : '我', sellerStuId: user ? user.stuId || '' : '', sellerDept: user ? user.dept || '' : '',
                     sellerPhone: user ? user.phone || '' : ''
                 }).then(function(newProduct) {
                     if (publishModal) publishModal.classList.remove('active');
                     publishForm.reset();
-                    currentPage = 1;
-                    loadProductsFromAPI(1);
-                    renderHotProducts();
-                    updateStats();
-                    showToast('商品发布成功！');
-                    console.log('[二手市场] 新商品发布:', newProduct.name);
+                    alert('发布成功，商品已进入审核，审核通过后将展示！');
+                    window.location.href = 'secondhand.html';
                 }).catch(function(err) {
-                    showToast('发布失败，请重试');
-                    console.warn('[二手市场] 发布失败:', err);
+                    alert('发布失败，请检查网络或稍后再试');
+                    _publishSubmitting = false;
                 });
             } else {
                 /* 降级：直接写入本地 */
                 var newProduct = {
                     id: Date.now(), name: name, category: category, price: parseInt(price), originalPrice: parseInt(price) * 2,
-                    condition: condition, desc: desc, seller: user ? user.name : '我', sellerDept: user ? user.dept || '' : '',
+                    condition: condition, desc: desc, seller: user ? user.name : '我', sellerStuId: user ? user.stuId || '' : '', sellerDept: user ? user.dept || '' : '',
                     sellerPhone: user ? user.phone || '' : '', views: 0, likes: 0, collects: 0, location: location || '校内当面交易',
-                    time: '刚刚', status: '在售', tag: 'new', comments: [], reviewStatus: 'approved'
+                    time: '刚刚', status: '在售', tag: 'new', comments: [], reviewStatus: 'pending'
                 };
                 products.push(newProduct);
                 saveProducts(products);
                 if (publishModal) publishModal.classList.remove('active');
                 publishForm.reset();
-                currentPage = 1;
-                loadProductsFromAPI(1);
-                renderHotProducts();
-                updateStats();
-                showToast('商品发布成功');
+                alert('发布成功，商品已进入审核，审核通过后将展示！');
+                window.location.href = 'secondhand.html';
             }
         });
     }
@@ -895,8 +928,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var rentalForm = document.getElementById('rentalForm');
     if (rentalForm) {
+        var rentalIsSubmitting = false;
         rentalForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            if (rentalIsSubmitting) return;
             var user = getCurrentUser();
             if (!user || user.role !== 'student') { showToast('请先登录后再发布'); return; }
             var name = document.getElementById('rentName').value.trim();
@@ -905,16 +940,35 @@ document.addEventListener('DOMContentLoaded', function() {
             var condition = document.getElementById('rentCondition').value;
             var desc = document.getElementById('rentDesc') ? document.getElementById('rentDesc').value.trim() : '';
             if (!name || !price || !period || !condition) { showToast('请填写完整信息'); return; }
+
+            /* 幂等性校验：1分钟内不允许发布同名同价教材 */
             var books = getRentalBooks();
+            var now = Date.now();
+            var duplicate = books.find(function(b) {
+                return b.name === name && b.price === price && b.seller === user.name && (now - b.id) < 60000;
+            });
+            if (duplicate) { showToast('请勿重复提交，稍后再试'); return; }
+
+            rentalIsSubmitting = true;
+            var submitBtn = rentalForm.querySelector('button[type="submit"]');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.5'; submitBtn.textContent = '提交中...'; }
+
             books.unshift({
                 id: Date.now(), name: name, price: price, period: period, condition: condition,
                 desc: desc || '暂无描述', seller: user.name, sellerDept: user.dept || '',
+                sellerStuId: user.stuId || '',
                 available: true, reviewStatus: 'pending', views: 0, likes: 0, collects: 0, time: '刚刚'
             });
             saveRentalBooks(books);
             if (rentalModal) rentalModal.classList.remove('active');
+            rentalForm.reset();
             renderRentalBooks();
-            showToast('教材租用发布成功，等待审核');
+            showToast('教材租用发布成功，已进入审核！');
+
+            setTimeout(function() {
+                rentalIsSubmitting = false;
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.textContent = '发布'; }
+            }, 2000);
         });
     }
 
@@ -924,7 +978,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var openRentParam = new URLSearchParams(window.location.search).get('openRent');
     if (openRentParam && rentOrderModal) {
         var user = getCurrentUser();
-        if (user && user.role === 'student') {
+        if (user) {
             document.getElementById('rentOrderProductId').value = openRentParam;
             rentOrderModal.classList.add('active');
         }

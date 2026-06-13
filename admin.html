@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -68,7 +68,7 @@
 
             <div class="adm-panel" id="panel-content">
                 <div class="adm-panel-header"><h2><i class="fas fa-clipboard-check"></i> 内容审核</h2></div>
-                <div class="adm-tabs"><button class="adm-tab active" data-ctab="secondhand">二手商品</button><button class="adm-tab" data-ctab="rental">教材租用</button><button class="adm-tab" data-ctab="parttime">兼职信息</button></div>
+                <div class="adm-tabs"><button class="adm-tab active" data-ctab="secondhand">二手商品</button><button class="adm-tab" data-ctab="rental">教材租用</button><button class="adm-tab" data-ctab="parttime">兼职信息</button><button class="adm-tab" data-ctab="pets">流浪猫</button></div>
                 <div class="adm-content-list" id="contentList"></div>
             </div>
 
@@ -159,6 +159,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="adm-row" style="margin-top:20px">
+                    <div class="adm-card">
+                        <div class="adm-card-header"><h3><i class="fas fa-database" style="color:#3b82f6;margin-right:6px"></i> 数据备份与恢复</h3></div>
+                        <div class="adm-card-body">
+                            <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">导出所有数据（含用户账号、商品、公告等）为JSON文件，部署新环境后可导入恢复。部署到服务器后务必先导入历史数据，否则已注册账号无法登录。</p>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                                <button class="adm-btn-primary" id="exportDataBtn" style="background:#3b82f6"><i class="fas fa-download"></i> 导出全部数据</button>
+                                <label class="adm-btn-primary" style="background:#10b981;cursor:pointer;display:inline-flex;align-items:center;gap:4px"><i class="fas fa-upload"></i> 导入数据 <input type="file" id="importDataInput" accept=".json" style="display:none"></label>
+                            </div>
+                            <div id="dataTransferStatus" style="margin-top:12px;font-size:13px;color:var(--text-secondary)"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -201,8 +214,27 @@
 
     <div class="lg-toast" id="lgToast"></div>
 
+    <!-- 自定义拒绝理由弹窗 -->
+    <div class="adm-reject-overlay" id="rejectOverlay">
+        <div class="adm-reject-modal">
+            <div class="adm-reject-header">
+                <h3><i class="fas fa-comment-slash"></i> 拒绝理由</h3>
+                <button class="adm-reject-close" id="rejectCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="adm-reject-body">
+                <textarea class="adm-reject-textarea" id="rejectTextarea" placeholder="请输入拒绝理由（选填，最多200字）" maxlength="200"></textarea>
+                <div class="adm-reject-counter"><span id="rejectCharCount">0</span>/200</div>
+            </div>
+            <div class="adm-reject-footer">
+                <button class="adm-reject-btn adm-reject-cancel" id="rejectCancelBtn">取消</button>
+                <button class="adm-reject-btn adm-reject-confirm" id="rejectConfirmBtn"><i class="fas fa-check"></i> 确定</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/db.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/secondhand-api.js"></script>
     <script src="js/admin.js"></script>
 <script src="js/robot-assistant.js"></script>
 </body>

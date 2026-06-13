@@ -66,15 +66,21 @@ document.addEventListener('DOMContentLoaded', function() {
     function getRentalBooks() {
         if (window.CampusDB) return CampusDB.getRentalBooks();
         try {
-            var stored = JSON.parse(localStorage.getItem('campus_rental_books') || '[]');
-            if (stored.length === 0) {
-                var defaults = getDefaultRentalBooks();
-                localStorage.setItem('campus_rental_books', JSON.stringify(defaults));
-                return defaults;
+            var stored = JSON.parse(localStorage.getItem('campus_rental_books_v2') || '[]');
+            if (stored.length > 0) return stored;
+            /* 兼容旧键 */
+            var old = JSON.parse(localStorage.getItem('campus_rental_books') || '[]');
+            if (old.length > 0) {
+                localStorage.setItem('campus_rental_books_v2', JSON.stringify(old));
+                return old;
             }
-            return stored;
+            var defaults = getDefaultRentalBooks();
+            localStorage.setItem('campus_rental_books_v2', JSON.stringify(defaults));
+            localStorage.setItem('campus_rental_books', JSON.stringify(defaults));
+            return defaults;
         } catch(e) {
             var defaults = getDefaultRentalBooks();
+            localStorage.setItem('campus_rental_books_v2', JSON.stringify(defaults));
             localStorage.setItem('campus_rental_books', JSON.stringify(defaults));
             return defaults;
         }
@@ -93,7 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function saveRentalBooks(list) {
         if (window.CampusDB) return CampusDB.saveRentalBooks(list);
-        localStorage.setItem('campus_rental_books', JSON.stringify(list));
+        localStorage.setItem('campus_rental_books_v2', JSON.stringify(list));
+        localStorage.setItem('campus_rental_books', JSON.stringify(list)); /* 双写兼容 */
     }
 
     function getRentalBookId() {
@@ -286,13 +293,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         '</div>' +
                     '</div>' +
                     '<div class="rd-seller-contact">' +
-                        '<button id="consultRental"><i class="fas fa-headset"></i> 立即咨询</button>' +
-                        '<button id="contactRental"><i class="fas fa-comment-dots"></i> 私信出租者</button>' +
+                        '<button id="chatRentalBtn"><i class="fas fa-comment-dots"></i> 私信沟通</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="rd-actions">' +
                     '<button class="btn-rent' + (isRented ? ' disabled' : '') + '" id="rentBtn"><i class="fas fa-hand-holding-heart"></i> ' + (isRented ? '已被租用' : '一键租用') + '</button>' +
-                    '<button class="btn-consult" id="consultBtn2"><i class="fas fa-comment-dots"></i> 咨询</button>' +
                     '<button class="btn-collect' + (isCollected ? ' collected' : '') + '" id="collectBtn"><i class="fa' + (isCollected ? 's' : 'r') + ' fa-bookmark"></i> ' + (isCollected ? '已收藏' : '收藏') + '</button>' +
                 '</div>' +
                 ownerBtns +
@@ -381,6 +386,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     showToast('请先登录后再租用教材');
                     return;
                 }
+                /* 校验：不能租用自己发布的教材 */
+                if (book.sellerStuId && user.stuId && book.sellerStuId === user.stuId) {
+                    showToast('不能租用自己发布的教材'); return;
+                }
+                if (book.seller === user.name) {
+                    showToast('不能租用自己发布的教材'); return;
+                }
                 if (!confirm('确认租借《' + book.name + '》？\n租金：¥' + book.price + '/' + book.period + '\n押金：¥' + (book.deposit || 30))) return;
                 var books = getRentalBooks();
                 var idx = books.findIndex(function(b) { return b.id === book.id; });
@@ -418,30 +430,23 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        var consultRental = document.getElementById('consultRental');
-        if (consultRental) {
-            consultRental.addEventListener('click', function() {
-                showToast('正在连接出租者，请稍候...');
-            });
-        }
-
-        var contactRental = document.getElementById('contactRental');
-        if (contactRental) {
-            contactRental.addEventListener('click', function() {
-                var user = getCurrentUser();
-                if (!user || user.role !== 'student') {
-                    showToast('请先登录后再私信出租者');
-                    return;
-                }
-                showToast('私信功能开发中，请使用咨询按钮');
-            });
-        }
-
-        var consultBtn2 = document.getElementById('consultBtn2');
-        if (consultBtn2) {
-            consultBtn2.addEventListener('click', function() {
-                showToast('正在连接出租者...');
-            });
+        var chatRentalBtn = document.getElementById('chatRentalBtn');
+        if (chatRentalBtn) {
+            if (isRented) {
+                chatRentalBtn.disabled = true;
+                chatRentalBtn.style.opacity = '0.5';
+                chatRentalBtn.style.cursor = 'not-allowed';
+                chatRentalBtn.innerHTML = '<i class="fas fa-ban"></i> 已被租用，无法沟通';
+            } else {
+                chatRentalBtn.addEventListener('click', function() {
+                    var user = getCurrentUser();
+                    if (!user || user.role !== 'student') {
+                        showToast('请先登录后再私信出租者');
+                        return;
+                    }
+                    window.location.href = 'chat.html?to=' + encodeURIComponent(book.seller) + '&productId=' + book.id + '&productName=' + encodeURIComponent(book.name);
+                });
+            }
         }
 
         var deleteRentalBtn = document.getElementById('deleteRentalBtn');

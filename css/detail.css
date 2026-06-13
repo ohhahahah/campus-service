@@ -622,13 +622,13 @@
     flex: 1;
     padding: 12px;
     border-radius: 12px;
-    border: 2px solid #f59e0b;
+    border: 2px solid #f97316;
     background: transparent;
-    color: #f59e0b;
+    color: #f97316;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -636,13 +636,23 @@
 }
 
 .detail-actions .btn-collect:hover {
-    background: #fef3c7;
-    transform: translateY(-1px);
+    background: #fff7ed;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249,115,22,0.15);
 }
 
 .detail-actions .btn-collect.collected {
-    background: #f59e0b;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-color: #f97316;
     color: #fff;
+    box-shadow: 0 4px 16px rgba(249,115,22,0.4);
+    transform: scale(1.02);
+}
+
+.detail-actions .btn-collect.collected:hover {
+    background: linear-gradient(135deg, #ea580c, #dc2626);
+    border-color: #ea580c;
+    box-shadow: 0 6px 20px rgba(249,115,22,0.5);
 }
 
 .detail-actions .btn-cart {

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     initNavAuth();
+    initAnnouncementSystem();
 
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', function() {
@@ -302,7 +303,7 @@ function initNavAuth() {
             }
         }
 
-        userDiv.innerHTML = navAvatarHtml + '<span class="nav-user-name">' + roleLabel + '</span><div class="nav-user-dropdown" id="userDropdown"><div class="nav-user-info"><i class="fas ' + roleIcon + '"></i><div><strong>' + (user.name || '') + '</strong><span>' + (user.role === 'admin' ? '系统管理员' : user.stuId + ' · ' + (user.dept || '')) + '</span></div></div>' + (user.role === 'admin' ? '<a href="admin.html" class="nav-dropdown-item"><i class="fas fa-cog"></i> 后台管理</a>' : '<a href="profile.html" class="nav-dropdown-item"><i class="fas fa-user"></i> 个人中心</a><a href="javascript:void(0)" class="nav-dropdown-item" id="navMyChat"><i class="fas fa-comment-dots"></i> 我的私信</a>') + '<a href="javascript:void(0)" class="nav-dropdown-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></div>';
+        userDiv.innerHTML = navAvatarHtml + '<span class="nav-user-name">' + roleLabel + '</span><div class="nav-user-dropdown" id="userDropdown"><div class="nav-user-info"><i class="fas ' + roleIcon + '"></i><div><strong>' + (user.name || '') + '</strong><span>' + (user.role === 'admin' ? '系统管理员' : user.stuId + ' · ' + (user.dept || '')) + '</span></div></div>' + (user.role === 'admin' ? '<a href="admin.html" class="nav-dropdown-item"><i class="fas fa-cog"></i> 后台管理</a>' : '<a href="profile.html" class="nav-dropdown-item"><i class="fas fa-user"></i> 个人中心</a><a href="favorites.html" class="nav-dropdown-item"><i class="fas fa-heart"></i> 我的收藏</a><a href="javascript:void(0)" class="nav-dropdown-item" id="navMyChat"><i class="fas fa-comment-dots"></i> 我的私信</a>') + '<a href="javascript:void(0)" class="nav-dropdown-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></div>';
 
         navRight.insertBefore(userDiv, navRight.firstChild);
 
@@ -331,21 +332,6 @@ function initNavAuth() {
         var navMyChat = document.getElementById('navMyChat');
         if (navMyChat) {
             navMyChat.addEventListener('click', function() {
-                openGlobalChatModal();
-            });
-        }
-
-        if (user.role === 'student') {
-            var chatBtn = document.createElement('button');
-            chatBtn.className = 'nav-chat-btn';
-            chatBtn.id = 'navChatBtn';
-            chatBtn.innerHTML = '<i class="fas fa-comment-dots"></i> 私信';
-            var unreadCount = getGlobalUnreadCount();
-            if (unreadCount > 0) {
-                chatBtn.innerHTML += '<span class="chat-badge">' + unreadCount + '</span>';
-            }
-            navRight.insertBefore(chatBtn, navRight.firstChild);
-            chatBtn.addEventListener('click', function() {
                 openGlobalChatModal();
             });
         }
@@ -550,4 +536,313 @@ function refreshGlobalNavBadge() {
         if (unread > 0) { globalBadge.style.display = 'inline'; globalBadge.textContent = unread + '条未读'; }
         else { globalBadge.style.display = 'none'; }
     }
+}
+
+/* ========== 公告系统 ========== */
+
+/* 获取当前用户 */
+function _getAnnUser() {
+    if (window.CampusDB) return CampusDB.getCurrentUser();
+    try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
+}
+
+/* 获取未读公告列表 */
+function _getUnreadAnnouncements(stuId) {
+    if (window.CampusDB) return CampusDB.getUnreadAnnouncements(stuId);
+    try {
+        var all = JSON.parse(localStorage.getItem('campus_announcements') || '[]');
+        var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}');
+        var readIds = readMap[stuId] || [];
+        return all.filter(function(a) {
+            return readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) === -1;
+        }).sort(function(a, b) { return (b.time || '').localeCompare(a.time || ''); });
+    } catch(e) { return []; }
+}
+
+/* 获取未读公告数量 */
+function _getUnreadAnnouncementCount(stuId) {
+    return _getUnreadAnnouncements(stuId).length;
+}
+
+/* 标记公告已读 */
+function _markAnnouncementRead(stuId, annId) {
+    if (window.CampusDB) { CampusDB.markAnnouncementRead(stuId, annId); return; }
+    try {
+        var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}');
+        if (!readMap[stuId]) readMap[stuId] = [];
+        var exists = readMap[stuId].findIndex(function(rid) { return String(rid) === String(annId); });
+        if (exists === -1) {
+            readMap[stuId].push(annId);
+            localStorage.setItem('campus_announcement_read', JSON.stringify(readMap));
+        }
+    } catch(e) {}
+}
+
+/* 获取所有公告（含已读状态） */
+function _getAnnouncementsWithReadStatus(stuId) {
+    if (window.CampusDB) return CampusDB.getAnnouncementsWithReadStatus(stuId);
+    try {
+        var all = JSON.parse(localStorage.getItem('campus_announcements') || '[]');
+        var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}');
+        var readIds = readMap[stuId] || [];
+        return all.map(function(a) {
+            var isRead = readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) !== -1;
+            return Object.assign({}, a, { isRead: isRead });
+        }).sort(function(a, b) {
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return (b.time || '').localeCompare(a.time || '');
+        });
+    } catch(e) { return []; }
+}
+
+/* 更新导航栏公告红点 */
+function _updateAnnouncementBadge() {
+    var user = _getAnnUser();
+    if (!user || user.role !== 'student') return;
+    var count = _getUnreadAnnouncementCount(user.stuId);
+    var bellBtn = document.getElementById('navAnnBell');
+    if (bellBtn) {
+        var existingDot = bellBtn.querySelector('.ann-badge');
+        if (existingDot) existingDot.remove();
+        if (count > 0) {
+            var dot = document.createElement('span');
+            dot.className = 'ann-badge';
+            dot.textContent = count > 99 ? '99+' : count;
+            bellBtn.appendChild(dot);
+        }
+    }
+    /* 派发事件，通知 Vue NavBar 同步 */
+    window.dispatchEvent(new CustomEvent('announcement-badge-update', { detail: { count: count } }));
+}
+
+/* 在导航栏添加公告铃铛按钮 */
+function _initAnnouncementBell() {
+    var user = _getAnnUser();
+    if (!user || user.role !== 'student') return;
+    var navRight = document.querySelector('.nav-right');
+    if (!navRight) return;
+    /* 避免重复添加 */
+    if (document.getElementById('navAnnBell')) return;
+    var bellBtn = document.createElement('button');
+    bellBtn.className = 'nav-icon-btn';
+    bellBtn.id = 'navAnnBell';
+    bellBtn.title = '公告通知';
+    bellBtn.innerHTML = '<i class="fas fa-bell"></i>';
+    /* 插入到用户头像之前 */
+    var userDiv = navRight.querySelector('.nav-user');
+    if (userDiv) {
+        navRight.insertBefore(bellBtn, userDiv);
+    } else {
+        navRight.insertBefore(bellBtn, navRight.firstChild);
+    }
+    _updateAnnouncementBadge();
+    bellBtn.addEventListener('click', function() {
+        _openAnnouncementList();
+    });
+}
+
+/* 强制阅读弹窗：逐条弹出未读公告 */
+var _unreadQueue = [];
+var _isShowingUnread = false;
+
+function _startUnreadAnnouncementFlow() {
+    var user = _getAnnUser();
+    if (!user || user.role !== 'student') return;
+    _unreadQueue = _getUnreadAnnouncements(user.stuId);
+    if (_unreadQueue.length === 0) return;
+    _isShowingUnread = true;
+    _showNextUnread();
+}
+
+function _showNextUnread() {
+    if (_unreadQueue.length === 0) {
+        _isShowingUnread = false;
+        return;
+    }
+    var ann = _unreadQueue.shift();
+    _showForceReadModal(ann);
+}
+
+function _showForceReadModal(ann) {
+    var overlay = document.getElementById('annForceOverlay');
+    if (!overlay) return;
+    overlay.setAttribute('data-current-ann-id', ann.id || '');
+    var titleEl = overlay.querySelector('.ann-force-title');
+    var metaEl = overlay.querySelector('.ann-force-meta');
+    var bodyEl = overlay.querySelector('.ann-force-body');
+    if (titleEl) titleEl.innerHTML = (ann.pinned ? '<span class="ann-type-tag ann-type-pinned"><i class="fas fa-thumbtack"></i> 置顶</span>' : '') + escapeGlobalHtml(ann.title || '');
+    if (metaEl) metaEl.innerHTML = '<span><i class="fas fa-user"></i> ' + escapeGlobalHtml(ann.author || '') + '</span><span><i class="fas fa-clock"></i> ' + escapeGlobalHtml(ann.time || '') + '</span>';
+    if (bodyEl) bodyEl.innerHTML = ann.content || '';
+    overlay.classList.add('active');
+}
+
+function _closeForceReadModal() {
+    var overlay = document.getElementById('annForceOverlay');
+    if (overlay) overlay.classList.remove('active');
+}
+
+/* 点击"我已阅读"按钮 */
+function _onForceReadConfirm() {
+    var overlay = document.getElementById('annForceOverlay');
+    var annId = overlay ? overlay.getAttribute('data-current-ann-id') : null;
+    var user = _getAnnUser();
+    if (user && annId) {
+        _markAnnouncementRead(user.stuId, annId);
+    }
+    _closeForceReadModal();
+    _updateAnnouncementBadge();
+    /* 继续下一条 */
+    setTimeout(function() { _showNextUnread(); }, 300);
+}
+
+/* 公告列表弹窗 */
+function _openAnnouncementList() {
+    var user = _getAnnUser();
+    if (!user || user.role !== 'student') return;
+    var overlay = document.getElementById('annListOverlay');
+    if (!overlay) return;
+    var listEl = overlay.querySelector('.ann-list-body');
+    if (!listEl) return;
+    var announcements = _getAnnouncementsWithReadStatus(user.stuId);
+    if (announcements.length === 0) {
+        listEl.innerHTML = '<div class="ann-list-empty"><i class="fas fa-bullhorn"></i><p>暂无公告</p></div>';
+    } else {
+        var html = '';
+        announcements.forEach(function(a) {
+            var readClass = a.isRead ? ' ann-item-read' : ' ann-item-unread';
+            var readTag = a.isRead ? '<span class="ann-read-tag">已读</span>' : '<span class="ann-unread-dot"></span>';
+            html += '<div class="ann-list-item' + readClass + '" data-id="' + (a.id || '') + '">' +
+                '<div class="ann-item-header">' +
+                (a.pinned ? '<span class="ann-type-tag ann-type-pinned"><i class="fas fa-thumbtack"></i> 置顶</span>' : '') +
+                '<span class="ann-item-title">' + escapeGlobalHtml(a.title || '') + '</span>' +
+                readTag +
+                '</div>' +
+                '<div class="ann-item-meta"><span><i class="fas fa-user"></i> ' + escapeGlobalHtml(a.author || '') + '</span><span><i class="fas fa-clock"></i> ' + escapeGlobalHtml(a.time || '') + '</span></div>' +
+                '</div>';
+        });
+        listEl.innerHTML = html;
+        listEl.querySelectorAll('.ann-list-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var id = item.getAttribute('data-id');
+                _openAnnouncementDetail(id);
+            });
+        });
+    }
+    overlay.classList.add('active');
+}
+
+function _closeAnnouncementList() {
+    var overlay = document.getElementById('annListOverlay');
+    if (overlay) overlay.classList.remove('active');
+    _updateAnnouncementBadge();
+}
+
+/* 公告详情弹窗 */
+function _openAnnouncementDetail(annId) {
+    var user = _getAnnUser();
+    if (!user) return;
+    var announcements = _getAnnouncementsWithReadStatus(user.stuId);
+    var ann = announcements.find(function(a) { return String(a.id) === String(annId); });
+    if (!ann) return;
+    /* 标记已读 */
+    if (!ann.isRead) {
+        _markAnnouncementRead(user.stuId, String(ann.id));
+        _updateAnnouncementBadge();
+        /* 更新列表项样式和标签 */
+        var listItem = document.querySelector('.ann-list-item[data-id="' + annId + '"]');
+        if (listItem) {
+            listItem.classList.remove('ann-item-unread');
+            listItem.classList.add('ann-item-read');
+            var dot = listItem.querySelector('.ann-unread-dot');
+            if (dot) {
+                var tag = document.createElement('span');
+                tag.className = 'ann-read-tag';
+                tag.textContent = '已读';
+                dot.replaceWith(tag);
+            }
+        }
+    }
+    var overlay = document.getElementById('annDetailOverlay');
+    if (!overlay) return;
+    var titleEl = overlay.querySelector('.ann-detail-title');
+    var metaEl = overlay.querySelector('.ann-detail-meta');
+    var bodyEl = overlay.querySelector('.ann-detail-body');
+    if (titleEl) titleEl.innerHTML = (ann.pinned ? '<span class="ann-type-tag ann-type-pinned"><i class="fas fa-thumbtack"></i> 置顶</span>' : '') + escapeGlobalHtml(ann.title || '');
+    if (metaEl) metaEl.innerHTML = '<span><i class="fas fa-user"></i> ' + escapeGlobalHtml(ann.author || '') + '</span><span><i class="fas fa-clock"></i> ' + escapeGlobalHtml(ann.time || '') + '</span>' + (ann.cat ? '<span><i class="fas fa-tag"></i> ' + escapeGlobalHtml(ann.cat) + '</span>' : '');
+    if (bodyEl) bodyEl.innerHTML = ann.content || '';
+    overlay.classList.add('active');
+}
+
+function _closeAnnouncementDetail() {
+    var overlay = document.getElementById('annDetailOverlay');
+    if (overlay) overlay.classList.remove('active');
+}
+
+/* 初始化公告系统 */
+function initAnnouncementSystem() {
+    /* 动态创建弹窗 DOM（确保所有页面都可用） */
+    if (!document.getElementById('annForceOverlay')) {
+        var forceHtml = '<div class="ann-overlay ann-force-overlay" id="annForceOverlay">' +
+            '<div class="ann-modal ann-force-modal">' +
+                '<div class="ann-modal-header"><h3 class="ann-force-title"></h3></div>' +
+                '<div class="ann-force-meta"></div>' +
+                '<div class="ann-force-body"></div>' +
+                '<div class="ann-modal-footer ann-force-footer">' +
+                    '<button class="ann-btn ann-btn-primary" id="annForceConfirmBtn"><i class="fas fa-check-circle"></i> 我已阅读并确认</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        var listHtml = '<div class="ann-overlay ann-list-overlay" id="annListOverlay">' +
+            '<div class="ann-modal ann-list-modal">' +
+                '<div class="ann-modal-header">' +
+                    '<h3><i class="fas fa-bullhorn" style="color:#3b82f6;margin-right:8px"></i>公告通知</h3>' +
+                    '<button class="ann-modal-close" id="annListCloseBtn"><i class="fas fa-times"></i></button>' +
+                '</div>' +
+                '<div class="ann-list-body"></div>' +
+            '</div>' +
+        '</div>';
+        var detailHtml = '<div class="ann-overlay ann-detail-overlay" id="annDetailOverlay">' +
+            '<div class="ann-modal ann-detail-modal">' +
+                '<div class="ann-modal-header">' +
+                    '<h3 class="ann-detail-title"></h3>' +
+                    '<button class="ann-modal-close" id="annDetailCloseBtn"><i class="fas fa-times"></i></button>' +
+                '</div>' +
+                '<div class="ann-detail-meta"></div>' +
+                '<div class="ann-detail-body"></div>' +
+            '</div>' +
+        '</div>';
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = forceHtml + listHtml + detailHtml;
+        while (wrapper.firstChild) {
+            document.body.appendChild(wrapper.firstChild);
+        }
+    }
+
+    _initAnnouncementBell();
+    /* 登录后自动弹未读公告（仅首页触发） */
+    var isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
+    if (isIndex) {
+        var user = _getAnnUser();
+        if (user && user.role === 'student') {
+            var sessionKey = 'campus_ann_shown_' + user.stuId;
+            var lastShown = sessionStorage.getItem(sessionKey);
+            if (!lastShown) {
+                sessionStorage.setItem(sessionKey, '1');
+                setTimeout(function() { _startUnreadAnnouncementFlow(); }, 800);
+            }
+        }
+    }
+    /* 绑定弹窗按钮事件 */
+    var forceConfirmBtn = document.getElementById('annForceConfirmBtn');
+    if (forceConfirmBtn) forceConfirmBtn.addEventListener('click', _onForceReadConfirm);
+    var listCloseBtn = document.getElementById('annListCloseBtn');
+    if (listCloseBtn) listCloseBtn.addEventListener('click', _closeAnnouncementList);
+    var detailCloseBtn = document.getElementById('annDetailCloseBtn');
+    if (detailCloseBtn) detailCloseBtn.addEventListener('click', _closeAnnouncementDetail);
+    /* 遮罩点击关闭（列表和详情弹窗可关闭，强制阅读不可关闭） */
+    var listOverlay = document.getElementById('annListOverlay');
+    if (listOverlay) listOverlay.addEventListener('click', function(e) { if (e.target === listOverlay) _closeAnnouncementList(); });
+    var detailOverlay = document.getElementById('annDetailOverlay');
+    if (detailOverlay) detailOverlay.addEventListener('click', function(e) { if (e.target === detailOverlay) _closeAnnouncementDetail(); });
 }

@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getProducts() {
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try {
+            var v = localStorage.getItem(STORAGE_KEY);
+            if (v) return JSON.parse(v);
+        } catch(e) {}
         if (window.CampusDB) return CampusDB.getSecondhand();
         try {
             return JSON.parse(localStorage.getItem('campus_secondhand') || '[]');
@@ -33,6 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function saveProducts(list) {
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
         if (window.CampusDB) return CampusDB.saveSecondhand(list);
         localStorage.setItem('campus_secondhand', JSON.stringify(list));
     }
@@ -238,10 +245,10 @@ document.addEventListener('DOMContentLoaded', function() {
             products.unshift(newProduct);
             saveProducts(products);
 
-            showToast('商品发布成功，等待审核！', 'success');
+            showToast('发布成功，商品已进入审核，审核通过后将在列表中展示！', 'success');
 
             setTimeout(function() {
-                window.location.href = 'detail.html?id=' + newProduct.id;
+                window.location.href = 'secondhand.html';
             }, 1500);
         });
     }

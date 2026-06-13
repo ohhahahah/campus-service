@@ -1,4 +1,7 @@
 (function() {
+    /* ========== 预设演示账号 ========== */
+    var DEMO_STUDENT_ID = '2024001';
+    var DEMO_STUDENT_PWD = '123456';
     var ADMIN_ACCOUNT = 'admin';
     var ADMIN_PASSWORD = 'admin123';
 
@@ -41,6 +44,39 @@
         initToLoginLink();
         initRegisterLink();
         checkUrlParam();
+        initDemoFill();
+    }
+
+    /* 演示账号一键填充 + 默认值 */
+    function initDemoFill() {
+        /* 默认填充学生账号 */
+        var stuIdInput = document.getElementById('stuLoginId');
+        var stuPwdInput = document.getElementById('stuLoginPwd');
+        var admIdInput = document.getElementById('admLoginId');
+        var admPwdInput = document.getElementById('admLoginPwd');
+
+        if (stuIdInput && !stuIdInput.value) stuIdInput.value = DEMO_STUDENT_ID;
+        if (stuPwdInput && !stuPwdInput.value) stuPwdInput.value = DEMO_STUDENT_PWD;
+        if (admIdInput && !admIdInput.value) admIdInput.value = ADMIN_ACCOUNT;
+        if (admPwdInput && !admPwdInput.value) admPwdInput.value = ADMIN_PASSWORD;
+
+        /* 一键填充按钮 */
+        var fillStudentBtn = document.getElementById('fillStudentBtn');
+        if (fillStudentBtn) {
+            fillStudentBtn.addEventListener('click', function() {
+                stuIdInput.value = DEMO_STUDENT_ID;
+                stuPwdInput.value = DEMO_STUDENT_PWD;
+                stuIdInput.focus();
+            });
+        }
+        var fillAdminBtn = document.getElementById('fillAdminBtn');
+        if (fillAdminBtn) {
+            fillAdminBtn.addEventListener('click', function() {
+                admIdInput.value = ADMIN_ACCOUNT;
+                admPwdInput.value = ADMIN_PASSWORD;
+                admIdInput.focus();
+            });
+        }
     }
 
     function checkUrlParam() {

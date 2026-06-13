@@ -21,49 +21,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var productImages = {
         1: [
-            'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&h=600&fit=crop'
+            'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&h=600&fit=crop'
         ],
         2: [
-            'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1600294037681-cfb50c53a572?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1588423771073-b8903fde1c68?w=800&h=600&fit=crop'
+            'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800&h=600&fit=crop'
         ],
         3: [
+            'https://images.unsplash.com/photo-1592656034223-8f862b5b4946?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&h=600&fit=crop'
+        ],
+        4: [
+            'https://images.unsplash.com/photo-1586953208270-767fc2b4be75?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=800&h=600&fit=crop'
+        ],
+        5: [
             'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&h=600&fit=crop'
         ],
-        4: [
-            'https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1534105175844-bc498de300d3?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1519682577862-22b62b24e493?w=800&h=600&fit=crop'
-        ],
-        5: [
-            'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1554290712-e640351074bd?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1613918431703-aa50889e3be2?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1614961233913-a5113e3b3b4b?w=800&h=600&fit=crop'
-        ],
         6: [
-            'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&h=600&fit=crop'
+            'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=600&fit=crop'
         ],
         7: [
-            'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1609692814858-f7cd2f0afa4f?w=800&h=600&fit=crop'
+            'https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=600&fit=crop'
         ],
         8: [
-            'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop'
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'https://images.unsplash.com/photo-1591337676887-a217a6c5a5a6?w=800&h=600&fit=crop'
         ],
         10: [
-            'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=800&h=600&fit=crop'
@@ -127,6 +127,96 @@ document.addEventListener('DOMContentLoaded', function() {
             'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop',
             'https://images.unsplash.com/photo-1486218119243-13883505764c?w=800&h=600&fit=crop'
+        ],
+        19: [
+            'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&h=600&fit=crop'
+        ],
+        20: [
+            'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&h=600&fit=crop'
+        ],
+        21: [
+            'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop'
+        ],
+        22: [
+            'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1461896836934-bd45ba8f8e25?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop'
+        ],
+        23: [
+            'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1461896836934-bd45ba8f8e25?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop'
+        ],
+        24: [
+            'https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1486218119243-13883505764c?w=800&h=600&fit=crop'
+        ],
+        25: [
+            'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1486218119243-13883505764c?w=800&h=600&fit=crop'
+        ],
+        26: [
+            'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&h=600&fit=crop'
+        ],
+        27: [
+            'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1530124566582-a45a7e3e29f0?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&h=600&fit=crop'
+        ],
+        28: [
+            'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1530124566582-a45a7e3e29f0?w=800&h=600&fit=crop'
+        ],
+        29: [
+            'https://images.unsplash.com/photo-1585771724684-38269d6639db?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1570222094114-d054a816e5e4?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&h=600&fit=crop'
+        ],
+        30: [
+            'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop'
+        ],
+        31: [
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1570222094114-d054a816e5e4?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop'
+        ],
+        32: [
+            'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&h=600&fit=crop'
+        ],
+        33: [
+            'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop'
         ]
     };
 
@@ -289,6 +379,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('detailToastMsg').textContent = msg;
         toast.classList.add('show');
         setTimeout(function() { toast.classList.remove('show'); }, 2500);
+    }
+
+    function getProductImage(product) {
+        if (product.images && Array.isArray(product.images) && product.images.length > 0) return product.images[0];
+        if (productImages[product.id] && productImages[product.id][0]) return productImages[product.id][0];
+        return categoryFallbackImages[product.category] || categoryFallbackImages['其他'];
     }
 
     function getProductId() {
@@ -805,9 +901,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderDetail(product) {
-        if (!product || product.status === '已下架' || product.reviewStatus === 'rejected') {
-            document.getElementById('detailMain').innerHTML = '<div class="detail-not-found"><i class="fas fa-box-open"></i><h2>商品不存在或已下架</h2><p>该商品可能已被卖家删除或被管理员下架</p><a href="secondhand.html"><i class="fas fa-arrow-left"></i> 返回二手市场</a></div>';
+        if (!product) {
+            document.getElementById('detailMain').innerHTML = '<div class="detail-not-found"><i class="fas fa-box-open"></i><h2>商品不存在</h2><p>该商品可能已被卖家删除</p><a href="secondhand.html"><i class="fas fa-arrow-left"></i> 返回二手市场</a></div>';
             return;
+        }
+        if (product.status === '已下架') {
+            document.getElementById('detailMain').innerHTML = '<div class="detail-not-found"><i class="fas fa-box-open"></i><h2>商品已下架</h2><p>该商品已被管理员下架</p><a href="secondhand.html"><i class="fas fa-arrow-left"></i> 返回二手市场</a></div>';
+            return;
+        }
+        if (product.reviewStatus === 'pending') {
+            var currentUser = getCurrentUser();
+            var isOwner = currentUser && (currentUser.name === product.seller || currentUser.stuId === product.sellerStuId);
+            if (!isOwner) {
+                document.getElementById('detailMain').innerHTML = '<div class="detail-not-found"><i class="fas fa-clock"></i><h2>商品审核中</h2><p>该商品正在审核中，审核通过后将展示</p><a href="secondhand.html"><i class="fas fa-arrow-left"></i> 返回二手市场</a></div>';
+                return;
+            }
+        }
+        if (product.reviewStatus === 'rejected') {
+            var currentUser2 = getCurrentUser();
+            var isOwner2 = currentUser2 && (currentUser2.name === product.seller || currentUser2.stuId === product.sellerStuId);
+            if (!isOwner2) {
+                document.getElementById('detailMain').innerHTML = '<div class="detail-not-found"><i class="fas fa-ban"></i><h2>商品未通过审核</h2><p>该商品未通过审核，无法展示</p><a href="secondhand.html"><i class="fas fa-arrow-left"></i> 返回二手市场</a></div>';
+                return;
+            }
         }
 
         document.getElementById('breadcrumbName').textContent = product.name;
@@ -957,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '</div>' +
             '</div>' +
             '<div class="detail-right">' +
-                (product.reviewStatus === 'pending' ? '<div class="detail-status-badge pending"><i class="fas fa-clock"></i> 审核中</div>' : '<div class="detail-status-badge ' + (isSold ? 'sold' : 'onsale') + '"><i class="fas fa-' + (isSold ? 'ban' : 'check-circle') + '"></i> ' + (isSold ? '已售出' : '在售中') + '</div>') +
+                (product.reviewStatus === 'pending' ? '<div class="detail-status-badge pending"><i class="fas fa-clock"></i> 审核中</div>' : (product.reviewStatus === 'rejected' ? '<div class="detail-status-badge rejected" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca"><i class="fas fa-ban"></i> 审核未通过</div>' + (product.rejectReason ? '<div style="margin-top:6px;padding:8px 12px;background:#fef2f2;border-radius:8px;font-size:13px;color:#991b1b"><i class="fas fa-comment-slash"></i> 拒绝理由：' + product.rejectReason + '</div>' : '') : '<div class="detail-status-badge ' + (isSold ? 'sold' : 'onsale') + '"><i class="fas fa-' + (isSold ? 'ban' : 'check-circle') + '"></i> ' + (isSold ? '已售出' : '在售中') + '</div>')) +
                 '<div class="detail-tag-row">' + tagHtml + '</div>' +
                 '<h1 class="detail-name">' + product.name + '</h1>' +
                 '<div class="detail-price-row">' +
@@ -1004,13 +1120,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         '<div class="detail-seller-stat"><span class="num">' + seller.praiseRate + '</span><span class="label">好评率</span></div>' +
                     '</div>' +
                     '<div class="detail-seller-contact">' +
-                        '<button id="consultSeller"><i class="fas fa-headset"></i> 立即咨询</button>' +
-                        '<button id="contactSeller"><i class="fas fa-comment-dots"></i> 私信卖家</button>' +
+                        '<button id="chatSellerBtn"><i class="fas fa-comment-dots"></i> 私信沟通</button>' +
                         '<button id="callSeller"><i class="fas fa-phone"></i> 一键联系</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="detail-actions">' +
-                    '<button class="btn-buy' + (isSold ? ' disabled' : '') + '" id="buyBtn"><i class="fas fa-hand-holding-heart"></i> ' + (isSold ? '已售出' : '一键租用') + '</button>' +
+                    '<button class="btn-buy' + (isSold ? ' disabled' : '') + '" id="buyBtn"><i class="fas fa-shopping-cart"></i> ' + (isSold ? '已售出' : '立即购买') + '</button>' +
                     '<button class="btn-collect' + (isCollected ? ' collected' : '') + '" id="collectBtn"><i class="fa' + (isCollected ? 's' : 'r') + ' fa-bookmark"></i> ' + (isCollected ? '已收藏' : '收藏') + '</button>' +
                     '<button class="btn-cart" id="chatBtn"><i class="fas fa-comment-dots"></i> 私信</button>' +
                     '<button class="btn-report" id="reportBtn"><i class="fas fa-flag"></i> 举报</button>' +
@@ -1109,6 +1224,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var collectBtn = document.getElementById('collectBtn');
         var collectStat = document.getElementById('collectStat');
         function toggleCollect() {
+            /* 登录校验 */
+            var user = getCurrentUser();
+            if (!user) {
+                showToast('请先登录后再收藏');
+                setTimeout(function() { window.location.href = 'login.html'; }, 1200);
+                return;
+            }
             var collected = [];
             try { collected = JSON.parse(localStorage.getItem('campus_collected') || '[]'); } catch(e) {}
             var products = getProducts();
@@ -1121,10 +1243,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (collectStat) { collectStat.classList.remove('collected'); collectStat.innerHTML = '<i class="far fa-bookmark"></i> ' + (products[idx] ? products[idx].collects : 0); }
                 showToast('已取消收藏');
             } else {
-                var productImage = '';
-                if (product.images && product.images.length > 0) productImage = product.images[0];
-                else if (productCoverImages && productCoverImages[product.id]) productImage = productCoverImages[product.id];
-                else productImage = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop';
+                var productImage = getProductImage(product);
                 collected.unshift({
                     productId: product.id,
                     name: product.name,
@@ -1144,38 +1263,116 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('campus_collected', JSON.stringify(collected));
             saveProducts(products);
         }
-        if (collectBtn) collectBtn.addEventListener('click', toggleCollect);
-        if (collectStat) collectStat.addEventListener('click', toggleCollect);
+        /* 事件委托兜底：确保收藏按钮始终可点击 */
+        var _collectBound = false;
+        if (collectBtn) { collectBtn.addEventListener('click', toggleCollect); _collectBound = true; }
+        if (collectStat) { collectStat.addEventListener('click', toggleCollect); _collectBound = true; }
+        if (!_collectBound) {
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('#collectBtn, #collectStat')) toggleCollect();
+            });
+        }
 
         var buyBtn = document.getElementById('buyBtn');
         if (buyBtn) {
             buyBtn.addEventListener('click', function() {
                 if (product.status === '已售出') { showToast('该商品已售出'); return; }
                 var user = getCurrentUser();
-                if (!user || user.role !== 'student') { showToast('请先登录后再租用'); return; }
-                window.location.href = 'secondhand.html?openRent=' + product.id;
+                if (!user) { showToast('请先登录后再购买'); setTimeout(function() { window.location.href = 'login.html'; }, 1200); return; }
+                showBuyModal(product);
+            });
+        }
+
+        /* 购买弹窗 */
+        function showBuyModal(product) {
+            var existing = document.getElementById('detailBuyModal');
+            if (existing) existing.remove();
+
+            var modal = document.createElement('div');
+            modal.id = 'detailBuyModal';
+            modal.className = 'sh-modal active';
+            modal.innerHTML =
+                '<div class="sh-modal-content" style="max-width:480px">' +
+                    '<div class="sh-modal-header"><h3><i class="fas fa-shopping-cart"></i> 立即购买 - ' + product.name + '</h3><button class="sh-close-btn" id="closeDetailBuy"><i class="fas fa-times"></i></button></div>' +
+                    '<form id="detailBuyForm" class="sh-form">' +
+                        '<div class="sh-form-group"><label><i class="fas fa-box"></i> 商品</label><div style="padding:8px 12px;background:var(--bg-secondary);border-radius:8px;font-size:14px">' + product.name + ' · ¥' + product.price + '</div></div>' +
+                        '<div class="sh-form-group"><label><i class="fas fa-building"></i> 收货楼栋</label><select id="detailBuyBuilding" required><option value="">请选择收货楼栋</option><option value="北区1号楼">北区1号楼</option><option value="北区2号楼">北区2号楼</option><option value="北区3号楼">北区3号楼</option><option value="南区1号楼">南区1号楼</option><option value="南区2号楼">南区2号楼</option><option value="东区1号楼">东区1号楼</option><option value="西区1号楼">西区1号楼</option></select></div>' +
+                        '<div class="sh-form-group"><label><i class="fas fa-comment"></i> 备注</label><textarea id="detailBuyNote" placeholder="选填，如特殊配送要求等" rows="3"></textarea></div>' +
+                        '<button type="submit" class="btn primary-btn sh-submit-btn"><i class="fas fa-check"></i> 提交购买订单</button>' +
+                    '</form>' +
+                '</div>';
+            document.body.appendChild(modal);
+
+            document.getElementById('closeDetailBuy').addEventListener('click', function() { modal.remove(); });
+            modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+
+            document.getElementById('detailBuyForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var building = document.getElementById('detailBuyBuilding').value;
+                var note = document.getElementById('detailBuyNote').value;
+                if (!building) { showToast('请填写完整购买信息'); return; }
+
+                var user = getCurrentUser();
+                var now = new Date();
+
+                var orders = [];
+                try { orders = JSON.parse(localStorage.getItem('campus_trade_orders') || '[]'); } catch(e) {}
+
+                orders.unshift({
+                    id: Date.now(),
+                    productId: product.id,
+                    productName: product.name,
+                    productImg: getProductImage(product),
+                    price: product.price,
+                    totalPrice: product.price,
+                    building: building,
+                    note: note,
+                    seller: product.seller,
+                    sellerDept: product.sellerDept || '',
+                    buyer: user ? user.name : '',
+                    buyerStuId: user ? user.stuId : '',
+                    status: '待确认',
+                    time: now.toLocaleString()
+                });
+
+                localStorage.setItem('campus_trade_orders', JSON.stringify(orders));
+                modal.remove();
+                showToast('购买订单提交成功！');
+                setTimeout(function() { window.location.href = 'orders.html'; }, 1200);
             });
         }
 
         var chatBtn = document.getElementById('chatBtn');
         if (chatBtn) {
             chatBtn.addEventListener('click', function() {
-                openPrivateChatModal(product);
+                var user = getCurrentUser();
+                if (!user) {
+                    showToast('请先登录后再私信卖家');
+                    setTimeout(function() { window.location.href = 'login.html'; }, 1200);
+                    return;
+                }
+                window.location.href = 'chat.html?to=' + encodeURIComponent(product.seller) + '&productId=' + product.id + '&productName=' + encodeURIComponent(product.name);
             });
         }
 
-        var consultSeller = document.getElementById('consultSeller');
-        if (consultSeller) {
-            consultSeller.addEventListener('click', function() {
-                openPrivateChatModal(product);
-            });
-        }
-
-        var contactSeller = document.getElementById('contactSeller');
-        if (contactSeller) {
-            contactSeller.addEventListener('click', function() {
-                openPrivateChatModal(product);
-            });
+        var chatSellerBtn = document.getElementById('chatSellerBtn');
+        if (chatSellerBtn) {
+            if (isSold) {
+                chatSellerBtn.disabled = true;
+                chatSellerBtn.style.opacity = '0.5';
+                chatSellerBtn.style.cursor = 'not-allowed';
+                chatSellerBtn.innerHTML = '<i class="fas fa-ban"></i> 已售出，无法沟通';
+            } else {
+                chatSellerBtn.addEventListener('click', function() {
+                    var user = getCurrentUser();
+                    if (!user) {
+                        showToast('请先登录后再私信卖家');
+                        setTimeout(function() { window.location.href = 'login.html'; }, 1200);
+                        return;
+                    }
+                    window.location.href = 'chat.html?to=' + encodeURIComponent(product.seller) + '&productId=' + product.id + '&productName=' + encodeURIComponent(product.name);
+                });
+            }
         }
 
         var callSeller = document.getElementById('callSeller');

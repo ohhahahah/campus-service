@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -58,6 +58,11 @@
                     <div class="lg-form-wrapper active" id="studentLoginForm">
                         <h2>学生登录</h2>
                         <p class="lg-subtitle">使用学号和密码登录</p>
+                        <div class="lg-demo-hint" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:10px;padding:12px 16px;margin-bottom:16px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><i class="fas fa-lightbulb" style="color:#2563eb"></i><strong style="color:#1e40af;font-size:13px">演示账号</strong></div>
+                            <div style="font-size:12px;color:#1e40af;line-height:1.8">学号：<code style="background:#bfdbfe;padding:2px 6px;border-radius:4px;font-weight:600">2024001</code> &nbsp;密码：<code style="background:#bfdbfe;padding:2px 6px;border-radius:4px;font-weight:600">123456</code></div>
+                            <button type="button" id="fillStudentBtn" style="margin-top:8px;padding:5px 14px;border-radius:6px;border:1px solid #3b82f6;background:#3b82f6;color:#fff;cursor:pointer;font-size:12px;transition:all .2s"><i class="fas fa-magic"></i> 一键填充</button>
+                        </div>
                         <form id="studentLogin">
                             <div class="lg-input-group"><i class="fas fa-id-card"></i><input type="text" id="stuLoginId" placeholder="请输入学号" required></div>
                             <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="stuLoginPwd" placeholder="请输入密码" required></div>
@@ -75,6 +80,11 @@
                     <div class="lg-form-wrapper" id="adminLoginForm">
                         <h2>管理员登录</h2>
                         <p class="lg-subtitle">系统管理员专用入口，不可注册</p>
+                        <div class="lg-demo-hint" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:10px;padding:12px 16px;margin-bottom:16px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><i class="fas fa-shield-alt" style="color:#16a34a"></i><strong style="color:#15803d;font-size:13px">管理员演示账号</strong></div>
+                            <div style="font-size:12px;color:#15803d;line-height:1.8">账号：<code style="background:#bbf7d0;padding:2px 6px;border-radius:4px;font-weight:600">admin</code> &nbsp;密码：<code style="background:#bbf7d0;padding:2px 6px;border-radius:4px;font-weight:600">admin123</code></div>
+                            <button type="button" id="fillAdminBtn" style="margin-top:8px;padding:5px 14px;border-radius:6px;border:1px solid #16a34a;background:#16a34a;color:#fff;cursor:pointer;font-size:12px;transition:all .2s"><i class="fas fa-magic"></i> 一键填充</button>
+                        </div>
                         <form id="adminLogin">
                             <div class="lg-input-group"><i class="fas fa-user-shield"></i><input type="text" id="admLoginId" placeholder="请输入管理员账号" required></div>
                             <div class="lg-input-group"><i class="fas fa-lock"></i><input type="password" id="admLoginPwd" placeholder="请输入管理员密码" required></div>

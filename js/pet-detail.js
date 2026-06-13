@@ -262,7 +262,14 @@
 
         // 操作按钮
         html += '<div class="pet-detail-actions">';
-        html += '<button class="pet-adopt-btn" id="adoptBtn"><i class="fas fa-hand-holding-heart"></i> 申请领养</button>';
+        var currentUser = null;
+        try { currentUser = JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) {}
+        var isPetOwner = currentUser && (currentUser.name === p.publisher || (currentUser.stuId && currentUser.stuId === p.publisherStuId));
+        if (isPetOwner) {
+            html += '<button class="pet-adopt-btn" style="opacity:0.5;cursor:not-allowed" disabled><i class="fas fa-user"></i> 我发布的</button>';
+        } else {
+            html += '<button class="pet-adopt-btn" id="adoptBtn"><i class="fas fa-hand-holding-heart"></i> 申请领养</button>';
+        }
         html += '<button class="pet-contact-btn" onclick="location.href=\'pets.html\'"><i class="fas fa-arrow-left"></i> 返回列表</button>';
         html += '</div>';
 
@@ -274,9 +281,12 @@
         // 绑定图片切换
         initGallery();
         // 绑定领养按钮
-        document.getElementById('adoptBtn').addEventListener('click', function() {
-            openModal('adoptModal');
-        });
+        var adoptBtn = document.getElementById('adoptBtn');
+        if (adoptBtn) {
+            adoptBtn.addEventListener('click', function() {
+                openModal('adoptModal');
+            });
+        }
     }
 
     function initGallery() {

@@ -313,11 +313,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getProducts() {
+        /* 优先使用 SecondhandAPI 的数据源 */
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try {
+            var v = localStorage.getItem(STORAGE_KEY);
+            if (v) return JSON.parse(v);
+        } catch(e) {}
         if (window.CampusDB) return CampusDB.getSecondhand();
         try { return JSON.parse(localStorage.getItem('campus_secondhand') || '[]'); } catch(e) { return []; }
     }
 
     function saveProducts(list) {
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
         if (window.CampusDB) return CampusDB.saveSecondhand(list);
         localStorage.setItem('campus_secondhand', JSON.stringify(list));
     }
@@ -387,6 +395,18 @@ document.addEventListener('DOMContentLoaded', function() {
             var statusClass = p.status === '已售出' ? 'sold' : 'selling';
             var statusText = p.status === '已下架' ? '已下架' : (p.status === '已售出' ? '已售出' : '出售中');
             if (p.reviewStatus === 'rejected' || p.status === '已下架') statusClass = 'sold';
+            /* 显示审核状态 */
+            var reviewBadge = '';
+            if (p.reviewStatus === 'pending') {
+                reviewBadge = '<span class="item-status" style="background:#fef3c7;color:#92400e;margin-left:6px">审核中</span>';
+                statusText = '待审核';
+                statusClass = 'sold';
+            } else if (p.reviewStatus === 'rejected') {
+                reviewBadge = '<span class="item-status" style="background:#fef2f2;color:#991b1b;margin-left:6px">已拒绝</span>';
+                statusText = '已拒绝';
+                statusClass = 'sold';
+                if (p.rejectReason) reviewBadge += '<div style="font-size:11px;color:#991b1b;margin-top:2px">理由：' + p.rejectReason + '</div>';
+            }
             var imgSrc = '';
             if (p.images && Array.isArray(p.images) && p.images.length > 0) imgSrc = p.images[0];
             html += '<div class="item-card" data-id="' + p.id + '">' +
@@ -394,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '<div class="item-info">' +
                     '<h4>' + p.name + '</h4>' +
                     '<span class="item-price">¥' + p.price + '</span>' +
-                    '<span class="item-status ' + statusClass + '">' + statusText + '</span>' +
+                    '<span class="item-status ' + statusClass + '">' + statusText + '</span>' + reviewBadge +
                     '<div class="item-actions">' +
                         '<button class="btn-view" data-id="' + p.id + '"><i class="fas fa-eye"></i> 查看</button>' +
                         '<button class="btn-delete-item" data-id="' + p.id + '"><i class="fas fa-trash-alt"></i> 删除</button>' +
@@ -504,7 +524,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!user) return;
         var rentalBooks = [];
         if (window.CampusDB) { rentalBooks = CampusDB.getRentalBooks(); } else {
-            try { rentalBooks = JSON.parse(localStorage.getItem('campus_rental_books') || '[]'); } catch(e) { return; }
+            try { rentalBooks = JSON.parse(localStorage.getItem('campus_rental_books_v2') || '[]'); } catch(e) {}
+            if (rentalBooks.length === 0) {
+                try { rentalBooks = JSON.parse(localStorage.getItem('campus_rental_books') || '[]'); } catch(e2) {}
+            }
         }
         var myRentals = rentalBooks.filter(function(b) {
             if (b.sellerStuId && user.stuId) return b.sellerStuId === user.stuId;
@@ -521,14 +544,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var html = '';
         myRentals.forEach(function(b) {
-            var statusText = b.reviewStatus === 'rejected' ? '已下架' : (b.available ? '可租' : '已租');
-            var statusClass = (b.reviewStatus === 'rejected' || !b.available) ? 'sold' : 'selling';
+            var statusText = b.available ? '可租' : '已租';
+            var statusClass = 'selling';
+            var reviewBadge = '';
+            if (b.reviewStatus === 'pending') {
+                reviewBadge = '<span class="item-status" style="background:#fef3c7;color:#92400e;margin-left:6px">审核中</span>';
+                statusText = '待审核';
+                statusClass = 'sold';
+            } else if (b.reviewStatus === 'rejected') {
+                reviewBadge = '<span class="item-status" style="background:#fef2f2;color:#991b1b;margin-left:6px">已拒绝</span>';
+                statusText = '已拒绝';
+                statusClass = 'sold';
+                if (b.rejectReason) reviewBadge += '<div style="font-size:11px;color:#991b1b;margin-top:2px">理由：' + b.rejectReason + '</div>';
+            }
             html += '<div class="item-card" data-rid="' + b.id + '">' +
                 '<div style="height:120px;background:linear-gradient(135deg,#ec489618,#be185d18);display:flex;align-items:center;justify-content:center"><i class="fas fa-book" style="font-size:32px;color:#ec4899"></i></div>' +
                 '<div class="item-info">' +
                     '<h4>' + b.name + '</h4>' +
                     '<span class="item-price">¥' + b.price + '/' + b.period + '</span>' +
-                    '<span class="item-status ' + statusClass + '">' + statusText + '</span>' +
+                    '<span class="item-status ' + statusClass + '">' + statusText + '</span>' + reviewBadge +
                     '<div class="item-actions">' +
                         '<button class="btn-view" data-rid="' + b.id + '"><i class="fas fa-eye"></i> 查看</button>' +
                         '<button class="btn-delete-item" data-rid="' + b.id + '"><i class="fas fa-trash-alt"></i> 删除</button>' +
@@ -553,12 +587,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!confirm('确定要删除该教材吗？删除后无法恢复！')) return;
                 var allBooks = [];
                 if (window.CampusDB) { allBooks = CampusDB.getRentalBooks(); } else {
-                    try { allBooks = JSON.parse(localStorage.getItem('campus_rental_books') || '[]'); } catch(e) { return; }
+                    try { allBooks = JSON.parse(localStorage.getItem('campus_rental_books_v2') || '[]'); } catch(e) {}
+                    if (allBooks.length === 0) { try { allBooks = JSON.parse(localStorage.getItem('campus_rental_books') || '[]'); } catch(e2) {} }
                 }
                 var idx = allBooks.findIndex(function(b) { return b.id === id; });
                 if (idx !== -1) {
                     allBooks[idx].reviewStatus = 'rejected';
-                    if (window.CampusDB) { CampusDB.saveRentalBooks(allBooks); } else { localStorage.setItem('campus_rental_books', JSON.stringify(allBooks)); }
+                    if (window.CampusDB) { CampusDB.saveRentalBooks(allBooks); } else {
+                        localStorage.setItem('campus_rental_books_v2', JSON.stringify(allBooks));
+                        localStorage.setItem('campus_rental_books', JSON.stringify(allBooks));
+                    }
                     showToast('教材已删除');
                     loadMyRentals();
                 }

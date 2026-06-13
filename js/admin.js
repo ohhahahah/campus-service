@@ -1,4 +1,69 @@
 (function() {
+    /* 自定义拒绝理由弹窗（替代原生 prompt） */
+    var _rejectCallback = null;
+    function showRejectDialog(callback, title) {
+        var overlay = document.getElementById('rejectOverlay');
+        var textarea = document.getElementById('rejectTextarea');
+        var charCount = document.getElementById('rejectCharCount');
+        var counter = textarea ? textarea.parentElement.querySelector('.adm-reject-counter') : null;
+        if (!overlay || !textarea) { /* 降级：弹窗元素不存在时使用原生 prompt */
+            var r = prompt(title || '请输入拒绝理由（可选）：');
+            callback(r);
+            return;
+        }
+        /* 更新标题 */
+        var h3 = overlay.querySelector('.adm-reject-header h3');
+        if (h3 && title) h3.innerHTML = '<i class="fas fa-comment-slash"></i> ' + title;
+        else if (h3) h3.innerHTML = '<i class="fas fa-comment-slash"></i> 拒绝理由';
+        textarea.value = '';
+        if (charCount) charCount.textContent = '0';
+        if (counter) counter.classList.remove('over');
+        _rejectCallback = callback;
+        overlay.classList.add('active');
+        setTimeout(function() { textarea.focus(); }, 100);
+    }
+    function closeRejectDialog(result) {
+        var overlay = document.getElementById('rejectOverlay');
+        var textarea = document.getElementById('rejectTextarea');
+        if (overlay) overlay.classList.remove('active');
+        if (textarea) textarea.value = '';
+        if (_rejectCallback) {
+            var cb = _rejectCallback;
+            _rejectCallback = null;
+            cb(result);
+        }
+    }
+    function initRejectDialog() {
+        var overlay = document.getElementById('rejectOverlay');
+        var textarea = document.getElementById('rejectTextarea');
+        var charCount = document.getElementById('rejectCharCount');
+        var counter = textarea ? textarea.parentElement.querySelector('.adm-reject-counter') : null;
+        if (!overlay) return;
+        document.getElementById('rejectConfirmBtn').addEventListener('click', function() {
+            var val = textarea ? textarea.value.trim() : '';
+            closeRejectDialog(val || '');
+        });
+        document.getElementById('rejectCancelBtn').addEventListener('click', function() {
+            closeRejectDialog(null);
+        });
+        document.getElementById('rejectCloseBtn').addEventListener('click', function() {
+            closeRejectDialog(null);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closeRejectDialog(null);
+        });
+        if (textarea && charCount) {
+            textarea.addEventListener('input', function() {
+                var len = textarea.value.length;
+                charCount.textContent = len;
+                if (counter) {
+                    if (len > 200) counter.classList.add('over');
+                    else counter.classList.remove('over');
+                }
+            });
+        }
+    }
+
     var DEFAULT_SENSITIVE_WORDS = [
         { id: 1, word: '赌博', cat: '违禁词', addTime: new Date().toISOString() },
         { id: 2, word: '色情', cat: '违禁词', addTime: new Date().toISOString() },
@@ -48,6 +113,11 @@
     }
 
     function getSecondhandItems() {
+        var STORAGE_KEY = 'campus_secondhand_v2';
+        try {
+            var v = localStorage.getItem(STORAGE_KEY);
+            if (v) return JSON.parse(v);
+        } catch(e) {}
         if (window.CampusDB) return CampusDB.getSecondhand();
         try { return JSON.parse(localStorage.getItem('campus_secondhand') || '[]'); } catch(e) { return []; }
     }
@@ -135,6 +205,7 @@
         }
         incrementVisit();
         initSidebar();
+        initRejectDialog();
         initOverview();
         initUsers();
         initContent();
@@ -410,204 +481,746 @@
         });
     }
 
-    /* ========== 内容审核模块 ========== */
-    var contentReviewData = {
-        secondhand: [
-            { id: 'sh1', title: '罗技G502有线鼠标', stuId: '2024001', desc: '罗技G502游戏鼠标，11个可编程按键，配重可调', price: '¥199', status: 'pending', time: '2026-06-08 14:30' },
-            { id: 'sh2', title: '四六级真题合集', stuId: '2024002', desc: '近五年四六级真题，含听力光盘', price: '¥20', status: 'pending', time: '2026-06-08 10:15' },
-            { id: 'sh3', title: '小米台灯Pro', stuId: '2024003', desc: '小米智能台灯Pro，支持小爱同学控制', price: '¥60', status: 'pending', time: '2026-06-07 16:45' },
-            { id: 'sh4', title: 'MacBook Pro 2023 M2', stuId: '2024001', desc: 'M2芯片，16G+512G，电池循环仅28次', price: '¥8999', status: 'approved', time: '2026-06-05 09:00' },
-            { id: 'sh5', title: '违规商品测试', stuId: '2024006', desc: '此商品描述包含违规信息已被拒绝', price: '¥0', status: 'rejected', time: '2026-06-04 11:20' }
-        ],
-        rental: [
-            { id: 'rt1', title: '高等数学（同济第七版）上册', stuId: '2024005', desc: '适用理工科专业，含部分课堂笔记', price: '¥15/学期', status: 'pending', time: '2026-06-08 09:00' },
-            { id: 'rt2', title: 'C++ Primer Plus 第6版', stuId: '2024001', desc: '计算机专业经典教材，含课后习题答案', price: '¥20/学年', status: 'pending', time: '2026-06-07 15:30' },
-            { id: 'rt3', title: '微观经济学（曼昆）', stuId: '2024003', desc: '经管专业核心教材，重点标注清晰', price: '¥18/学期', status: 'pending', time: '2026-06-06 11:00' },
-            { id: 'rt4', title: '大学物理（第四版）', stuId: '2024002', desc: '适用物理、工科专业，保存完好', price: '¥12/学期', status: 'approved', time: '2026-06-03 10:00' },
-            { id: 'rt5', title: '已损坏教材', stuId: '2024004', desc: '教材严重缺页，无法正常使用', price: '¥5/学期', status: 'rejected', time: '2026-06-02 14:00' }
-        ],
-        parttime: [
-            { id: 'pt1', title: '校园咖啡厅周末兼职', stuId: '2024002', desc: '周六日9:00-17:00，负责点单和清洁', price: '¥120/天', status: 'pending', time: '2026-06-08 08:30' },
-            { id: 'pt2', title: '小学数学家教', stuId: '2024001', desc: '每周三晚辅导小学五年级数学', price: '¥80/次', status: 'pending', time: '2026-06-07 20:00' },
-            { id: 'pt3', title: '快递代取跑腿', stuId: '2024005', desc: '代取快递送到宿舍，按件计费', price: '¥3-8/件', status: 'pending', time: '2026-06-07 12:00' },
-            { id: 'pt4', title: '图书馆整理助理', stuId: '2024003', desc: '工作日14:00-17:00，整理上架图书', price: '¥15/小时', status: 'approved', time: '2026-06-04 09:30' },
-            { id: 'pt5', title: '虚假刷单兼职', stuId: '2024006', desc: '刷单日赚500，轻松兼职（违规信息）', price: '¥500/天', status: 'rejected', time: '2026-06-03 16:00' }
-        ]
-    };
+    /* ========== 内容审核模块（从 localStorage 读取真实数据） ========== */
 
-    /* 后端接口映射 */
-    var contentApiMap = {
-        secondhand: '/api/admin/secondhand',
-        rental: '/api/admin/textbook',
-        parttime: '/api/admin/parttime'
-    };
-
-    /* 加载状态跟踪 */
-    var contentLoading = { secondhand: false, rental: false, parttime: false };
+    /* 当前审核标签和筛选状态 */
+    var currentReviewTab = 'secondhand';
+    var currentReviewFilter = 'pending'; // pending / approved / rejected / all
 
     function initContent() {
-        var currentCTab = 'secondhand';
-        console.log('[内容审核] 初始化，默认标签：secondhand');
+        console.log('[内容审核] 初始化，使用 SecondhandAPI 真实数据');
 
         document.querySelectorAll('.adm-tab[data-ctab]').forEach(function(tab) {
             tab.addEventListener('click', function() {
                 var newTab = tab.getAttribute('data-ctab');
-                if (newTab === currentCTab) return;
+                if (newTab === currentReviewTab) return;
                 document.querySelectorAll('.adm-tab[data-ctab]').forEach(function(t) { t.classList.remove('active'); });
                 tab.classList.add('active');
-                currentCTab = newTab;
-                console.log('[内容审核] 切换标签 →', currentCTab);
-                renderContent(currentCTab);
+                currentReviewTab = newTab;
+                currentReviewFilter = 'pending';
+                console.log('[内容审核] 切换标签 →', currentReviewTab);
+                renderContent(currentReviewTab);
             });
         });
 
-        renderContent(currentCTab);
-    }
-
-    function fetchContentData(tab, callback) {
-        var apiUrl = contentApiMap[tab];
-        console.log('[内容审核] 请求接口:', apiUrl, '标签:', tab);
-
-        contentLoading[tab] = true;
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', apiUrl, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.timeout = 5000;
-
-        xhr.onload = function() {
-            contentLoading[tab] = false;
-            if (xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    var res = JSON.parse(xhr.responseText);
-                    console.log('[内容审核] 接口返回成功:', tab, res);
-                    if (res.data && Array.isArray(res.data) && res.data.length > 0) {
-                        callback(null, res.data);
-                    } else {
-                        console.log('[内容审核] 接口返回空数据，使用本地示例数据');
-                        callback(null, null);
-                    }
-                } catch (e) {
-                    console.warn('[内容审核] 接口返回解析失败，使用本地示例数据:', e);
-                    callback(null, null);
-                }
-            } else {
-                console.warn('[内容审核] 接口返回非200状态:', xhr.status, '使用本地示例数据');
-                callback(null, null);
-            }
-        };
-
-        xhr.onerror = function() {
-            contentLoading[tab] = false;
-            console.warn('[内容审核] 接口请求失败（网络错误），使用本地示例数据');
-            callback(null, null);
-        };
-
-        xhr.ontimeout = function() {
-            contentLoading[tab] = false;
-            console.warn('[内容审核] 接口请求超时，使用本地示例数据');
-            callback(null, null);
-        };
-
-        xhr.send();
+        renderContent(currentReviewTab);
     }
 
     function renderContent(tab) {
         var container = document.getElementById('contentList');
-        var tabLabels = { secondhand: '二手商品', rental: '教材租用', parttime: '兼职信息' };
-        var priceLabel = tab === 'parttime' ? '薪资' : (tab === 'rental' ? '租金' : '价格');
+        var tabLabels = { secondhand: '二手商品', rental: '教材租用', parttime: '兼职信息', pets: '流浪猫' };
 
         /* 显示加载状态 */
         container.innerHTML = '<div class="adm-loading"><div class="adm-loading-spinner"></div><span>加载中...</span></div>';
 
-        /* 尝试从后端接口获取数据 */
-        fetchContentData(tab, function(err, apiData) {
-            var data = apiData || contentReviewData[tab] || [];
-            console.log('[内容审核] 渲染数据，标签:', tab, '数据条数:', data.length);
+        if (tab === 'secondhand') {
+            /* 二手商品：优先从 SecondhandAPI 获取，降级从 localStorage 读取 */
+            if (window.SecondhandAPI) {
+                SecondhandAPI.getReviewList({ status: currentReviewFilter, page: 1, pageSize: 50 }).then(function(result) {
+                    renderSecondhandReview(container, result, tabLabels[tab]);
+                }).catch(function(err) {
+                    console.warn('[内容审核] API加载失败，使用本地数据:', err);
+                    renderSecondhandReviewLocal(container, tabLabels[tab]);
+                });
+            } else {
+                renderSecondhandReviewLocal(container, tabLabels[tab]);
+            }
+        } else if (tab === 'rental') {
+            /* 教材租用：优先从 RentalAPI 获取，降级从 localStorage 读取 */
+            if (window.RentalAPI) {
+                RentalAPI.getReviewList({ status: currentReviewFilter, page: 1, pageSize: 50 }).then(function(result) {
+                    renderRentalReviewAPI(container, result, tabLabels[tab]);
+                }).catch(function(err) {
+                    console.warn('[内容审核] 教材租用API加载失败，使用本地数据:', err);
+                    renderRentalReviewLocal(container, tabLabels[tab]);
+                });
+            } else {
+                renderRentalReviewLocal(container, tabLabels[tab]);
+            }
+        } else if (tab === 'parttime') {
+            /* 兼职信息：从 localStorage 读取 */
+            renderParttimeReview(container, tabLabels[tab]);
+        } else if (tab === 'pets') {
+            /* 流浪猫：从 localStorage 读取 */
+            renderPetsReview(container, tabLabels[tab]);
+        }
+    }
+
+    /* 本地降级：渲染二手商品审核列表（从 localStorage 读取） */
+    function renderSecondhandReviewLocal(container, tabLabel) {
+        var products = getSecondhandItems();
+
+        var pending = products.filter(function(p) { return p.reviewStatus === 'pending'; }).length;
+        var approved = products.filter(function(p) { return p.reviewStatus === 'approved'; }).length;
+        var rejected = products.filter(function(p) { return p.reviewStatus === 'rejected'; }).length;
+
+        var data = currentReviewFilter === 'all' ? products : products.filter(function(p) { return p.reviewStatus === currentReviewFilter; });
+
+        var html = '<div class="adm-review-filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'pending' ? 'active' : '') + '" data-filter="pending" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'pending' ? '#3b82f6' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'pending' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">待审核 (' + pending + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'approved' ? 'active' : '') + '" data-filter="approved" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'approved' ? '#10b981' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'approved' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已通过 (' + approved + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'rejected' ? 'active' : '') + '" data-filter="rejected" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'rejected' ? '#ef4444' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'rejected' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已拒绝 (' + rejected + ')</button>';
+        html += '</div>';
+
+        if (data.length === 0) {
+            html += '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + (currentReviewFilter === 'pending' ? '待审核' : currentReviewFilter === 'approved' ? '已通过' : currentReviewFilter === 'rejected' ? '已拒绝' : '') + tabLabel + '</p></div>';
+            container.innerHTML = html;
+            bindFilterButtons(container);
+            return;
+        }
+
+        html += '<div class="adm-table-wrap"><table class="adm-table adm-review-table"><thead><tr>' +
+            '<th>商品名称</th><th>发布者</th><th>价格</th><th>状态</th><th>操作</th></tr></thead><tbody>';
+
+        data.forEach(function(item) {
+            var statusHtml = item.reviewStatus === 'pending' ? '<span class="adm-status-badge adm-status-pending">待审核</span>' :
+                item.reviewStatus === 'approved' ? '<span class="adm-status-badge adm-status-approved">已通过</span>' :
+                '<span class="adm-status-badge adm-status-rejected">已拒绝</span>';
+            var actions = '';
+            if (item.reviewStatus === 'pending') {
+                actions = '<button class="adm-btn-sm adm-btn-approve" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-check"></i> 通过</button> ' +
+                    '<button class="adm-btn-sm adm-btn-reject" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-times"></i> 拒绝</button>';
+            } else if (item.reviewStatus === 'approved') {
+                actions = '<button class="adm-btn-sm adm-btn-reject" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-undo"></i> 撤销</button>';
+            } else {
+                actions = '<button class="adm-btn-sm adm-btn-approve" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-redo"></i> 恢复</button>';
+            }
+            html += '<tr><td>' + (item.name || '未知') + '</td><td>' + (item.seller || '未知') + '</td><td>¥' + (item.price || 0) + '</td><td>' + statusHtml + '</td><td>' + actions + '</td></tr>';
+        });
+
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        bindFilterButtons(container);
+
+        /* 绑定审核操作按钮 */
+        container.querySelectorAll('.adm-btn-approve').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var productId = parseInt(btn.getAttribute('data-id'));
+                localApproveProduct(productId);
+            });
+        });
+        container.querySelectorAll('.adm-btn-reject').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var productId = parseInt(btn.getAttribute('data-id'));
+                localRejectProduct(productId); /* 内部会弹 prompt */
+            });
+        });
+    }
+
+    /* 渲染二手商品审核列表（API模式） */
+    function renderSecondhandReview(container, result, tabLabel) {
+        var data = result.list || [];
+        var total = result.total || 0;
+
+        /* 获取各状态数量统计 */
+        SecondhandAPI.getReviewStats().then(function(stats) {
+            var html = '<div class="adm-review-filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+            html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'pending' ? 'active' : '') + '" data-filter="pending" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'pending' ? '#3b82f6' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'pending' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">待审核 (' + stats.pending + ')</button>';
+            html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'approved' ? 'active' : '') + '" data-filter="approved" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'approved' ? '#10b981' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'approved' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已通过 (' + stats.approved + ')</button>';
+            html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'rejected' ? 'active' : '') + '" data-filter="rejected" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'rejected' ? '#ef4444' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'rejected' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已拒绝 (' + stats.rejected + ')</button>';
+            html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'all' ? 'active' : '') + '" data-filter="all" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'all' ? '#6b7280' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'all' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">全部 (' + stats.total + ')</button>';
+            html += '</div>';
 
             if (data.length === 0) {
-                container.innerHTML = '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + tabLabels[tab] + '审核数据</p></div>';
+                html += '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + (currentReviewFilter === 'pending' ? '待审核' : currentReviewFilter === 'approved' ? '已通过' : currentReviewFilter === 'rejected' ? '已拒绝' : '') + tabLabel + '</p></div>';
+                container.innerHTML = html;
+                bindFilterButtons(container);
                 return;
             }
 
-            var pendingCount = data.filter(function(d) { return d.status === 'pending'; }).length;
-            var approvedCount = data.filter(function(d) { return d.status === 'approved'; }).length;
-            var rejectedCount = data.filter(function(d) { return d.status === 'rejected'; }).length;
-
-            var html = '<div class="adm-review-stats">' +
-                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#6b7280">' + pendingCount + '</span><span class="adm-review-stat-label">待审核</span></div>' +
-                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#059669">' + approvedCount + '</span><span class="adm-review-stat-label">已通过</span></div>' +
-                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#ef4444">' + rejectedCount + '</span><span class="adm-review-stat-label">已拒绝</span></div>' +
-                '</div>';
-
             html += '<div class="adm-table-wrap"><table class="adm-table adm-review-table"><thead><tr>' +
-                '<th style="width:50px">序号</th>' +
-                '<th>标题</th>' +
-                '<th style="width:110px">发布者学号</th>' +
-                '<th>描述</th>' +
-                '<th style="width:100px">' + priceLabel + '</th>' +
+                '<th style="width:60px">图片</th>' +
+                '<th>商品名称</th>' +
+                '<th style="width:80px">分类</th>' +
+                '<th style="width:90px">价格</th>' +
+                '<th style="width:90px">发布人</th>' +
                 '<th style="width:80px">状态</th>' +
-                '<th style="width:140px">发布时间</th>' +
-                '<th style="width:140px">操作</th>' +
+                '<th style="width:130px">发布时间</th>' +
+                '<th style="width:160px">操作</th>' +
                 '</tr></thead><tbody>';
 
-            data.forEach(function(item, idx) {
+            data.forEach(function(item) {
                 var statusHtml = '';
-                if (item.status === 'pending') statusHtml = '<span class="adm-status-badge adm-status-pending">待审核</span>';
-                else if (item.status === 'approved') statusHtml = '<span class="adm-status-badge adm-status-approved">已通过</span>';
+                if (item.reviewStatus === 'pending') statusHtml = '<span class="adm-status-badge adm-status-pending">待审核</span>';
+                else if (item.reviewStatus === 'approved') statusHtml = '<span class="adm-status-badge adm-status-approved">已通过</span>';
                 else statusHtml = '<span class="adm-status-badge adm-status-rejected">已拒绝</span>';
 
                 var actions = '';
-                if (item.status === 'pending') {
-                    actions = '<button class="adm-btn-sm adm-btn-approve" data-tab="' + tab + '" data-id="' + item.id + '"><i class="fas fa-check"></i> 通过</button> ' +
-                        '<button class="adm-btn-sm adm-btn-reject" data-tab="' + tab + '" data-id="' + item.id + '"><i class="fas fa-times"></i> 拒绝</button>';
-                } else if (item.status === 'approved') {
-                    actions = '<button class="adm-btn-sm adm-btn-reject" data-tab="' + tab + '" data-id="' + item.id + '"><i class="fas fa-undo"></i> 撤销</button>';
+                if (item.reviewStatus === 'pending') {
+                    actions = '<button class="adm-btn-sm adm-btn-approve" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-check"></i> 通过</button> ' +
+                        '<button class="adm-btn-sm adm-btn-reject" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-times"></i> 拒绝</button>';
+                } else if (item.reviewStatus === 'approved') {
+                    actions = '<button class="adm-btn-sm adm-btn-reject" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-undo"></i> 撤销</button>';
                 } else {
-                    actions = '<button class="adm-btn-sm adm-btn-approve" data-tab="' + tab + '" data-id="' + item.id + '"><i class="fas fa-redo"></i> 恢复</button>';
+                    actions = '<button class="adm-btn-sm adm-btn-approve" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-redo"></i> 恢复</button>';
                 }
 
-                html += '<tr><td>' + (idx + 1) + '</td>' +
-                    '<td style="font-weight:600;color:var(--text-primary)">' + item.title + '</td>' +
-                    '<td style="color:var(--text-secondary)">' + item.stuId + '</td>' +
-                    '<td style="color:var(--text-secondary);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + item.desc + '">' + item.desc + '</td>' +
-                    '<td style="font-weight:600;color:#165DFF">' + item.price + '</td>' +
+                var imgHtml = '<div style="width:40px;height:40px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden"><i class="fas fa-image" style="color:#94a3b8;font-size:14px"></i></div>';
+                if (item.images && item.images.length > 0) {
+                    imgHtml = '<div style="width:40px;height:40px;border-radius:6px;overflow:hidden"><img src="' + item.images[0] + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML=\'<i class=\\\'fas fa-image\\\' style=\\\'color:#94a3b8;font-size:14px;display:flex;align-items:center;justify-content:center;width:100%;height:100%\\\'></i>\'"></div>';
+                }
+
+                html += '<tr><td>' + imgHtml + '</td>' +
+                    '<td style="font-weight:600;color:var(--text-primary)">' + item.name + '</td>' +
+                    '<td style="color:var(--text-secondary)">' + item.category + '</td>' +
+                    '<td style="font-weight:600;color:#165DFF">¥' + item.price + '</td>' +
+                    '<td style="color:var(--text-secondary)">' + item.seller + '</td>' +
                     '<td>' + statusHtml + '</td>' +
-                    '<td style="color:var(--text-secondary);font-size:12px">' + item.time + '</td>' +
+                    '<td style="color:var(--text-secondary);font-size:12px">' + (item.time || '-') + '</td>' +
                     '<td>' + actions + '</td></tr>';
             });
 
             html += '</tbody></table></div>';
             container.innerHTML = html;
 
-            /* 绑定审核按钮事件 */
+            /* 绑定筛选按钮 */
+            bindFilterButtons(container);
+
+            /* 绑定审核操作按钮 */
             container.querySelectorAll('.adm-btn-approve').forEach(function(btn) {
                 btn.addEventListener('click', function() {
-                    var tabKey = btn.getAttribute('data-tab');
-                    var itemId = btn.getAttribute('data-id');
-                    var items = contentReviewData[tabKey];
-                    var item = items.find(function(d) { return d.id === itemId; });
-                    if (item) {
-                        item.status = 'approved';
-                        console.log('[内容审核] 审核通过:', itemId, '标签:', tabKey);
-                        showToast('已通过审核', 'success');
-                        renderContent(tabKey);
+                    var productId = parseInt(btn.getAttribute('data-id'));
+                    if (window.SecondhandAPI) {
+                        SecondhandAPI.approveProduct({ productId: productId, reviewer: '管理员' }).then(function(res) {
+                            if (res.success) { showToast('审核通过', 'success'); renderContent(currentReviewTab); }
+                            else { showToast(res.message || '操作失败', 'error'); }
+                        }).catch(function() {
+                            /* API失败时本地降级 */
+                            localApproveProduct(productId);
+                        });
+                    } else {
+                        localApproveProduct(productId);
                     }
                 });
             });
             container.querySelectorAll('.adm-btn-reject').forEach(function(btn) {
                 btn.addEventListener('click', function() {
-                    var tabKey = btn.getAttribute('data-tab');
-                    var itemId = btn.getAttribute('data-id');
-                    var items = contentReviewData[tabKey];
-                    var item = items.find(function(d) { return d.id === itemId; });
-                    if (item) {
-                        item.status = 'rejected';
-                        console.log('[内容审核] 审核拒绝:', itemId, '标签:', tabKey);
-                        showToast('已拒绝', 'error');
-                        renderContent(tabKey);
+                    var productId = parseInt(btn.getAttribute('data-id'));
+                    showRejectDialog(function(reason) {
+                        if (reason === null) return; /* 用户取消 */
+                        if (window.SecondhandAPI) {
+                            SecondhandAPI.rejectProduct({ productId: productId, reviewer: '管理员', reviewNote: reason }).then(function(res) {
+                                if (res.success) { showToast('已拒绝', 'error'); renderContent(currentReviewTab); }
+                                else { showToast(res.message || '操作失败', 'error'); }
+                            }).catch(function() {
+                                localRejectProduct(productId, reason);
+                            });
+                        } else {
+                            localRejectProduct(productId, reason);
+                        }
+                    });
+                });
+            });
+        });
+    }
+
+    /* 绑定筛选按钮事件 */
+    function bindFilterButtons(container) {
+        container.querySelectorAll('.adm-filter-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentReviewFilter = btn.getAttribute('data-filter');
+                renderContent(currentReviewTab);
+            });
+        });
+    }
+
+    /* 本地审核操作（无后端API时的降级方案） */
+    function localApproveProduct(productId) {
+        var products = getSecondhandItems();
+        var product = products.find(function(p) { return p.id === productId; });
+        if (product) {
+            product.reviewStatus = 'approved';
+            product.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            /* 写回统一存储 */
+            var STORAGE_KEY = 'campus_secondhand_v2';
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)); } catch(e) {}
+            localStorage.setItem('campus_secondhand', JSON.stringify(products));
+            showToast('审核通过', 'success');
+            renderContent(currentReviewTab);
+        } else {
+            showToast('商品不存在', 'error');
+        }
+    }
+
+    function localRejectProduct(productId, reason) {
+        if (reason === undefined) {
+            showRejectDialog(function(r) {
+                if (r === null) return;
+                localRejectProduct(productId, r);
+            });
+            return;
+        }
+        var products = getSecondhandItems();
+        var product = products.find(function(p) { return p.id === productId; });
+        if (product) {
+            product.reviewStatus = 'rejected';
+            product.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            if (reason) product.rejectReason = reason;
+            /* 写回统一存储 */
+            var STORAGE_KEY = 'campus_secondhand_v2';
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)); } catch(e) {}
+            localStorage.setItem('campus_secondhand', JSON.stringify(products));
+            showToast('已拒绝', 'error');
+            renderContent(currentReviewTab);
+        } else {
+            showToast('商品不存在', 'error');
+        }
+    }
+
+    /* 统一获取教材租用列表 */
+    function getRentalBooks() {
+        var STORAGE_KEY = 'campus_rental_books_v2';
+        try {
+            var v = localStorage.getItem(STORAGE_KEY);
+            if (v) {
+                var data = JSON.parse(v);
+                if (data.length > 0) return data;
+            }
+        } catch(e) {}
+        /* 兼容旧键 */
+        try {
+            var old = JSON.parse(localStorage.getItem('campus_rental_books') || '[]');
+            if (old.length > 0) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(old));
+                return old;
+            }
+        } catch(e2) {}
+        if (window.CampusDB) return CampusDB.getRentalBooks ? CampusDB.getRentalBooks() : [];
+        return [];
+    }
+
+    /* 本地审核操作：通过教材 */
+    function localApproveRental(bookId) {
+        var books = getRentalBooks();
+        var book = books.find(function(b) { return b.id === bookId; });
+        if (book) {
+            book.reviewStatus = 'approved';
+            book.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            var STORAGE_KEY = 'campus_rental_books_v2';
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(books)); } catch(e) {}
+            localStorage.setItem('campus_rental_books', JSON.stringify(books));
+            showToast('审核通过', 'success');
+            renderContent(currentReviewTab);
+        } else {
+            showToast('教材不存在', 'error');
+        }
+    }
+
+    /* 本地审核操作：拒绝教材 */
+    function localRejectRental(bookId, reason) {
+        if (reason === undefined) {
+            showRejectDialog(function(r) {
+                if (r === null) return;
+                localRejectRental(bookId, r);
+            });
+            return;
+        }
+        var books = getRentalBooks();
+        var book = books.find(function(b) { return b.id === bookId; });
+        if (book) {
+            book.reviewStatus = 'rejected';
+            book.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            if (reason) book.rejectReason = reason;
+            var STORAGE_KEY = 'campus_rental_books_v2';
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(books)); } catch(e) {}
+            localStorage.setItem('campus_rental_books', JSON.stringify(books));
+            showToast('已拒绝', 'error');
+            renderContent(currentReviewTab);
+        } else {
+            showToast('教材不存在', 'error');
+        }
+    }
+
+    /* 本地降级：渲染教材租用审核列表（从 localStorage 读取） */
+    function renderRentalReviewLocal(container, tabLabel) {
+        var books = getRentalBooks();
+
+        var pending = books.filter(function(b) { return b.reviewStatus === 'pending'; }).length;
+        var approved = books.filter(function(b) { return b.reviewStatus === 'approved'; }).length;
+        var rejected = books.filter(function(b) { return b.reviewStatus === 'rejected'; }).length;
+
+        var data = currentReviewFilter === 'all' ? books : books.filter(function(b) { return b.reviewStatus === currentReviewFilter; });
+
+        var html = '<div class="adm-review-filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'pending' ? 'active' : '') + '" data-filter="pending" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'pending' ? '#3b82f6' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'pending' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">待审核 (' + pending + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'approved' ? 'active' : '') + '" data-filter="approved" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'approved' ? '#10b981' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'approved' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已通过 (' + approved + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'rejected' ? 'active' : '') + '" data-filter="rejected" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'rejected' ? '#ef4444' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'rejected' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已拒绝 (' + rejected + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'all' ? 'active' : '') + '" data-filter="all" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'all' ? '#6b7280' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'all' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">全部 (' + books.length + ')</button>';
+        html += '</div>';
+
+        if (data.length === 0) {
+            html += '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + (currentReviewFilter === 'pending' ? '待审核' : currentReviewFilter === 'approved' ? '已通过' : currentReviewFilter === 'rejected' ? '已拒绝' : '') + tabLabel + '</p></div>';
+            container.innerHTML = html;
+            bindFilterButtons(container);
+            return;
+        }
+
+        html += '<div class="adm-table-wrap"><table class="adm-table adm-review-table"><thead><tr>' +
+            '<th style="width:60px">图片</th>' +
+            '<th>书名</th>' +
+            '<th style="width:80px">租金</th>' +
+            '<th style="width:90px">发布者</th>' +
+            '<th style="width:100px">所属学院</th>' +
+            '<th style="width:80px">状态</th>' +
+            '<th style="width:130px">提交时间</th>' +
+            '<th style="width:160px">操作</th>' +
+            '</tr></thead><tbody>';
+
+        data.forEach(function(item) {
+            var statusHtml = item.reviewStatus === 'pending' ? '<span class="adm-status-badge adm-status-pending">待审核</span>' :
+                item.reviewStatus === 'approved' ? '<span class="adm-status-badge adm-status-approved">已通过</span>' :
+                '<span class="adm-status-badge adm-status-rejected">已拒绝</span>';
+            var actions = '';
+            if (item.reviewStatus === 'pending') {
+                actions = '<button class="adm-btn-sm adm-btn-approve-rental" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-check"></i> 通过</button> ' +
+                    '<button class="adm-btn-sm adm-btn-reject-rental" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-times"></i> 拒绝</button>';
+            } else if (item.reviewStatus === 'approved') {
+                actions = '<button class="adm-btn-sm adm-btn-reject-rental" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-undo"></i> 撤销</button>';
+            } else {
+                actions = '<button class="adm-btn-sm adm-btn-approve-rental" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-redo"></i> 恢复</button>';
+            }
+
+            var imgHtml = '<div style="width:40px;height:40px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden"><i class="fas fa-book" style="color:#94a3b8;font-size:14px"></i></div>';
+            if (item.image) {
+                imgHtml = '<div style="width:40px;height:40px;border-radius:6px;overflow:hidden"><img src="' + item.image + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML=\'<i class=\\\'fas fa-book\\\' style=\\\'color:#94a3b8;font-size:14px;display:flex;align-items:center;justify-content:center;width:100%;height:100%\\\'></i>\'"></div>';
+            }
+
+            html += '<tr><td>' + imgHtml + '</td>' +
+                '<td style="font-weight:600;color:var(--text-primary)">' + item.name + '</td>' +
+                '<td style="font-weight:600;color:#165DFF">¥' + item.price + '/' + item.period + '</td>' +
+                '<td style="color:var(--text-secondary)">' + item.seller + '</td>' +
+                '<td style="color:var(--text-secondary)">' + (item.sellerDept || '-') + '</td>' +
+                '<td>' + statusHtml + '</td>' +
+                '<td style="color:var(--text-secondary);font-size:12px">' + (item.time || '-') + '</td>' +
+                '<td>' + actions + '</td></tr>';
+        });
+
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        bindFilterButtons(container);
+
+        container.querySelectorAll('.adm-btn-approve-rental').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var bookId = parseInt(btn.getAttribute('data-id'));
+                if (window.RentalAPI) {
+                    RentalAPI.approveBook({ bookId: bookId, reviewer: '管理员' }).then(function(res) {
+                        if (res.success) { showToast('审核通过', 'success'); renderContent(currentReviewTab); }
+                        else { showToast(res.message || '操作失败', 'error'); }
+                    }).catch(function() {
+                        localApproveRental(bookId);
+                    });
+                } else {
+                    localApproveRental(bookId);
+                }
+            });
+        });
+        container.querySelectorAll('.adm-btn-reject-rental').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var bookId = parseInt(btn.getAttribute('data-id'));
+                showRejectDialog(function(reason) {
+                    if (reason === null) return;
+                    if (window.RentalAPI) {
+                        RentalAPI.rejectBook({ bookId: bookId, reviewer: '管理员', reviewNote: reason }).then(function(res) {
+                            if (res.success) { showToast('已拒绝', 'error'); renderContent(currentReviewTab); }
+                            else { showToast(res.message || '操作失败', 'error'); }
+                        }).catch(function() {
+                            localRejectRental(bookId, reason);
+                        });
+                    } else {
+                        localRejectRental(bookId, reason);
                     }
                 });
+            });
+        });
+    }
+
+    /* 渲染教材租用审核列表（API模式） */
+    function renderRentalReviewAPI(container, result, tabLabel) {
+        var data = result.list || [];
+        var total = result.total || 0;
+
+        var html = '<div class="adm-review-filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'pending' ? 'active' : '') + '" data-filter="pending" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'pending' ? '#3b82f6' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'pending' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">待审核</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'approved' ? 'active' : '') + '" data-filter="approved" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'approved' ? '#10b981' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'approved' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已通过</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'rejected' ? 'active' : '') + '" data-filter="rejected" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'rejected' ? '#ef4444' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'rejected' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已拒绝</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'all' ? 'active' : '') + '" data-filter="all" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'all' ? '#6b7280' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'all' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">全部</button>';
+        html += '</div>';
+
+        if (data.length === 0) {
+            html += '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + (currentReviewFilter === 'pending' ? '待审核' : currentReviewFilter === 'approved' ? '已通过' : currentReviewFilter === 'rejected' ? '已拒绝' : '') + tabLabel + '</p></div>';
+            container.innerHTML = html;
+            bindFilterButtons(container);
+            return;
+        }
+
+        html += '<div class="adm-table-wrap"><table class="adm-table adm-review-table"><thead><tr>' +
+            '<th style="width:60px">图片</th>' +
+            '<th>书名</th>' +
+            '<th style="width:80px">租金</th>' +
+            '<th style="width:90px">发布者</th>' +
+            '<th style="width:100px">所属学院</th>' +
+            '<th style="width:80px">状态</th>' +
+            '<th style="width:130px">提交时间</th>' +
+            '<th style="width:160px">操作</th>' +
+            '</tr></thead><tbody>';
+
+        data.forEach(function(item) {
+            var statusHtml = '';
+            if (item.reviewStatus === 'pending') statusHtml = '<span class="adm-status-badge adm-status-pending">待审核</span>';
+            else if (item.reviewStatus === 'approved') statusHtml = '<span class="adm-status-badge adm-status-approved">已通过</span>';
+            else statusHtml = '<span class="adm-status-badge adm-status-rejected">已拒绝</span>';
+
+            var actions = '';
+            if (item.reviewStatus === 'pending') {
+                actions = '<button class="adm-btn-sm adm-btn-approve-rental" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-check"></i> 通过</button> ' +
+                    '<button class="adm-btn-sm adm-btn-reject-rental" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-times"></i> 拒绝</button>';
+            } else if (item.reviewStatus === 'approved') {
+                actions = '<button class="adm-btn-sm adm-btn-reject-rental" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-undo"></i> 撤销</button>';
+            } else {
+                actions = '<button class="adm-btn-sm adm-btn-approve-rental" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-redo"></i> 恢复</button>';
+            }
+
+            var imgHtml = '<div style="width:40px;height:40px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden"><i class="fas fa-book" style="color:#94a3b8;font-size:14px"></i></div>';
+            if (item.image) {
+                imgHtml = '<div style="width:40px;height:40px;border-radius:6px;overflow:hidden"><img src="' + item.image + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML=\'<i class=\\\'fas fa-book\\\' style=\\\'color:#94a3b8;font-size:14px;display:flex;align-items:center;justify-content:center;width:100%;height:100%\\\'></i>\'"></div>';
+            }
+
+            html += '<tr><td>' + imgHtml + '</td>' +
+                '<td style="font-weight:600;color:var(--text-primary)">' + item.name + '</td>' +
+                '<td style="font-weight:600;color:#165DFF">¥' + item.price + '/' + item.period + '</td>' +
+                '<td style="color:var(--text-secondary)">' + item.seller + '</td>' +
+                '<td style="color:var(--text-secondary)">' + (item.sellerDept || '-') + '</td>' +
+                '<td>' + statusHtml + '</td>' +
+                '<td style="color:var(--text-secondary);font-size:12px">' + (item.time || '-') + '</td>' +
+                '<td>' + actions + '</td></tr>';
+        });
+
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        bindFilterButtons(container);
+
+        container.querySelectorAll('.adm-btn-approve-rental').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var bookId = parseInt(btn.getAttribute('data-id'));
+                if (window.RentalAPI) {
+                    RentalAPI.approveBook({ bookId: bookId, reviewer: '管理员' }).then(function(res) {
+                        if (res.success) { showToast('审核通过', 'success'); renderContent(currentReviewTab); }
+                        else { showToast(res.message || '操作失败', 'error'); }
+                    }).catch(function() {
+                        localApproveRental(bookId);
+                    });
+                } else {
+                    localApproveRental(bookId);
+                }
+            });
+        });
+        container.querySelectorAll('.adm-btn-reject-rental').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var bookId = parseInt(btn.getAttribute('data-id'));
+                showRejectDialog(function(reason) {
+                    if (reason === null) return;
+                    if (window.RentalAPI) {
+                        RentalAPI.rejectBook({ bookId: bookId, reviewer: '管理员', reviewNote: reason }).then(function(res) {
+                            if (res.success) { showToast('已拒绝', 'error'); renderContent(currentReviewTab); }
+                            else { showToast(res.message || '操作失败', 'error'); }
+                        }).catch(function() {
+                            localRejectRental(bookId, reason);
+                        });
+                    } else {
+                        localRejectRental(bookId, reason);
+                    }
+                });
+            });
+        });
+    }
+
+    /* 渲染兼职信息审核列表 */
+    function renderParttimeReview(container, tabLabel) {
+        var jobs = [];
+        try { jobs = JSON.parse(localStorage.getItem('campus_parttime_jobs') || '[]'); } catch(e) {}
+        if (jobs.length === 0 && window.CampusDB) { jobs = CampusDB.getParttimeJobs ? CampusDB.getParttimeJobs() : []; }
+
+        var pending = jobs.filter(function(j) { return j.reviewStatus === 'pending'; }).length;
+        var approved = jobs.filter(function(j) { return j.reviewStatus === 'approved'; }).length;
+        var rejected = jobs.filter(function(j) { return j.reviewStatus === 'rejected'; }).length;
+
+        var data = currentReviewFilter === 'all' ? jobs : jobs.filter(function(j) { return j.reviewStatus === currentReviewFilter; });
+
+        var html = '<div class="adm-review-filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'pending' ? 'active' : '') + '" data-filter="pending" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'pending' ? '#3b82f6' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'pending' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">待审核 (' + pending + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'approved' ? 'active' : '') + '" data-filter="approved" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'approved' ? '#10b981' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'approved' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已通过 (' + approved + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'rejected' ? 'active' : '') + '" data-filter="rejected" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'rejected' ? '#ef4444' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'rejected' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已拒绝 (' + rejected + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'all' ? 'active' : '') + '" data-filter="all" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'all' ? '#6b7280' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'all' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">全部 (' + jobs.length + ')</button>';
+        html += '</div>';
+
+        if (data.length === 0) {
+            html += '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + (currentReviewFilter === 'pending' ? '待审核' : currentReviewFilter === 'approved' ? '已通过' : currentReviewFilter === 'rejected' ? '已拒绝' : '') + tabLabel + '</p></div>';
+            container.innerHTML = html;
+            bindFilterButtons(container);
+            return;
+        }
+
+        html += '<div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>序号</th><th>兼职岗位</th><th>薪资</th><th>发布者</th><th>所属学院</th><th>提交时间</th><th>状态</th><th>操作</th></tr></thead><tbody>';
+        data.forEach(function(item, idx) {
+            var statusHtml = item.reviewStatus === 'pending' ? '<span class="adm-status-badge adm-status-pending">待审核</span>' :
+                item.reviewStatus === 'approved' ? '<span class="adm-status-badge adm-status-approved">已通过</span>' :
+                '<span class="adm-status-badge adm-status-rejected">已拒绝</span>';
+            var actions = '';
+            if (item.reviewStatus === 'pending') {
+                actions = '<button class="adm-btn-sm adm-btn-approve-pt" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-check"></i> 通过</button> <button class="adm-btn-sm adm-btn-reject-pt" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-times"></i> 驳回</button>';
+            } else if (item.reviewStatus === 'approved') {
+                actions = '<button class="adm-btn-sm adm-btn-reject-pt" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-undo"></i> 撤销</button>';
+            } else {
+                actions = '<button class="adm-btn-sm adm-btn-approve-pt" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-redo"></i> 恢复</button>';
+            }
+            html += '<tr><td>' + (idx+1) + '</td><td>' + item.title + '</td><td>' + item.salary + '</td><td>' + (item.contact || '-') + '</td><td>' + (item.dept || '-') + '</td><td>' + (item.publishTime || item.time || '-') + '</td><td>' + statusHtml + '</td><td>' + actions + '</td></tr>';
+        });
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        bindFilterButtons(container);
+
+        container.querySelectorAll('.adm-btn-approve-pt').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = btn.getAttribute('data-id');
+                var allJobs = JSON.parse(localStorage.getItem('campus_parttime_jobs') || '[]');
+                var job = allJobs.find(function(j) { return String(j.id) === String(id); });
+                if (job) { job.reviewStatus = 'approved'; job.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16); localStorage.setItem('campus_parttime_jobs', JSON.stringify(allJobs)); showToast('审核通过', 'success'); renderContent(currentReviewTab); }
+                else { showToast('兼职信息不存在', 'error'); }
+            });
+        });
+        container.querySelectorAll('.adm-btn-reject-pt').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = btn.getAttribute('data-id');
+                showRejectDialog(function(reason) {
+                    if (reason === null) return;
+                    var allJobs = JSON.parse(localStorage.getItem('campus_parttime_jobs') || '[]');
+                    var job = allJobs.find(function(j) { return String(j.id) === String(id); });
+                    if (job) { job.reviewStatus = 'rejected'; job.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16); if (reason) job.rejectReason = reason; localStorage.setItem('campus_parttime_jobs', JSON.stringify(allJobs)); showToast('已驳回', 'error'); renderContent(currentReviewTab); }
+                    else { showToast('兼职信息不存在', 'error'); }
+                }, '驳回理由');
+            });
+        });
+    }
+
+    /* 统一获取流浪猫列表（含去重和字段补全） */
+    function getPetsList() {
+        try {
+            var pets = JSON.parse(localStorage.getItem('campus_pets') || '[]');
+            /* 补全缺失的 reviewStatus 字段 */
+            pets.forEach(function(p) {
+                if (!p.reviewStatus) p.reviewStatus = 'approved';
+            });
+            /* 去重：按 id 去重，保留第一条 */
+            var seen = {};
+            var deduped = [];
+            pets.forEach(function(p) {
+                if (!seen[p.id]) {
+                    seen[p.id] = true;
+                    deduped.push(p);
+                }
+            });
+            /* 如果去重后数据有变化，回写 localStorage */
+            if (deduped.length !== pets.length) {
+                localStorage.setItem('campus_pets', JSON.stringify(deduped));
+            }
+            return deduped;
+        } catch(e) { return []; }
+    }
+
+    /* 本地审核操作：通过流浪猫 */
+    function localApprovePet(petId) {
+        var pets = getPetsList();
+        var pet = pets.find(function(p) { return String(p.id) === String(petId); });
+        if (pet) {
+            pet.reviewStatus = 'approved';
+            pet.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            localStorage.setItem('campus_pets', JSON.stringify(pets));
+            showToast('审核通过', 'success');
+            renderContent(currentReviewTab);
+        } else {
+            showToast('记录不存在', 'error');
+        }
+    }
+
+    /* 本地审核操作：拒绝流浪猫 */
+    function localRejectPet(petId, reason) {
+        if (reason === undefined) {
+            showRejectDialog(function(r) {
+                if (r === null) return;
+                localRejectPet(petId, r);
+            });
+            return;
+        }
+        var pets = getPetsList();
+        var pet = pets.find(function(p) { return String(p.id) === String(petId); });
+        if (pet) {
+            pet.reviewStatus = 'rejected';
+            pet.reviewTime = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            if (reason) pet.rejectReason = reason;
+            localStorage.setItem('campus_pets', JSON.stringify(pets));
+            showToast('已拒绝', 'error');
+            renderContent(currentReviewTab);
+        } else {
+            showToast('记录不存在', 'error');
+        }
+    }
+
+    /* 渲染流浪猫审核列表 */
+    function renderPetsReview(container, tabLabel) {
+        var pets = getPetsList();
+
+        var data = currentReviewFilter === 'all' ? pets : pets.filter(function(p) { return p.reviewStatus === currentReviewFilter; });
+        var pending = pets.filter(function(p) { return p.reviewStatus === 'pending'; }).length;
+        var approved = pets.filter(function(p) { return p.reviewStatus === 'approved'; }).length;
+        var rejected = pets.filter(function(p) { return p.reviewStatus === 'rejected'; }).length;
+
+        var html = '<div class="adm-review-filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'pending' ? 'active' : '') + '" data-filter="pending" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'pending' ? '#3b82f6' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'pending' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">待审核 (' + pending + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'approved' ? 'active' : '') + '" data-filter="approved" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'approved' ? '#10b981' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'approved' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已通过 (' + approved + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'rejected' ? 'active' : '') + '" data-filter="rejected" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'rejected' ? '#ef4444' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'rejected' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">已拒绝 (' + rejected + ')</button>';
+        html += '<button class="adm-filter-btn ' + (currentReviewFilter === 'all' ? 'active' : '') + '" data-filter="all" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (currentReviewFilter === 'all' ? '#6b7280' : 'var(--bg-secondary)') + ';color:' + (currentReviewFilter === 'all' ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px">全部 (' + pets.length + ')</button>';
+        html += '</div>';
+
+        if (data.length === 0) {
+            html += '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + (currentReviewFilter === 'pending' ? '待审核' : currentReviewFilter === 'approved' ? '已通过' : currentReviewFilter === 'rejected' ? '已拒绝' : '') + tabLabel + '</p></div>';
+            container.innerHTML = html;
+            bindFilterButtons(container);
+            return;
+        }
+
+        html += '<div class="adm-table-wrap"><table class="adm-table"><thead><tr><th style="width:60px">图片</th><th>名称</th><th>品种</th><th>位置</th><th>联系人</th><th style="width:80px">状态</th><th style="width:130px">登记时间</th><th style="width:160px">操作</th></tr></thead><tbody>';
+        data.forEach(function(item) {
+            var statusHtml = item.reviewStatus === 'pending' ? '<span class="adm-status-badge adm-status-pending">待审核</span>' :
+                item.reviewStatus === 'approved' ? '<span class="adm-status-badge adm-status-approved">已通过</span>' :
+                '<span class="adm-status-badge adm-status-rejected">已拒绝</span>';
+            var actions = item.reviewStatus === 'pending' ?
+                '<button class="adm-btn-sm adm-btn-approve-pet" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-check"></i> 通过</button> <button class="adm-btn-sm adm-btn-reject-pet" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-times"></i> 拒绝</button>' :
+                (item.reviewStatus === 'approved' ? '<button class="adm-btn-sm adm-btn-reject-pet" data-id="' + item.id + '" style="color:#ef4444"><i class="fas fa-undo"></i> 撤销</button>' : '<button class="adm-btn-sm adm-btn-approve-pet" data-id="' + item.id + '" style="color:#059669"><i class="fas fa-redo"></i> 恢复</button>');
+            var imgHtml = '<div style="width:40px;height:40px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;overflow:hidden"><i class="fas fa-cat" style="color:#94a3b8;font-size:14px"></i></div>';
+            if (item.images && item.images.length > 0) {
+                imgHtml = '<div style="width:40px;height:40px;border-radius:6px;overflow:hidden"><img src="' + item.images[0] + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML=\'<i class=\\\'fas fa-cat\\\' style=\\\'color:#94a3b8;font-size:14px;display:flex;align-items:center;justify-content:center;width:100%;height:100%\\\'></i>\'"></div>';
+            }
+            html += '<tr><td>' + imgHtml + '</td><td style="font-weight:600">' + item.name + '</td><td style="color:var(--text-secondary)">' + item.breed + '</td><td style="color:var(--text-secondary)">' + item.location + '</td><td style="color:var(--text-secondary)">' + item.contact + '</td><td>' + statusHtml + '</td><td style="color:var(--text-secondary);font-size:12px">' + (item.publishTime || '-') + '</td><td>' + actions + '</td></tr>';
+        });
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        bindFilterButtons(container);
+
+        container.querySelectorAll('.adm-btn-approve-pet').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = btn.getAttribute('data-id');
+                localApprovePet(id);
+            });
+        });
+        container.querySelectorAll('.adm-btn-reject-pet').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = btn.getAttribute('data-id');
+                localRejectPet(id);
             });
         });
     }
@@ -647,8 +1260,8 @@
         }).join('');
         div.querySelectorAll('.adm-btn-del').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                var id = parseInt(btn.getAttribute('data-id'));
-                var list = getAnnouncements().filter(function(a) { return a.id !== id; });
+                var id = btn.getAttribute('data-id');
+                var list = getAnnouncements().filter(function(a) { return String(a.id) !== String(id); });
                 saveAnnouncements(list);
                 renderAnnouncements();
                 showToast('公告已删除', 'success');
@@ -941,6 +1554,86 @@
                 setTimeout(function() { location.reload(); }, 1000);
             }
         });
+
+        /* 数据导出 */
+        var exportBtn = document.getElementById('exportDataBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                var statusEl = document.getElementById('dataTransferStatus');
+                try {
+                    var allData = {};
+                    /* 收集所有 campus_ 开头的 localStorage 数据 */
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var key = localStorage.key(i);
+                        if (key && key.indexOf('campus_') === 0) {
+                            try { allData[key] = JSON.parse(localStorage.getItem(key)); } catch(e) { allData[key] = localStorage.getItem(key); }
+                        }
+                    }
+                    /* 也收集 campus_secondhand_v2 */
+                    try { var v2 = localStorage.getItem('campus_secondhand_v2'); if (v2) allData['campus_secondhand_v2'] = JSON.parse(v2); } catch(e) {}
+                    try { var pets = localStorage.getItem('campus_pets'); if (pets) allData['campus_pets'] = JSON.parse(pets); } catch(e) {}
+
+                    var json = JSON.stringify(allData, null, 2);
+                    var blob = new Blob([json], { type: 'application/json' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'campus_backup_' + new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19) + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    var studentCount = (allData['campus_students'] || []).length;
+                    statusEl.innerHTML = '<span style="color:#10b981"><i class="fas fa-check-circle"></i> 导出成功！包含 ' + studentCount + ' 个用户账号，共 ' + Object.keys(allData).length + ' 个数据表</span>';
+                } catch(err) {
+                    statusEl.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> 导出失败：' + err.message + '</span>';
+                }
+            });
+        }
+
+        /* 数据导入 */
+        var importInput = document.getElementById('importDataInput');
+        if (importInput) {
+            importInput.addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                var statusEl = document.getElementById('dataTransferStatus');
+                statusEl.innerHTML = '<span style="color:#f59e0b"><i class="fas fa-spinner fa-spin"></i> 正在导入数据...</span>';
+
+                var reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        var data = JSON.parse(ev.target.result);
+                        if (typeof data !== 'object' || data === null) {
+                            throw new Error('无效的数据格式');
+                        }
+                        var keys = Object.keys(data);
+                        var studentCount = 0;
+                        keys.forEach(function(key) {
+                            try {
+                                localStorage.setItem(key, JSON.stringify(data[key]));
+                                if (key === 'campus_students' && Array.isArray(data[key])) {
+                                    studentCount = data[key].length;
+                                }
+                            } catch(err) {
+                                console.warn('[数据导入] 写入失败:', key, err);
+                            }
+                        });
+                        /* 更新初始化标记，防止 db.js 重新初始化覆盖导入数据 */
+                        try {
+                            localStorage.setItem('campus_db_initialized', JSON.stringify({ version: '3.1', initTime: new Date().toISOString(), imported: true }));
+                        } catch(e) {}
+                        statusEl.innerHTML = '<span style="color:#10b981"><i class="fas fa-check-circle"></i> 导入成功！已恢复 ' + studentCount + ' 个用户账号，共 ' + keys.length + ' 个数据表。页面即将刷新...</span>';
+                        setTimeout(function() { location.reload(); }, 2000);
+                    } catch(err) {
+                        statusEl.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> 导入失败：' + err.message + '</span>';
+                    }
+                };
+                reader.readAsText(file);
+                /* 重置 input 以允许重复选择同一文件 */
+                this.value = '';
+            });
+        }
     }
 
     function initLogout() {

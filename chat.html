@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>私信沟通 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+    <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a>
+                <a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="chat-page">
+        <div class="chat-container">
+            <!-- 左侧会话列表 -->
+            <div class="chat-sidebar" id="chatSidebar">
+                <div class="chat-sidebar-header">
+                    <h3><i class="fas fa-comments"></i> 我的私信</h3>
+                </div>
+                <div class="chat-session-list" id="sessionList">
+                    <div class="chat-loading"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>
+                </div>
+            </div>
+            <!-- 右侧聊天区域 -->
+            <div class="chat-main" id="chatMain">
+                <div class="chat-empty-state">
+                    <i class="fas fa-comment-dots" style="font-size:48px;opacity:0.3"></i>
+                    <p>选择一个会话开始聊天</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-toast" id="chatToast"></div>
+
+<script src="js/db.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>

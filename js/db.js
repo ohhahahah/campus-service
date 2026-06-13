@@ -7,7 +7,7 @@
         currentUser: 'campus_current_user',
         secondhand: 'campus_secondhand',
         chat: 'campus_chat',
-        rentalBooks: 'campus_rental_books',
+        rentalBooks: 'campus_rental_books_v2',
         rentalCollected: 'campus_rental_collected',
         avatars: 'campus_avatars',
         bookings: 'campus_bookings',
@@ -19,7 +19,8 @@
         sensitiveWords: 'campus_sensitive_words',
         blockLog: 'campus_block_log',
         visitCount: 'campus_visit_count',
-        pets: 'campus_pets'
+        pets: 'campus_pets',
+        announcementRead: 'campus_announcement_read'
     };
 
     function _get(key, defaultVal) {
@@ -240,32 +241,50 @@
         }
     ];
 
+    /* 补全默认流浪猫的审核状态字段 */
+    defaultPets.forEach(function(p) {
+        if (!p.reviewStatus) p.reviewStatus = 'approved';
+        if (!p.publishTime) p.publishTime = '2026-06-01 10:00';
+    });
+
     function initDatabase() {
         var initFlag = _get(DB_INIT_KEY, null);
         var needsInit = !initFlag || initFlag.version !== DB_VERSION;
 
         if (!needsInit) {
-            _ensureTable(tables.students, []);
-            _ensureTable(tables.secondhand, []);
-            _ensureTable(tables.rentalBooks, []);
+            /* 已初始化且版本匹配：只确保表存在，不覆盖已有数据 */
+            _ensureTable(tables.students, defaultStudents);
+            _ensureTable(tables.secondhand, defaultSecondhand);
+            _ensureTable(tables.rentalBooks, defaultRentalBooks);
             _ensureTable(tables.chat, {});
             _ensureTable(tables.avatars, {});
-            _ensureTable(tables.bookings, []);
-            _ensureTable(tables.repairs, []);
-            _ensureTable(tables.announcements, []);
+            _ensureTable(tables.bookings, defaultBookings);
+            _ensureTable(tables.repairs, defaultRepairs);
+            _ensureTable(tables.announcements, defaultAnnouncements);
             _ensureTable(tables.collected, []);
             _ensureTable(tables.liked, []);
             _ensureTable(tables.cart, []);
             _ensureTable(tables.rentalCollected, []);
-            _ensureTable(tables.sensitiveWords, []);
+            _ensureTable(tables.sensitiveWords, defaultSensitiveWords);
             _ensureTable(tables.blockLog, defaultBlockLog);
             _ensureTable(tables.visitCount, 0);
-            _ensureTable(tables.pets, []);
+            _ensureTable(tables.pets, defaultPets);
             return;
         }
 
-        if (!_get(tables.students, null)) {
+        /* 版本变更或首次初始化：合并策略——保留已有用户数据，补充默认数据 */
+        var existingStudents = _get(tables.students, []);
+        if (existingStudents.length === 0) {
             _set(tables.students, defaultStudents);
+        } else {
+            /* 合并：保留已有用户，补充默认用户中不存在的 */
+            var existingIds = existingStudents.map(function(s) { return s.stuId; });
+            defaultStudents.forEach(function(ds) {
+                if (existingIds.indexOf(ds.stuId) === -1) {
+                    existingStudents.push(ds);
+                }
+            });
+            _set(tables.students, existingStudents);
         }
         if (!_get(tables.secondhand, null)) {
             _set(tables.secondhand, defaultSecondhand);
@@ -307,6 +326,14 @@
         var existing = localStorage.getItem(key);
         if (existing === null || existing === undefined) {
             _set(key, defaultVal);
+        } else {
+            /* 如果已有数据为空数组但默认值不为空，则写入默认数据 */
+            try {
+                var parsed = JSON.parse(existing);
+                if (Array.isArray(parsed) && parsed.length === 0 && Array.isArray(defaultVal) && defaultVal.length > 0) {
+                    _set(key, defaultVal);
+                }
+            } catch(e) {}
         }
     }
 
@@ -415,11 +442,23 @@
         },
 
         getRentalBooks: function() {
-            return _get(tables.rentalBooks, []);
+            var data = _get(tables.rentalBooks, []);
+            if (data.length > 0) return data;
+            /* 兼容旧键 */
+            try {
+                var old = JSON.parse(localStorage.getItem('campus_rental_books') || '[]');
+                if (old.length > 0) {
+                    _set(tables.rentalBooks, old);
+                    return old;
+                }
+            } catch(e) {}
+            return data;
         },
 
         saveRentalBooks: function(list) {
-            return _set(tables.rentalBooks, list);
+            _set(tables.rentalBooks, list);
+            /* 双写旧键兼容 */
+            try { localStorage.setItem('campus_rental_books', JSON.stringify(list)); } catch(e) {}
         },
 
         findRentalBook: function(id) {
@@ -547,6 +586,49 @@
 
         saveAnnouncements: function(list) {
             return _set(tables.announcements, list);
+        },
+
+        /* 公告已读状态管理 */
+        getAnnouncementReadMap: function() {
+            return _get(tables.announcementRead, {});
+        },
+        saveAnnouncementReadMap: function(map) {
+            return _set(tables.announcementRead, map);
+        },
+        getUnreadAnnouncements: function(stuId) {
+            var all = this.getAnnouncements();
+            var readMap = this.getAnnouncementReadMap();
+            var readIds = readMap[stuId] || [];
+            return all.filter(function(a) {
+                return readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) === -1;
+            }).sort(function(a, b) {
+                return (b.time || '').localeCompare(a.time || '');
+            });
+        },
+        getUnreadAnnouncementCount: function(stuId) {
+            return this.getUnreadAnnouncements(stuId).length;
+        },
+        markAnnouncementRead: function(stuId, announcementId) {
+            var readMap = this.getAnnouncementReadMap();
+            if (!readMap[stuId]) readMap[stuId] = [];
+            var exists = readMap[stuId].findIndex(function(rid) { return String(rid) === String(announcementId); });
+            if (exists === -1) {
+                readMap[stuId].push(announcementId);
+                this.saveAnnouncementReadMap(readMap);
+            }
+        },
+        getAnnouncementsWithReadStatus: function(stuId) {
+            var all = this.getAnnouncements();
+            var readMap = this.getAnnouncementReadMap();
+            var readIds = readMap[stuId] || [];
+            return all.map(function(a) {
+                var isRead = readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) !== -1;
+                return Object.assign({}, a, { isRead: isRead });
+            }).sort(function(a, b) {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                return (b.time || '').localeCompare(a.time || '');
+            });
         },
 
         getCollected: function() {
@@ -714,6 +796,8 @@
                     _set(tables[name], data[name]);
                 }
             });
+            /* 更新初始化标记，防止 initDatabase 覆盖导入数据 */
+            _set(DB_INIT_KEY, { version: DB_VERSION, initTime: new Date().toISOString(), imported: true });
         },
 
         clearAll: function() {
@@ -767,5 +851,121 @@
     initDatabase();
 
     window.CampusDB = db;
+
+    /* ===== 校园超市数据接口 ===== */
+    var shopTables = {
+        goods: 'campus_shop_goods',
+        cart: 'campus_shop_cart',
+        orders: 'campus_shop_orders'
+    };
+
+    window.ShopDB = {
+        /* 商品接口 */
+        getGoods: function() {
+            return _get(shopTables.goods, []);
+        },
+        saveGoods: function(list) {
+            _set(shopTables.goods, list);
+        },
+        getGoodsByCategory: function(cat) {
+            var all = this.getGoods();
+            return cat === 'all' ? all : all.filter(function(g) { return g.cat === cat; });
+        },
+        getGoodsById: function(id) {
+            return this.getGoods().find(function(g) { return g.id === id; }) || null;
+        },
+
+        /* 购物车接口 */
+        getCart: function() {
+            return _get(shopTables.cart, []);
+        },
+        saveCart: function(list) {
+            _set(shopTables.cart, list);
+        },
+        addToCart: function(productId, qty) {
+            qty = qty || 1;
+            var cart = this.getCart();
+            var found = cart.find(function(c) { return c.id === productId; });
+            if (found) {
+                found.qty += qty;
+            } else {
+                var product = this.getGoodsById(productId);
+                if (!product) return false;
+                cart.push({ id: product.id, name: product.name, price: product.price, qty: qty, img: product.img, cat: product.cat, selected: true });
+            }
+            this.saveCart(cart);
+            return true;
+        },
+        updateCartQty: function(productId, qty) {
+            var cart = this.getCart();
+            var found = cart.find(function(c) { return c.id === productId; });
+            if (found) {
+                found.qty = qty;
+                if (qty <= 0) cart = cart.filter(function(c) { return c.id !== productId; });
+                this.saveCart(cart);
+            }
+        },
+        removeFromCart: function(productId) {
+            var cart = this.getCart().filter(function(c) { return c.id !== productId; });
+            this.saveCart(cart);
+        },
+        clearSelectedCart: function() {
+            var cart = this.getCart().filter(function(c) { return c.selected === false; });
+            cart.forEach(function(c) { c.selected = true; });
+            this.saveCart(cart);
+        },
+        getCartCount: function() {
+            return this.getCart().reduce(function(s, c) { return s + c.qty; }, 0);
+        },
+        getCartTotal: function() {
+            return this.getCart().filter(function(c) { return c.selected !== false; }).reduce(function(s, c) { return s + c.price * c.qty; }, 0);
+        },
+
+        /* 订单接口 */
+        getOrders: function() {
+            return _get(shopTables.orders, []);
+        },
+        saveOrders: function(list) {
+            _set(shopTables.orders, list);
+        },
+        submitOrder: function(address, phone) {
+            var cart = this.getCart();
+            var selectedItems = cart.filter(function(c) { return c.selected !== false; });
+            if (selectedItems.length === 0) return null;
+
+            var total = selectedItems.reduce(function(s, i) { return s + i.price * i.qty; }, 0);
+            var now = new Date();
+            var timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            var order = {
+                orderId: 'ORD' + Date.now(),
+                items: selectedItems.map(function(i) { return { id: i.id, name: i.name, qty: i.qty, price: i.price }; }),
+                total: total,
+                address: address,
+                phone: phone,
+                time: timeStr,
+                status: 'pending'
+            };
+
+            var orders = this.getOrders();
+            orders.unshift(order);
+            this.saveOrders(orders);
+
+            /* 清除已选商品 */
+            this.clearSelectedCart();
+            return order;
+        },
+        getOrderById: function(orderId) {
+            return this.getOrders().find(function(o) { return o.orderId === orderId; }) || null;
+        },
+        updateOrderStatus: function(orderId, status) {
+            var orders = this.getOrders();
+            var found = orders.find(function(o) { return o.orderId === orderId; });
+            if (found) {
+                found.status = status;
+                this.saveOrders(orders);
+            }
+        }
+    };
 
 })(window);
