@@ -236,6 +236,17 @@
     color: var(--primary-light);
 }
 
+.chat-exit-btn {
+    color: #ef4444;
+    border-color: #fecaca;
+}
+
+.chat-exit-btn:hover {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #f87171;
+}
+
 /* 消息区域 */
 .chat-messages {
     flex: 1;

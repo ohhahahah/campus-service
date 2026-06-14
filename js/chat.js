@@ -195,6 +195,7 @@
                 '</div>' +
                 '<div class="chat-header-right">' +
                     '<button class="chat-header-btn" id="backToList"><i class="fas fa-arrow-left"></i> 返回</button>' +
+                    (sProductId ? '<button class="chat-header-btn chat-exit-btn" id="exitToDetail" title="返回商品详情"><i class="fas fa-times"></i> 退出私信</button>' : '') +
                 '</div>' +
             '</div>' +
             '<div class="chat-messages" id="chatMessages"></div>' +
@@ -212,6 +213,13 @@
             chatMainEl.innerHTML = '<div class="chat-empty-state"><i class="fas fa-comment-dots" style="font-size:48px;opacity:0.3"></i><p>选择一个会话开始聊天</p></div>';
             renderSessionList();
         });
+
+        var exitBtn = document.getElementById('exitToDetail');
+        if (exitBtn) {
+            exitBtn.addEventListener('click', function() {
+                window.location.href = 'detail.html?id=' + sProductId;
+            });
+        }
 
         var chatInput = document.getElementById('chatInput');
         var chatSendBtn = document.getElementById('chatSendBtn');
