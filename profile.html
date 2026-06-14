@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -74,6 +74,10 @@
                 <a href="#myRentals" class="nav-item" data-section="myRentals">
                     <i class="fas fa-book"></i>
                     <span>教材租用</span>
+                </a>
+                <a href="#purchases" class="nav-item" data-section="purchases">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>我的购买记录</span>
                 </a>
                 <a href="#messages" class="nav-item" data-section="messages">
                     <i class="fas fa-comment-dots"></i>
@@ -185,6 +189,15 @@
                 </div>
                 <div class="items-grid" id="myRentalsGrid">
                 </div>
+            </section>
+
+            <!-- 我的购买记录 -->
+            <section class="profile-section" id="purchases">
+                <div class="section-header">
+                    <h2><i class="fas fa-shopping-cart" style="color:#f97316;margin-right:8px"></i>我的购买记录</h2>
+                    <span id="purchaseCount" style="color:var(--text-secondary);font-size:14px"></span>
+                </div>
+                <div id="purchaseList" class="records-list"></div>
             </section>
 
             <section class="profile-section" id="messages">

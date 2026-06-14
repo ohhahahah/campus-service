@@ -155,16 +155,34 @@
         var list = document.getElementById('jobsList');
         list.innerHTML = '';
         var filtered = cat === 'all' ? jobs : jobs.filter(function(j) { return j.cat === cat; });
-        /* 只展示已审核通过的兼职 */
-        filtered = filtered.filter(function(j) { return j.reviewStatus === 'approved'; });
+        /* 只展示已审核通过且未关闭的兼职 */
+        filtered = filtered.filter(function(j) { return j.reviewStatus === 'approved' && j.jobStatus !== '已关闭'; });
         if (filtered.length === 0) {
             list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-secondary)"><i class="fas fa-briefcase" style="font-size:48px;opacity:0.3;display:block;margin-bottom:15px"></i><p>暂无兼职信息</p></div>';
             return;
         }
+        var user = getCurrentUser();
         filtered.forEach(function(job) {
+            var isFull = job.jobStatus === '已招满';
+            var isOwner = user && (user.name === job.publisher || (user.stuId && user.stuId === job.publisherStuId));
+            var alreadyApplied = user && job.applicants && job.applicants.some(function(a) { return a.name === user.name || (a.stuId && a.stuId === user.stuId); });
+            var statusBadge = '';
+            if (isFull) {
+                statusBadge = '<span class="pt-job-tag" style="background:#fef3c7;color:#92400e"><i class="fas fa-users"></i> 已招满</span>';
+            }
+            var applyBtnHtml = '';
+            if (isOwner) {
+                applyBtnHtml = '<button class="pt-apply-btn" style="opacity:0.5;cursor:not-allowed" disabled><i class="fas fa-user"></i> 我发布的</button>';
+            } else if (alreadyApplied) {
+                applyBtnHtml = '<button class="pt-apply-btn" style="background:#10b981" disabled><i class="fas fa-check"></i> 已申请</button>';
+            } else if (isFull) {
+                applyBtnHtml = '<button class="pt-apply-btn" style="opacity:0.5;cursor:not-allowed" disabled><i class="fas fa-ban"></i> 已招满</button>';
+            } else {
+                applyBtnHtml = '<button class="pt-apply-btn" data-id="' + job.id + '"><i class="fas fa-paper-plane"></i> 申请</button>';
+            }
             var card = document.createElement('div');
             card.className = 'pt-job-card';
-            card.innerHTML = '<div class="pt-job-icon cat-' + job.cat + '"><i class="fas ' + job.icon + '"></i></div><div class="pt-job-info"><h4>' + job.title + '</h4><p>' + job.desc + '</p><div class="pt-job-meta"><span class="pt-job-tag salary">' + job.salary + '</span><span class="pt-job-tag cat">' + job.cat + '</span><span class="pt-job-tag time"><i class="fas fa-clock"></i> ' + job.time + '</span></div><div class="pt-job-actions"><button class="pt-apply-btn" data-id="' + job.id + '"><i class="fas fa-paper-plane"></i> 申请</button><button class="pt-detail-link-btn" data-id="' + job.id + '"><i class="fas fa-eye"></i> 查看详情</button></div></div>';
+            card.innerHTML = '<div class="pt-job-icon cat-' + job.cat + '"><i class="fas ' + job.icon + '"></i></div><div class="pt-job-info"><h4>' + job.title + '</h4><p>' + job.desc + '</p><div class="pt-job-meta"><span class="pt-job-tag salary">' + job.salary + '</span><span class="pt-job-tag cat">' + job.cat + '</span><span class="pt-job-tag time"><i class="fas fa-clock"></i> ' + job.time + '</span>' + statusBadge + '</div><div class="pt-job-actions">' + applyBtnHtml + '<button class="pt-detail-link-btn" data-id="' + job.id + '"><i class="fas fa-eye"></i> 查看详情</button></div></div>';
             list.appendChild(card);
         });
         // 卡片点击跳转详情
@@ -172,8 +190,8 @@
             card.style.cursor = 'pointer';
             card.addEventListener('click', function(e) {
                 if (e.target.closest('.pt-apply-btn') || e.target.closest('.pt-detail-link-btn')) return;
-                var jobId = card.querySelector('.pt-apply-btn').getAttribute('data-id');
-                location.href = 'parttime-detail.html?id=' + jobId;
+                var jobId = card.querySelector('.pt-apply-btn') ? card.querySelector('.pt-apply-btn').getAttribute('data-id') : card.querySelector('.pt-detail-link-btn').getAttribute('data-id');
+                if (jobId) location.href = 'parttime-detail.html?id=' + jobId;
             });
         });
         list.querySelectorAll('.pt-detail-link-btn').forEach(function(btn) {
@@ -182,10 +200,28 @@
                 location.href = 'parttime-detail.html?id=' + btn.getAttribute('data-id');
             });
         });
-        list.querySelectorAll('.pt-apply-btn').forEach(function(btn) {
+        list.querySelectorAll('.pt-apply-btn[data-id]').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                location.href = 'parttime-detail.html?id=' + btn.getAttribute('data-id');
+                var user = getCurrentUser();
+                if (!user) { showToast('请先登录后再申请'); return; }
+                var jobId = btn.getAttribute('data-id');
+                /* 查找兼职并记录申请 */
+                var stored = [];
+                try { stored = JSON.parse(localStorage.getItem('campus_parttime_jobs') || '[]'); } catch(e) {}
+                var job = stored.find(function(j) { return j.id === jobId; });
+                if (!job) { showToast('兼职信息不存在'); return; }
+                if (job.jobStatus === '已招满') { showToast('该兼职已招满，不再接受申请'); return; }
+                if (job.publisher === user.name || (job.publisherStuId && job.publisherStuId === user.stuId)) { showToast('不能申请自己发布的兼职'); return; }
+                if (!job.applicants) job.applicants = [];
+                if (job.applicants.some(function(a) { return a.name === user.name || (a.stuId && a.stuId === user.stuId); })) { showToast('您已申请过该兼职'); return; }
+                job.applicants.push({ name: user.name, stuId: user.stuId || '', applyTime: new Date().toISOString().replace('T', ' ').substring(0, 16), status: '待审核' });
+                try { localStorage.setItem('campus_parttime_jobs', JSON.stringify(stored)); } catch(e) {}
+                /* 同步更新内存中的jobs */
+                var memJob = jobs.find(function(j) { return j.id === jobId; });
+                if (memJob) { if (!memJob.applicants) memJob.applicants = []; memJob.applicants.push({ name: user.name, stuId: user.stuId || '', applyTime: new Date().toISOString().replace('T', ' ').substring(0, 16), status: '待审核' }); }
+                renderJobs(document.querySelector('.pt-filter.active') ? document.querySelector('.pt-filter.active').getAttribute('data-cat') : 'all');
+                showToast('申请提交成功，请等待发布人审核！');
             });
         });
     }
@@ -297,7 +333,11 @@
     }
 
     function initModals() {
-        document.getElementById('publishJobBtn').addEventListener('click', function() { openModal('jobModal'); });
+        document.getElementById('publishJobBtn').addEventListener('click', function() {
+            var user = getCurrentUser();
+            if (!user) { showToast('请先登录后再发布兼职'); return; }
+            openModal('jobModal');
+        });
         document.getElementById('publishCarpoolBtn').addEventListener('click', function() { openModal('carpoolModal'); });
         document.getElementById('publishSkillBtn').addEventListener('click', function() { openModal('skillModal'); });
         document.querySelectorAll('.pt-modal-close').forEach(function(btn) {
@@ -314,6 +354,8 @@
     function initForms() {
         document.getElementById('jobForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            var user = getCurrentUser();
+            if (!user) { showToast('请先登录后再发布兼职'); return; }
             var newJob = {
                 id: 'j' + Date.now(),
                 title: document.getElementById('jobTitle').value,
@@ -325,6 +367,10 @@
                 contact: document.getElementById('jobContact').value,
                 icon: 'fa-briefcase',
                 reviewStatus: 'pending',
+                jobStatus: '招聘中',
+                publisher: user.name || '',
+                publisherStuId: user.stuId || '',
+                applicants: [],
                 publishTime: new Date().toISOString().replace('T', ' ').substring(0, 16)
             };
             jobs.unshift(newJob);

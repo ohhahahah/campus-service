@@ -1372,6 +1372,9 @@ body::before {
 .ann-btn{padding:12px 32px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:8px}
 .ann-btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 15px rgba(59,130,246,0.3)}
 .ann-btn-primary:hover{box-shadow:0 6px 20px rgba(59,130,246,0.4);transform:translateY(-1px)}
+.ann-btn-secondary{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0}
+.ann-btn-secondary:hover{background:#e2e8f0;color:#475569}
+.ann-force-footer{display:flex;gap:12px;justify-content:center}
 
 /* 公告列表弹窗 */
 .ann-list-modal{max-width:500px;max-height:80vh;display:flex;flex-direction:column}

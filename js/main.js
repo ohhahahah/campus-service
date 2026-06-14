@@ -546,15 +546,23 @@ function _getAnnUser() {
     try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
 }
 
-/* 获取未读公告列表 */
+/* 获取未读公告列表（支持版本号：公告版本更新后视为未读） */
 function _getUnreadAnnouncements(stuId) {
     if (window.CampusDB) return CampusDB.getUnreadAnnouncements(stuId);
     try {
         var all = JSON.parse(localStorage.getItem('campus_announcements') || '[]');
         var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}');
-        var readIds = readMap[stuId] || [];
+        var readList = readMap[stuId] || [];
         return all.filter(function(a) {
-            return readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) === -1;
+            var readRecord = readList.find(function(rid) {
+                if (typeof rid === 'object') return String(rid.noticeId) === String(a.id);
+                return String(rid) === String(a.id);
+            });
+            if (!readRecord) return true; /* 从未读过 */
+            /* 如果公告有版本号，且用户读过的版本低于当前版本，视为未读 */
+            var annVersion = a.version || 1;
+            var readVersion = (typeof readRecord === 'object' ? readRecord.version : 1) || 1;
+            return annVersion > readVersion;
         }).sort(function(a, b) { return (b.time || '').localeCompare(a.time || ''); });
     } catch(e) { return []; }
 }
@@ -564,18 +572,30 @@ function _getUnreadAnnouncementCount(stuId) {
     return _getUnreadAnnouncements(stuId).length;
 }
 
-/* 标记公告已读 */
-function _markAnnouncementRead(stuId, annId) {
-    if (window.CampusDB) { CampusDB.markAnnouncementRead(stuId, annId); return; }
+/* 标记公告已读（含阅读时间，支持版本号） */
+function _markAnnouncementRead(stuId, annId, version) {
+    if (window.CampusDB) { CampusDB.markAnnouncementRead(stuId, annId, version); return; }
     try {
         var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}');
         if (!readMap[stuId]) readMap[stuId] = [];
-        var exists = readMap[stuId].findIndex(function(rid) { return String(rid) === String(annId); });
+        /* 检查是否已存在该公告的阅读记录 */
+        var exists = readMap[stuId].findIndex(function(rid) {
+            if (typeof rid === 'object') return String(rid.noticeId) === String(annId);
+            return String(rid) === String(annId);
+        });
+        var readRecord = {
+            noticeId: String(annId),
+            readTime: new Date().toISOString(),
+            version: version || 1
+        };
         if (exists === -1) {
-            readMap[stuId].push(annId);
-            localStorage.setItem('campus_announcement_read', JSON.stringify(readMap));
+            readMap[stuId].push(readRecord);
+        } else {
+            /* 更新已有记录（支持版本更新后重新标记） */
+            readMap[stuId][exists] = readRecord;
         }
-    } catch(e) {}
+        localStorage.setItem('campus_announcement_read', JSON.stringify(readMap));
+    } catch(e) { console.error('[公告] 标记已读失败:', e); }
 }
 
 /* 获取所有公告（含已读状态） */
@@ -584,9 +604,18 @@ function _getAnnouncementsWithReadStatus(stuId) {
     try {
         var all = JSON.parse(localStorage.getItem('campus_announcements') || '[]');
         var readMap = JSON.parse(localStorage.getItem('campus_announcement_read') || '{}');
-        var readIds = readMap[stuId] || [];
+        var readList = readMap[stuId] || [];
         return all.map(function(a) {
-            var isRead = readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) !== -1;
+            var readRecord = readList.find(function(rid) {
+                if (typeof rid === 'object') return String(rid.noticeId) === String(a.id);
+                return String(rid) === String(a.id);
+            });
+            var isRead = false;
+            if (readRecord) {
+                var annVersion = a.version || 1;
+                var readVersion = (typeof readRecord === 'object' ? readRecord.version : 1) || 1;
+                isRead = annVersion <= readVersion;
+            }
             return Object.assign({}, a, { isRead: isRead });
         }).sort(function(a, b) {
             if (a.pinned && !b.pinned) return -1;
@@ -682,13 +711,20 @@ function _closeForceReadModal() {
     if (overlay) overlay.classList.remove('active');
 }
 
-/* 点击"我已阅读"按钮 */
+/* 点击"我已阅读"或"关闭"按钮 */
 function _onForceReadConfirm() {
     var overlay = document.getElementById('annForceOverlay');
     var annId = overlay ? overlay.getAttribute('data-current-ann-id') : null;
     var user = _getAnnUser();
     if (user && annId) {
-        _markAnnouncementRead(user.stuId, annId);
+        /* 获取公告版本号 */
+        var annVersion = 1;
+        try {
+            var allAnns = JSON.parse(localStorage.getItem('campus_announcements') || '[]');
+            var found = allAnns.find(function(a) { return String(a.id) === String(annId); });
+            if (found && found.version) annVersion = found.version;
+        } catch(e) {}
+        _markAnnouncementRead(user.stuId, annId, annVersion);
     }
     _closeForceReadModal();
     _updateAnnouncementBadge();
@@ -747,7 +783,7 @@ function _openAnnouncementDetail(annId) {
     if (!ann) return;
     /* 标记已读 */
     if (!ann.isRead) {
-        _markAnnouncementRead(user.stuId, String(ann.id));
+        _markAnnouncementRead(user.stuId, String(ann.id), ann.version || 1);
         _updateAnnouncementBadge();
         /* 更新列表项样式和标签 */
         var listItem = document.querySelector('.ann-list-item[data-id="' + annId + '"]');
@@ -789,7 +825,8 @@ function initAnnouncementSystem() {
                 '<div class="ann-force-meta"></div>' +
                 '<div class="ann-force-body"></div>' +
                 '<div class="ann-modal-footer ann-force-footer">' +
-                    '<button class="ann-btn ann-btn-primary" id="annForceConfirmBtn"><i class="fas fa-check-circle"></i> 我已阅读并确认</button>' +
+                    '<button class="ann-btn ann-btn-secondary" id="annForceCloseBtn"><i class="fas fa-times"></i> 关闭</button>' +
+                    '<button class="ann-btn ann-btn-primary" id="annForceConfirmBtn"><i class="fas fa-check-circle"></i> 我知道了</button>' +
                 '</div>' +
             '</div>' +
         '</div>';
@@ -836,6 +873,8 @@ function initAnnouncementSystem() {
     /* 绑定弹窗按钮事件 */
     var forceConfirmBtn = document.getElementById('annForceConfirmBtn');
     if (forceConfirmBtn) forceConfirmBtn.addEventListener('click', _onForceReadConfirm);
+    var forceCloseBtn = document.getElementById('annForceCloseBtn');
+    if (forceCloseBtn) forceCloseBtn.addEventListener('click', _onForceReadConfirm);
     var listCloseBtn = document.getElementById('annListCloseBtn');
     if (listCloseBtn) listCloseBtn.addEventListener('click', _closeAnnouncementList);
     var detailCloseBtn = document.getElementById('annDetailCloseBtn');

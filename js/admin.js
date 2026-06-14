@@ -1240,7 +1240,7 @@
                 return;
             }
             var list = getAnnouncements();
-            list.unshift({ id: Date.now(), title: title, cat: cat, content: content, pinned: pinned, time: new Date().toISOString() });
+            list.unshift({ id: Date.now(), title: title, cat: cat, content: content, pinned: pinned, time: new Date().toISOString(), version: 1, author: '管理员', type: 'normal' });
             saveAnnouncements(list);
             this.reset();
             renderAnnouncements();
@@ -1256,7 +1256,7 @@
             return;
         }
         div.innerHTML = list.slice(0, 10).map(function(a) {
-            return '<div class="adm-ann-item"><div class="adm-ann-item-info">' + (a.pinned ? '<span style="color:#ef4444;font-weight:600">[置顶]</span> ' : '') + '<h4>' + a.title + '</h4><p>' + a.cat + '</p><span>' + formatDate(a.time) + '</span></div><div class="adm-ann-item-actions"><button class="adm-btn-sm adm-btn-del" data-id="' + a.id + '"><i class="fas fa-trash"></i></button></div></div>';
+            return '<div class="adm-ann-item"><div class="adm-ann-item-info">' + (a.pinned ? '<span style="color:#ef4444;font-weight:600">[置顶]</span> ' : '') + '<h4>' + a.title + '</h4><p>' + a.cat + '</p><span>' + formatDate(a.time) + (a.version > 1 ? ' (v' + a.version + ')' : '') + '</span></div><div class="adm-ann-item-actions"><button class="adm-btn-sm adm-btn-edit" data-id="' + a.id + '" title="编辑（版本+1）"><i class="fas fa-edit"></i></button><button class="adm-btn-sm adm-btn-del" data-id="' + a.id + '"><i class="fas fa-trash"></i></button></div></div>';
         }).join('');
         div.querySelectorAll('.adm-btn-del').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -1265,6 +1265,21 @@
                 saveAnnouncements(list);
                 renderAnnouncements();
                 showToast('公告已删除', 'success');
+            });
+        });
+        /* 编辑公告：版本号+1，所有用户需重新阅读 */
+        div.querySelectorAll('.adm-btn-edit').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = btn.getAttribute('data-id');
+                var list = getAnnouncements();
+                var idx = list.findIndex(function(a) { return String(a.id) === String(id); });
+                if (idx !== -1) {
+                    list[idx].version = (list[idx].version || 1) + 1;
+                    list[idx].time = new Date().toISOString();
+                    saveAnnouncements(list);
+                    renderAnnouncements();
+                    showToast('公告已更新（版本 v' + list[idx].version + '），所有用户需重新阅读', 'success');
+                }
             });
         });
     }

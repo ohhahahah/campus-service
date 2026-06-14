@@ -931,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var icon = categoryIcons[product.category] || 'fas fa-box';
         var colors = categoryColors[product.category] || ['#3b82f6', '#1e40af'];
-        var isSold = product.status === '已售出';
+        var isSold = product.status === '已售出' || product.status === '已售罄';
         var discount = product.originalPrice > 0 ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
         var seller = getSellerProfile(product.seller);
         var images = [];
@@ -963,80 +963,6 @@ document.addEventListener('DOMContentLoaded', function() {
         for (var j = 0; j < slideCount; j++) {
             dots += '<div class="detail-carousel-dot' + (j === 0 ? ' active' : '') + '" data-index="' + j + '"></div>';
         }
-
-        var comments = product.comments || [];
-        var commentsHtml = '';
-        if (comments.length === 0) {
-            commentsHtml = '<div class="detail-empty-comments"><i class="fas fa-comment-slash"></i><p>暂无留言，快来第一个提问吧</p></div>';
-        } else {
-            comments.forEach(function(c) {
-                var isSellerComment = c.isSeller === true;
-                var commentAvatarUrl = null;
-                var commentStuId = c.stuId || null;
-                if (commentStuId) commentAvatarUrl = getUserAvatarUrl(commentStuId);
-                if (!commentAvatarUrl && c.name) {
-                    var allStudents = [];
-                    if (window.CampusDB) { allStudents = CampusDB.getStudents(); } else {
-                        try { allStudents = JSON.parse(localStorage.getItem('campus_students') || '[]'); } catch(e3) {}
-                    }
-                    var cStudent = allStudents.find(function(s) { return s.name === c.name; });
-                    if (cStudent) commentAvatarUrl = getUserAvatarUrl(cStudent.stuId);
-                }
-                var commentAvatarClass = 'detail-comment-avatar' + (isSellerComment ? ' seller-avatar' : '');
-                commentsHtml += '<div class="detail-comment-item">' +
-                    renderAvatarHtml(c.avatar || c.name.charAt(0), commentAvatarUrl, commentAvatarClass) +
-                    '<div class="detail-comment-body">' +
-                        '<div class="detail-comment-name">' + c.name + (isSellerComment ? '<span class="seller-badge">卖家</span>' : '') + '</div>' +
-                        '<div class="detail-comment-text">' + c.text + '</div>' +
-                        '<div class="detail-comment-time">' + c.time + '</div>' +
-                    '</div>' +
-                '</div>';
-            });
-        }
-
-        var sellerProducts = getProducts().filter(function(p) {
-            var sameSeller = p.seller === product.seller;
-            if (product.sellerStuId && p.sellerStuId) sameSeller = sameSeller || p.sellerStuId === product.sellerStuId;
-            return sameSeller && p.id !== product.id && p.status !== '已下架' && p.reviewStatus !== 'rejected';
-        }).slice(0, 4);
-        var otherHtml = '';
-        sellerProducts.forEach(function(sp) {
-            var spIcon = categoryIcons[sp.category] || 'fas fa-box';
-            var spColors = categoryColors[sp.category] || ['#3b82f6', '#1e40af'];
-            var spImgArr = [];
-            if (sp.images && Array.isArray(sp.images) && sp.images.length > 0) spImgArr = sp.images;
-            else spImgArr = productImages[sp.id] || categoryFallbackImages[sp.category] || categoryFallbackImages['其他'];
-            var spImg = spImgArr[0];
-            otherHtml += '<div class="detail-other-card" data-id="' + sp.id + '">' +
-                '<div class="detail-other-card-img" style="background:linear-gradient(135deg,' + spColors[0] + '18,' + spColors[1] + '18)">' +
-                    '<img src="' + spImg + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\';this.parentElement.querySelector(\'i\')&&(this.parentElement.querySelector(\'i\').style.display=\'block\')"><i class="' + spIcon + '" style="display:none"></i>' +
-                '</div>' +
-                '<div class="detail-other-card-body"><h4>' + sp.name + '</h4><span class="price">¥' + sp.price + '</span></div>' +
-            '</div>';
-        });
-
-        var similarProducts = getProducts().filter(function(p) {
-            return p.category === product.category && p.id !== product.id && p.status !== '已下架' && p.reviewStatus !== 'rejected';
-        }).slice(0, 5);
-        var similarHtml = '';
-        similarProducts.forEach(function(sp) {
-            var spIcon = categoryIcons[sp.category] || 'fas fa-box';
-            var spColors = categoryColors[sp.category] || ['#3b82f6', '#1e40af'];
-            var spImgArr = [];
-            if (sp.images && Array.isArray(sp.images) && sp.images.length > 0) spImgArr = sp.images;
-            else spImgArr = productImages[sp.id] || categoryFallbackImages[sp.category] || categoryFallbackImages['其他'];
-            var spImg = spImgArr[0];
-            similarHtml += '<div class="detail-similar-card" data-id="' + sp.id + '">' +
-                '<div class="detail-similar-card-img" style="background:linear-gradient(135deg,' + spColors[0] + '18,' + spColors[1] + '18)">' +
-                    '<img src="' + spImg + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'"><i class="' + spIcon + '" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center"></i>' +
-                '</div>' +
-                '<div class="detail-similar-card-body">' +
-                    '<h4>' + sp.name + '</h4>' +
-                    '<div class="similar-meta">' + sp.condition + ' · ' + sp.seller + '</div>' +
-                    '<span class="price">¥' + sp.price + '<small>¥' + sp.originalPrice + '</small></span>' +
-                '</div>' +
-            '</div>';
-        });
 
         var isCollected = false;
         try { var collected = JSON.parse(localStorage.getItem('campus_collected') || '[]'); isCollected = collected.some(function(c) { return (typeof c === 'object' ? c.productId : c) === product.id; }); } catch(e) {}
@@ -1073,7 +999,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '</div>' +
             '</div>' +
             '<div class="detail-right">' +
-                (product.reviewStatus === 'pending' ? '<div class="detail-status-badge pending"><i class="fas fa-clock"></i> 审核中</div>' : (product.reviewStatus === 'rejected' ? '<div class="detail-status-badge rejected" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca"><i class="fas fa-ban"></i> 审核未通过</div>' + (product.rejectReason ? '<div style="margin-top:6px;padding:8px 12px;background:#fef2f2;border-radius:8px;font-size:13px;color:#991b1b"><i class="fas fa-comment-slash"></i> 拒绝理由：' + product.rejectReason + '</div>' : '') : '<div class="detail-status-badge ' + (isSold ? 'sold' : 'onsale') + '"><i class="fas fa-' + (isSold ? 'ban' : 'check-circle') + '"></i> ' + (isSold ? '已售出' : '在售中') + '</div>')) +
+                (product.reviewStatus === 'pending' ? '<div class="detail-status-badge pending"><i class="fas fa-clock"></i> 审核中</div>' : (product.reviewStatus === 'rejected' ? '<div class="detail-status-badge rejected" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca"><i class="fas fa-ban"></i> 审核未通过</div>' + (product.rejectReason ? '<div style="margin-top:6px;padding:8px 12px;background:#fef2f2;border-radius:8px;font-size:13px;color:#991b1b"><i class="fas fa-comment-slash"></i> 拒绝理由：' + product.rejectReason + '</div>' : '') : '<div class="detail-status-badge ' + (isSold ? 'sold' : 'onsale') + '"><i class="fas fa-' + (isSold ? 'ban' : 'check-circle') + '"></i> ' + (product.status === '已售罄' ? '已售罄' : (isSold ? '已售出' : '在售中')) + '</div>')) +
                 '<div class="detail-tag-row">' + tagHtml + '</div>' +
                 '<h1 class="detail-name">' + product.name + '</h1>' +
                 '<div class="detail-price-row">' +
@@ -1125,39 +1051,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     '</div>' +
                 '</div>' +
                 '<div class="detail-actions">' +
-                    '<button class="btn-buy' + (isSold ? ' disabled' : '') + '" id="buyBtn"><i class="fas fa-shopping-cart"></i> ' + (isSold ? '已售出' : '立即购买') + '</button>' +
+                    '<button class="btn-buy' + (isSold ? ' disabled' : '') + '" id="buyBtn"><i class="fas fa-shopping-cart"></i> ' + (product.status === '已售罄' ? '已售罄' : (isSold ? '已售出' : '立即购买')) + '</button>' +
                     '<button class="btn-collect' + (isCollected ? ' collected' : '') + '" id="collectBtn"><i class="fa' + (isCollected ? 's' : 'r') + ' fa-bookmark"></i> ' + (isCollected ? '已收藏' : '收藏') + '</button>' +
                     '<button class="btn-cart" id="chatBtn"><i class="fas fa-comment-dots"></i> 私信</button>' +
                     '<button class="btn-report" id="reportBtn"><i class="fas fa-flag"></i> 举报</button>' +
                     getDeleteBtnHtml(product) +
                 '</div>' +
             '</div>' +
-            '<div class="detail-section">' +
-                '<div class="detail-section-header">' +
-                    '<h3><i class="fas fa-comments"></i> 评论&留言 <span class="count" id="commentCount">' + comments.length + '条留言</span></h3>' +
-                '</div>' +
-                '<div class="detail-comments-list" id="commentsList">' + commentsHtml + '</div>' +
-                '<div class="detail-comment-input">' +
-                    '<input type="text" id="commentInput" placeholder="留言咨询卖家，按回车发送...">' +
-                    '<button id="commentSubmit"><i class="fas fa-paper-plane"></i> 发送</button>' +
-                '</div>' +
-            '</div>' +
-            (sellerProducts.length > 0 ?
-            '<div class="detail-section">' +
-                '<div class="detail-section-header">' +
-                    '<h3><i class="fas fa-store"></i> 卖家其他在售商品</h3>' +
-                '</div>' +
-                '<div class="detail-other-products">' +
-                    '<div class="detail-other-grid">' + otherHtml + '</div>' +
-                '</div>' +
-            '</div>' : '') +
-            (similarProducts.length > 0 ?
-            '<div class="detail-similar-section">' +
-                '<div class="detail-section-header">' +
-                    '<h3><i class="fas fa-th-large"></i> 相似推荐</h3>' +
-                '</div>' +
-                '<div class="detail-similar-grid">' + similarHtml + '</div>' +
-            '</div>' : '') +
         '</div>';
 
         document.getElementById('detailMain').innerHTML = html;
@@ -1276,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var buyBtn = document.getElementById('buyBtn');
         if (buyBtn) {
             buyBtn.addEventListener('click', function() {
-                if (product.status === '已售出') { showToast('该商品已售出'); return; }
+                if (product.status === '已售出' || product.status === '已售罄') { showToast('该商品已售罄'); return; }
                 var user = getCurrentUser();
                 if (!user) { showToast('请先登录后再购买'); setTimeout(function() { window.location.href = 'login.html'; }, 1200); return; }
                 showBuyModal(product);
@@ -1312,6 +1212,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 var note = document.getElementById('detailBuyNote').value;
                 if (!building) { showToast('请填写完整购买信息'); return; }
 
+                /* 再次检查库存 */
+                var freshProducts = getProducts();
+                var freshIdx = freshProducts.findIndex(function(p) { return p.id === product.id; });
+                if (freshIdx === -1) { showToast('商品不存在'); return; }
+                var currentStock = freshProducts[freshIdx].stock !== undefined ? freshProducts[freshIdx].stock : 1;
+                if (currentStock <= 0 || freshProducts[freshIdx].status === '已售罄' || freshProducts[freshIdx].status === '已售出') {
+                    showToast('该商品已售罄，无法购买');
+                    modal.remove();
+                    return;
+                }
+
                 var user = getCurrentUser();
                 var now = new Date();
 
@@ -1336,9 +1247,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 localStorage.setItem('campus_trade_orders', JSON.stringify(orders));
+
+                /* 扣减库存，库存≤0时标记为已售罄 */
+                freshProducts[freshIdx].stock = currentStock - 1;
+                if (freshProducts[freshIdx].stock <= 0) {
+                    freshProducts[freshIdx].status = '已售罄';
+                }
+                saveProducts(freshProducts);
                 modal.remove();
                 showToast('购买订单提交成功！');
-                setTimeout(function() { window.location.href = 'orders.html'; }, 1200);
+                setTimeout(function() { window.location.href = 'purchases.html'; }, 1200);
             });
         }
 
@@ -1405,62 +1323,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-
-        var commentInput = document.getElementById('commentInput');
-        var commentSubmit = document.getElementById('commentSubmit');
-
-        function submitComment() {
-            var text = commentInput.value.trim();
-            if (!text) { showToast('请输入留言内容'); return; }
-            var products = getProducts();
-            var idx = products.findIndex(function(p) { return p.id === product.id; });
-            if (idx === -1) return;
-            if (!products[idx].comments) products[idx].comments = [];
-            var now = new Date();
-            var timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-            var currentUser = getCurrentUser();
-            var commentAvatarUrl = currentUser && currentUser.stuId ? getUserAvatarUrl(currentUser.stuId) : null;
-            var comment = {
-                name: currentUser ? currentUser.name : '我',
-                avatar: currentUser ? currentUser.name.charAt(0) : '我',
-                text: text,
-                time: timeStr,
-                isSeller: false,
-                stuId: currentUser ? currentUser.stuId : null
-            };
-            products[idx].comments.push(comment);
-            saveProducts(products);
-
-            var commentsList = document.getElementById('commentsList');
-            var emptyEl = commentsList.querySelector('.detail-empty-comments');
-            if (emptyEl) emptyEl.remove();
-
-            var itemHtml = '<div class="detail-comment-item" style="animation:fadeIn 0.3s">' +
-                renderAvatarHtml(comment.avatar, commentAvatarUrl, 'detail-comment-avatar') +
-                '<div class="detail-comment-body">' +
-                    '<div class="detail-comment-name">' + comment.name + '</div>' +
-                    '<div class="detail-comment-text">' + comment.text + '</div>' +
-                    '<div class="detail-comment-time">' + comment.time + '</div>' +
-                '</div>' +
-            '</div>';
-            commentsList.insertAdjacentHTML('beforeend', itemHtml);
-
-            var countEl = document.getElementById('commentCount');
-            if (countEl) countEl.textContent = products[idx].comments.length + '条留言';
-
-            commentInput.value = '';
-            showToast('留言成功');
-        }
-
-        if (commentSubmit) commentSubmit.addEventListener('click', submitComment);
-        if (commentInput) commentInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitComment(); });
-
-        document.querySelectorAll('.detail-other-card, .detail-similar-card').forEach(function(card) {
-            card.addEventListener('click', function() {
-                var id = this.dataset.id;
-                if (id) window.location.href = 'detail.html?id=' + id;
-            });
-        });
     }
 
     var productId = getProductId();

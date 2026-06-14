@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的购买记录 - 智慧校园二手市场</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/secondhand.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-university"></i>
+                <span>智慧校园</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link active">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a>
+                <a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="sh-nav-links">
+                    <a href="orders.html" class="sh-nav-link" title="我的订单"><i class="fas fa-receipt"></i></a>
+                    <a href="purchases.html" class="sh-nav-link" title="我的购买记录" style="color:var(--primary-light)"><i class="fas fa-shopping-bag"></i></a>
+                </div>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sh-page-container" style="padding-top:90px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+            <h1 class="sh-page-title" style="margin-bottom:0"><i class="fas fa-shopping-bag" style="color:#f97316"></i> 我的购买记录</h1>
+            <span id="purchaseCount" style="color:var(--text-secondary);font-size:14px"></span>
+        </div>
+        <div id="purchaseList" class="sh-order-list"></div>
+    </div>
+
+    <div class="sh-toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function getCurrentUser() {
+            if (window.CampusDB) return CampusDB.getCurrentUser();
+            try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
+        }
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2500);
+        }
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        var user = getCurrentUser();
+        var listEl = document.getElementById('purchaseList');
+        var countEl = document.getElementById('purchaseCount');
+
+        /* 状态映射：适配购买场景 */
+        var statusMap = {
+            '待确认': { label: '待付款', cls: 'pending', icon: 'fa-clock' },
+            '待配送': { label: '待收货', cls: 'shipped', icon: 'fa-truck' },
+            '已收货': { label: '已收货', cls: 'completed', icon: 'fa-check-circle' },
+            '已完成': { label: '已完成', cls: 'completed', icon: 'fa-check-double' },
+            '已退款': { label: '已退款', cls: 'rejected', icon: 'fa-undo' },
+            '已租用': { label: '已收货', cls: 'completed', icon: 'fa-check-circle' },
+            '已归还': { label: '已完成', cls: 'completed', icon: 'fa-check-double' }
+        };
+
+        function renderPurchaseCard(order) {
+            var st = statusMap[order.status] || { label: order.status || '待确认', cls: 'pending', icon: 'fa-circle' };
+            var img = order.productImg || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop';
+            var name = order.productName || order.name || '未知商品';
+            var price = order.totalPrice || order.price || 0;
+            var seller = order.seller || '未知';
+            var sellerDept = order.sellerDept || '';
+            var building = order.building || '';
+            var note = order.note || '';
+            var time = order.time || '';
+            var status = order.status || '待确认';
+
+            var card = document.createElement('div');
+            card.className = 'sh-order-card';
+            card.style.cursor = 'pointer';
+            card.innerHTML =
+                '<div class="sh-order-img"><img src="' + img + '" alt="' + escapeHtml(name) + '" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<div style=&quot;display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-secondary)&quot;><i class=&quot;fas fa-box&quot; style=&quot;font-size:24px&quot;></i></div>\'"></div>' +
+                '<div class="sh-order-info">' +
+                    '<h3>' + escapeHtml(name) + '</h3>' +
+                    '<div class="sh-order-meta">' +
+                        '<div><i class="fas fa-user"></i> 卖家：' + escapeHtml(seller) + (sellerDept ? '（' + escapeHtml(sellerDept) + '）' : '') + '</div>' +
+                        '<div><i class="fas fa-coins"></i> 价格：<strong style="color:#f97316">¥' + price + '</strong></div>' +
+                        (building ? '<div><i class="fas fa-map-marker-alt"></i> 收货地址：' + escapeHtml(building) + '</div>' : '') +
+                        (note ? '<div><i class="fas fa-sticky-note"></i> 备注：' + escapeHtml(note) + '</div>' : '') +
+                        (time ? '<div><i class="fas fa-clock"></i> 下单时间：' + escapeHtml(time) + '</div>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<span class="sh-order-status ' + st.cls + '"><i class="fas ' + st.icon + '"></i> ' + st.label + '</span>';
+
+            if (order.productId) {
+                card.addEventListener('click', function() {
+                    window.location.href = 'detail.html?id=' + order.productId;
+                });
+            }
+            return card;
+        }
+
+        function renderPurchases() {
+            listEl.innerHTML = '';
+
+            var orders = [];
+            try { orders = JSON.parse(localStorage.getItem('campus_trade_orders') || '[]'); } catch(e) {}
+
+            /* 只显示当前用户的购买记录 */
+            var myOrders = orders.filter(function(o) {
+                return o.buyerStuId === user.stuId || o.buyer === user.name;
+            });
+
+            if (myOrders.length === 0) {
+                listEl.innerHTML = '<div class="sh-page-empty" style="text-align:center;padding:60px 20px"><i class="fas fa-shopping-bag" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">暂无购买记录</p><a href="secondhand.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去逛逛</a></div>';
+                if (countEl) countEl.textContent = '';
+                return;
+            }
+
+            myOrders.forEach(function(order) {
+                listEl.appendChild(renderPurchaseCard(order));
+            });
+
+            if (countEl) countEl.textContent = '共 ' + myOrders.length + ' 笔购买';
+        }
+
+        if (!user) {
+            listEl.innerHTML = '<div class="sh-page-empty" style="text-align:center;padding:60px 20px"><i class="fas fa-lock" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">请先登录后查看购买记录</p><a href="login.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去登录</a></div>';
+            if (countEl) countEl.textContent = '';
+            return;
+        }
+
+        renderPurchases();
+    });
+    </script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

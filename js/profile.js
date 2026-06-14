@@ -757,4 +757,86 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() { loadMyMessages(); }, 100);
         });
     }
+
+    /* ===== 我的购买记录 ===== */
+    function loadPurchaseRecords() {
+        var user = getCurrentUser();
+        var listEl = document.getElementById('purchaseList');
+        var countEl = document.getElementById('purchaseCount');
+        if (!listEl) return;
+
+        if (!user) {
+            listEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary)"><i class="fas fa-lock" style="font-size:36px;margin-bottom:12px;display:block"></i><p>请先登录后查看购买记录</p></div>';
+            if (countEl) countEl.textContent = '';
+            return;
+        }
+
+        var orders = [];
+        try { orders = JSON.parse(localStorage.getItem('campus_trade_orders') || '[]'); } catch(e) {}
+
+        /* 只显示当前用户的购买记录 */
+        var myOrders = orders.filter(function(o) {
+            return o.buyerStuId === user.stuId || o.buyer === user.name;
+        });
+
+        if (countEl) countEl.textContent = myOrders.length > 0 ? '共 ' + myOrders.length + ' 笔' : '';
+
+        if (myOrders.length === 0) {
+            listEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary)"><i class="fas fa-shopping-bag" style="font-size:36px;margin-bottom:12px;display:block;color:#d1d5db"></i><p>暂无购买记录</p><a href="secondhand.html" style="display:inline-block;margin-top:12px;padding:8px 20px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:13px">去逛逛</a></div>';
+            return;
+        }
+
+        var statusMap = {
+            '待确认': { label: '待付款', cls: 'pending', icon: 'fa-clock' },
+            '待配送': { label: '待收货', cls: 'shipped', icon: 'fa-truck' },
+            '已收货': { label: '已收货', cls: 'completed', icon: 'fa-check-circle' },
+            '已完成': { label: '已完成', cls: 'completed', icon: 'fa-check-double' },
+            '已退款': { label: '已退款', cls: 'rejected', icon: 'fa-undo' },
+            '已租用': { label: '已收货', cls: 'completed', icon: 'fa-check-circle' },
+            '已归还': { label: '已完成', cls: 'completed', icon: 'fa-check-double' }
+        };
+
+        var html = '';
+        myOrders.forEach(function(order) {
+            var st = statusMap[order.status] || { label: order.status || '待确认', cls: 'pending', icon: 'fa-circle' };
+            var img = order.productImg || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop';
+            html += '<div class="record-item" style="cursor:pointer" data-oid="' + (order.id || '') + '">' +
+                '<div class="record-icon"><img src="' + img + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<i class=\\\'fas fa-box\\\' style=\\\'font-size:20px\\\'></i>\'"></div>' +
+                '<div class="record-info">' +
+                    '<h4>' + escapeProfileHtml(order.productName || '未知商品') + '</h4>' +
+                    '<p style="font-size:12px;color:var(--text-secondary)">' +
+                        '<i class="fas fa-user"></i> 卖家：' + escapeProfileHtml(order.seller || '未知') +
+                        (order.sellerDept ? '（' + escapeProfileHtml(order.sellerDept) + '）' : '') +
+                    '</p>' +
+                    '<p style="font-size:12px;color:var(--text-secondary)">' +
+                        '<i class="fas fa-coins"></i> ¥' + (order.totalPrice || order.price || 0) +
+                        (order.building ? ' &nbsp;<i class="fas fa-map-marker-alt"></i> ' + escapeProfileHtml(order.building) : '') +
+                    '</p>' +
+                    '<p style="font-size:12px;color:var(--text-secondary)"><i class="fas fa-clock"></i> ' + escapeProfileHtml(order.time || '') + '</p>' +
+                '</div>' +
+                '<span class="record-status ' + st.cls + '"><i class="fas ' + st.icon + '"></i> ' + st.label + '</span>' +
+            '</div>';
+        });
+        listEl.innerHTML = html;
+
+        /* 点击跳转商品详情 */
+        listEl.querySelectorAll('.record-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var oid = this.dataset.oid;
+                var found = myOrders.find(function(o) { return String(o.id) === String(oid); });
+                if (found && found.productId) {
+                    window.location.href = 'detail.html?id=' + found.productId;
+                }
+            });
+        });
+    }
+
+    loadPurchaseRecords();
+
+    var purchasesNavItem = document.querySelector('.nav-item[data-section="purchases"]');
+    if (purchasesNavItem) {
+        purchasesNavItem.addEventListener('click', function() {
+            setTimeout(function() { loadPurchaseRecords(); }, 100);
+        });
+    }
 });

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的发布兼职 - 智慧校园</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/parttime.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><i class="fas fa-university"></i><span>智慧校园</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link active">兼职互助</a>
+                <a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <div class="pt-container" style="padding-top:100px;max-width:900px;margin:0 auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+            <h1 style="margin:0;font-size:22px;display:flex;align-items:center;gap:10px">
+                <i class="fas fa-briefcase" style="color:#6366f1"></i> 我的发布兼职
+            </h1>
+            <div style="display:flex;gap:10px">
+                <a href="parttime.html" style="padding:8px 16px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);text-decoration:none;font-size:13px;border:1px solid var(--border-color)"><i class="fas fa-arrow-left"></i> 返回列表</a>
+                <span id="publishCount" style="color:var(--text-secondary);font-size:14px;line-height:36px"></span>
+            </div>
+        </div>
+        <div id="myPublishedList"></div>
+    </div>
+
+    <!-- 编辑弹窗 -->
+    <div class="pt-modal" id="editModal">
+        <div class="pt-modal-content">
+            <div class="pt-modal-header"><h3>编辑兼职信息</h3><button class="pt-modal-close" id="editModalClose"><i class="fas fa-times"></i></button></div>
+            <div class="pt-modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editJobId">
+                    <div class="pt-form-group"><label>兼职标题</label><input type="text" id="editTitle" required></div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>兼职类型</label><select id="editCat" required><option value="">请选择</option><option>勤工助学</option><option>校园兼职</option><option>家教</option><option>代取快递</option><option>其他</option></select></div>
+                        <div class="pt-form-group"><label>薪资待遇</label><input type="text" id="editSalary" required></div>
+                    </div>
+                    <div class="pt-form-row">
+                        <div class="pt-form-group"><label>工作地点</label><input type="text" id="editLocation" required></div>
+                        <div class="pt-form-group"><label>工作时间</label><input type="text" id="editTime" required></div>
+                    </div>
+                    <div class="pt-form-group"><label>详细描述</label><textarea id="editDesc" rows="3" required></textarea></div>
+                    <div class="pt-form-group"><label>联系方式</label><input type="text" id="editContact" required></div>
+                    <button type="submit" class="pt-submit-btn"><i class="fas fa-check"></i> 保存修改</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-toast" id="ptToast"></div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    (function() {
+        function getCurrentUser() {
+            if (window.CampusDB) return CampusDB.getCurrentUser();
+            try { return JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) { return null; }
+        }
+
+        function getJobs() {
+            try { return JSON.parse(localStorage.getItem('campus_parttime_jobs') || '[]'); } catch(e) { return []; }
+        }
+
+        function saveJobs(list) {
+            try { localStorage.setItem('campus_parttime_jobs', JSON.stringify(list)); } catch(e) {}
+        }
+
+        function showToast(msg) {
+            var toast = document.getElementById('ptToast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        var user = getCurrentUser();
+        var listEl = document.getElementById('myPublishedList');
+        var countEl = document.getElementById('publishCount');
+
+        if (!user) {
+            listEl.innerHTML = '<div style="text-align:center;padding:60px 20px"><i class="fas fa-lock" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">请先登录后查看我的发布</p><a href="login.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:#6366f1;color:#fff;text-decoration:none;font-size:14px">去登录</a></div>';
+            return;
+        }
+
+        function renderList() {
+            var allJobs = getJobs();
+            /* 只显示当前用户发布的兼职 */
+            var myJobs = allJobs.filter(function(j) {
+                return j.publisherStuId === user.stuId || j.publisher === user.name;
+            });
+
+            if (countEl) countEl.textContent = myJobs.length > 0 ? '共 ' + myJobs.length + ' 条' : '';
+
+            if (myJobs.length === 0) {
+                listEl.innerHTML = '<div style="text-align:center;padding:60px 20px"><i class="fas fa-briefcase" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">暂无发布的兼职信息</p><a href="parttime.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:#6366f1;color:#fff;text-decoration:none;font-size:14px">去发布兼职</a></div>';
+                return;
+            }
+
+            var statusMap = {
+                '招聘中': { cls: 'active', color: '#10b981', icon: 'fa-user-check' },
+                '已招满': { cls: 'full', color: '#f59e0b', icon: 'fa-users' },
+                '已关闭': { cls: 'closed', color: '#6b7280', icon: 'fa-ban' },
+                'pending': { cls: 'pending', color: '#f59e0b', icon: 'fa-clock' },
+                'approved': { cls: 'active', color: '#10b981', icon: 'fa-check-circle' },
+                'rejected': { cls: 'rejected', color: '#ef4444', icon: 'fa-times-circle' }
+            };
+
+            var html = '';
+            myJobs.forEach(function(job) {
+                var jobStatus = job.jobStatus || (job.reviewStatus === 'approved' ? '招聘中' : (job.reviewStatus === 'pending' ? '审核中' : '未通过'));
+                var st = statusMap[jobStatus] || statusMap['招聘中'];
+                var reviewBadge = '';
+                if (job.reviewStatus === 'pending') {
+                    reviewBadge = '<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#fef3c7;color:#92400e;font-size:11px;margin-left:8px"><i class="fas fa-clock"></i> 审核中</span>';
+                } else if (job.reviewStatus === 'rejected') {
+                    reviewBadge = '<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#fee2e2;color:#991b1b;font-size:11px;margin-left:8px"><i class="fas fa-times-circle"></i> 未通过</span>';
+                }
+
+                html += '<div class="my-pub-card" data-id="' + job.id + '">' +
+                    '<div class="my-pub-card-header">' +
+                        '<div class="my-pub-card-icon cat-' + job.cat + '"><i class="fas ' + (job.icon || 'fa-briefcase') + '"></i></div>' +
+                        '<div class="my-pub-card-info">' +
+                            '<h4>' + escapeHtml(job.title) + reviewBadge + '</h4>' +
+                            '<p><i class="fas fa-coins"></i> ' + escapeHtml(job.salary) + ' &nbsp; <i class="fas fa-map-marker-alt"></i> ' + escapeHtml(job.location) + '</p>' +
+                            '<p><i class="fas fa-clock"></i> ' + escapeHtml(job.publishTime || job.time || '') + '</p>' +
+                        '</div>' +
+                        '<span class="my-pub-status ' + st.cls + '" style="color:' + st.color + '"><i class="fas ' + st.icon + '"></i> ' + jobStatus + '</span>' +
+                    '</div>' +
+                    '<div class="my-pub-card-actions">' +
+                        '<button class="my-pub-btn view-btn" data-id="' + job.id + '"><i class="fas fa-eye"></i> 查看详情</button>' +
+                        (job.reviewStatus === 'approved' ? '<button class="my-pub-btn edit-btn" data-id="' + job.id + '"><i class="fas fa-edit"></i> 编辑</button>' : '') +
+                        (job.reviewStatus === 'approved' && jobStatus !== '已招满' ? '<button class="my-pub-btn full-btn" data-id="' + job.id + '"><i class="fas fa-users"></i> 标记招满</button>' : '') +
+                        (job.reviewStatus === 'approved' && jobStatus !== '已关闭' ? '<button class="my-pub-btn close-btn" data-id="' + job.id + '"><i class="fas fa-ban"></i> 下架</button>' : '') +
+                        '<button class="my-pub-btn delete-btn" data-id="' + job.id + '" style="color:#ef4444"><i class="fas fa-trash"></i> 删除</button>' +
+                    '</div>' +
+                '</div>';
+            });
+            listEl.innerHTML = html;
+            bindActions();
+        }
+
+        function bindActions() {
+            /* 查看详情 */
+            listEl.querySelectorAll('.view-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    window.location.href = 'parttime-detail.html?id=' + btn.dataset.id;
+                });
+            });
+
+            /* 编辑 */
+            listEl.querySelectorAll('.edit-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var allJobs = getJobs();
+                    var job = allJobs.find(function(j) { return j.id === btn.dataset.id; });
+                    if (!job) return;
+                    document.getElementById('editJobId').value = job.id;
+                    document.getElementById('editTitle').value = job.title || '';
+                    document.getElementById('editCat').value = job.cat || '';
+                    document.getElementById('editSalary').value = job.salary || '';
+                    document.getElementById('editLocation').value = job.location || '';
+                    document.getElementById('editTime').value = job.time || '';
+                    document.getElementById('editDesc').value = job.desc || '';
+                    document.getElementById('editContact').value = job.contact || '';
+                    document.getElementById('editModal').classList.add('active');
+                });
+            });
+
+            /* 标记招满 */
+            listEl.querySelectorAll('.full-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (!confirm('确认标记为「已招满」？标记后将不再接受新报名。')) return;
+                    var allJobs = getJobs();
+                    var idx = allJobs.findIndex(function(j) { return j.id === btn.dataset.id; });
+                    if (idx !== -1) {
+                        allJobs[idx].jobStatus = '已招满';
+                        saveJobs(allJobs);
+                        renderList();
+                        showToast('已标记为招满');
+                    }
+                });
+            });
+
+            /* 下架 */
+            listEl.querySelectorAll('.close-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (!confirm('确认下架该兼职？下架后将不再展示在公共列表中。')) return;
+                    var allJobs = getJobs();
+                    var idx = allJobs.findIndex(function(j) { return j.id === btn.dataset.id; });
+                    if (idx !== -1) {
+                        allJobs[idx].jobStatus = '已关闭';
+                        allJobs[idx].reviewStatus = 'closed';
+                        saveJobs(allJobs);
+                        renderList();
+                        showToast('已下架');
+                    }
+                });
+            });
+
+            /* 删除 */
+            listEl.querySelectorAll('.delete-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (!confirm('确认删除该兼职？删除后不可恢复，相关报名数据也将清除。')) return;
+                    var allJobs = getJobs();
+                    allJobs = allJobs.filter(function(j) { return j.id !== btn.dataset.id; });
+                    saveJobs(allJobs);
+                    renderList();
+                    showToast('已删除');
+                });
+            });
+        }
+
+        /* 编辑弹窗事件 */
+        document.getElementById('editModalClose').addEventListener('click', function() {
+            document.getElementById('editModal').classList.remove('active');
+        });
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var id = document.getElementById('editJobId').value;
+            var allJobs = getJobs();
+            var idx = allJobs.findIndex(function(j) { return j.id === id; });
+            if (idx === -1) { showToast('兼职不存在'); return; }
+            allJobs[idx].title = document.getElementById('editTitle').value;
+            allJobs[idx].cat = document.getElementById('editCat').value;
+            allJobs[idx].salary = document.getElementById('editSalary').value;
+            allJobs[idx].location = document.getElementById('editLocation').value;
+            allJobs[idx].time = document.getElementById('editTime').value;
+            allJobs[idx].desc = document.getElementById('editDesc').value;
+            allJobs[idx].contact = document.getElementById('editContact').value;
+            saveJobs(allJobs);
+            document.getElementById('editModal').classList.remove('active');
+            renderList();
+            showToast('修改已保存');
+        });
+
+        renderList();
+    })();
+    </script>
+<script src="js/robot-assistant.js"></script>
+</body>
+</html>

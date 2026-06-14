@@ -106,11 +106,11 @@
     ];
 
     var defaultAnnouncements = [
-        { id: 'a1', title: '关于2026年春季学期开学注册的通知', content: '各位同学，2026年春季学期将于2月24日正式开学，请同学们按时返校注册。', author: '教务处', time: '2026-02-15', type: 'important', cat: '教务通知', pinned: true },
-        { id: 'a2', title: '图书馆开放时间调整通知', content: '因装修需要，图书馆3楼自习区将于3月1日至3月15日暂停开放。', author: '图书馆', time: '2026-02-28', type: 'normal', cat: '后勤公告', pinned: false },
-        { id: 'a3', title: '校园网络升级维护通知', content: '信息中心将于本周末进行网络升级维护，届时校园网可能出现短暂中断。', author: '信息中心', time: '2026-03-05', type: 'important', cat: '安全提示', pinned: false },
-        { id: 'a4', title: '二手交易平台上线公告', content: '智慧校园二手交易平台已正式上线，欢迎同学们发布闲置物品，绿色共享。发布商品请遵守平台规则，禁止发布违禁品。', author: '平台管理员', time: '2026-06-01', type: 'normal', cat: '校园活动', pinned: true },
-        { id: 'a5', title: '暑期留校申请通知', content: '需要暑期留校的同学，请于6月20日前在系统中提交申请，经辅导员审批后方可留校。', author: '学生处', time: '2026-06-05', type: 'important', cat: '教务通知', pinned: false }
+        { id: 'a1', title: '关于2026年春季学期开学注册的通知', content: '各位同学，2026年春季学期将于2月24日正式开学，请同学们按时返校注册。', author: '教务处', time: '2026-02-15', type: 'important', cat: '教务通知', pinned: true, version: 1 },
+        { id: 'a2', title: '图书馆开放时间调整通知', content: '因装修需要，图书馆3楼自习区将于3月1日至3月15日暂停开放。', author: '图书馆', time: '2026-02-28', type: 'normal', cat: '后勤公告', pinned: false, version: 1 },
+        { id: 'a3', title: '校园网络升级维护通知', content: '信息中心将于本周末进行网络升级维护，届时校园网可能出现短暂中断。', author: '信息中心', time: '2026-03-05', type: 'important', cat: '安全提示', pinned: false, version: 1 },
+        { id: 'a4', title: '二手交易平台上线公告', content: '智慧校园二手交易平台已正式上线，欢迎同学们发布闲置物品，绿色共享。发布商品请遵守平台规则，禁止发布违禁品。', author: '平台管理员', time: '2026-06-01', type: 'normal', cat: '校园活动', pinned: true, version: 1 },
+        { id: 'a5', title: '暑期留校申请通知', content: '需要暑期留校的同学，请于6月20日前在系统中提交申请，经辅导员审批后方可留校。', author: '学生处', time: '2026-06-05', type: 'important', cat: '教务通知', pinned: false, version: 1 }
     ];
 
     var defaultBlockLog = [
@@ -598,9 +598,16 @@
         getUnreadAnnouncements: function(stuId) {
             var all = this.getAnnouncements();
             var readMap = this.getAnnouncementReadMap();
-            var readIds = readMap[stuId] || [];
+            var readList = readMap[stuId] || [];
             return all.filter(function(a) {
-                return readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) === -1;
+                var readRecord = readList.find(function(rid) {
+                    if (typeof rid === 'object') return String(rid.noticeId) === String(a.id);
+                    return String(rid) === String(a.id);
+                });
+                if (!readRecord) return true;
+                var annVersion = a.version || 1;
+                var readVersion = (typeof readRecord === 'object' ? readRecord.version : 1) || 1;
+                return annVersion > readVersion;
             }).sort(function(a, b) {
                 return (b.time || '').localeCompare(a.time || '');
             });
@@ -608,21 +615,40 @@
         getUnreadAnnouncementCount: function(stuId) {
             return this.getUnreadAnnouncements(stuId).length;
         },
-        markAnnouncementRead: function(stuId, announcementId) {
+        markAnnouncementRead: function(stuId, announcementId, version) {
             var readMap = this.getAnnouncementReadMap();
             if (!readMap[stuId]) readMap[stuId] = [];
-            var exists = readMap[stuId].findIndex(function(rid) { return String(rid) === String(announcementId); });
+            var exists = readMap[stuId].findIndex(function(rid) {
+                if (typeof rid === 'object') return String(rid.noticeId) === String(announcementId);
+                return String(rid) === String(announcementId);
+            });
+            var readRecord = {
+                noticeId: String(announcementId),
+                readTime: new Date().toISOString(),
+                version: version || 1
+            };
             if (exists === -1) {
-                readMap[stuId].push(announcementId);
-                this.saveAnnouncementReadMap(readMap);
+                readMap[stuId].push(readRecord);
+            } else {
+                readMap[stuId][exists] = readRecord;
             }
+            this.saveAnnouncementReadMap(readMap);
         },
         getAnnouncementsWithReadStatus: function(stuId) {
             var all = this.getAnnouncements();
             var readMap = this.getAnnouncementReadMap();
-            var readIds = readMap[stuId] || [];
+            var readList = readMap[stuId] || [];
             return all.map(function(a) {
-                var isRead = readIds.findIndex(function(rid) { return String(rid) === String(a.id); }) !== -1;
+                var readRecord = readList.find(function(rid) {
+                    if (typeof rid === 'object') return String(rid.noticeId) === String(a.id);
+                    return String(rid) === String(a.id);
+                });
+                var isRead = false;
+                if (readRecord) {
+                    var annVersion = a.version || 1;
+                    var readVersion = (typeof readRecord === 'object' ? readRecord.version : 1) || 1;
+                    isRead = annVersion <= readVersion;
+                }
                 return Object.assign({}, a, { isRead: isRead });
             }).sort(function(a, b) {
                 if (a.pinned && !b.pinned) return -1;
