@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐饮服务 - 食堂后台 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dining-admin.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="life.html" class="da-back-btn" title="返回生活服务"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="dining.html" class="nav-link active">餐饮服务</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <div class="da-staff-badge"><i class="fas fa-utensils"></i> 食堂工作台</div>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="da-hero">
+        <div class="da-hero-content">
+            <h1><i class="fas fa-concierge-bell"></i> 食堂管理员工作台</h1>
+            <p>实时接收订单 · 一键接单 · 制作配送 · 高效办结</p>
+            <div class="da-hero-stats">
+                <div class="da-stat">
+                    <span class="da-stat-num" id="statPending">0</span>
+                    <span class="da-stat-label">待接单</span>
+                </div>
+                <div class="da-stat">
+                    <span class="da-stat-num" id="statCooking">0</span>
+                    <span class="da-stat-label">制作中</span>
+                </div>
+                <div class="da-stat">
+                    <span class="da-stat-num" id="statDelivering">0</span>
+                    <span class="da-stat-label">配送中</span>
+                </div>
+                <div class="da-stat">
+                    <span class="da-stat-num" id="statDone">0</span>
+                    <span class="da-stat-label">已办结</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab切换 -->
+    <section class="da-tabs-section">
+        <div class="da-tabs-header">
+            <button class="da-tab active" data-tab="pending"><i class="fas fa-bell"></i><span>待接单</span><em id="pendingBadge" class="da-badge">0</em></button>
+            <button class="da-tab" data-tab="cooking"><i class="fas fa-fire"></i><span>制作中</span></button>
+            <button class="da-tab" data-tab="delivering"><i class="fas fa-truck"></i><span>配送中</span></button>
+            <button class="da-tab" data-tab="done"><i class="fas fa-flag-checkered"></i><span>已办结</span></button>
+            <button class="da-tab" data-tab="history"><i class="fas fa-history"></i><span>全部历史</span></button>
+            <button class="da-tab" data-tab="menu-publish"><i class="fas fa-upload"></i><span>菜单发布</span></button>
+        </div>
+    </section>
+
+    <!-- 待接单 -->
+    <div class="da-tab-content active" id="pending">
+        <div class="da-container" id="pendingList"></div>
+    </div>
+    <!-- 制作中 -->
+    <div class="da-tab-content" id="cooking">
+        <div class="da-container" id="cookingList"></div>
+    </div>
+    <!-- 配送中 -->
+    <div class="da-tab-content" id="delivering">
+        <div class="da-container" id="deliveringList"></div>
+    </div>
+    <!-- 已办结 -->
+    <div class="da-tab-content" id="done">
+        <div class="da-container" id="doneList"></div>
+    </div>
+    <!-- 全部历史 -->
+    <div class="da-tab-content" id="history">
+        <div class="da-container" id="historyList"></div>
+    </div>
+
+    <!-- 菜单发布 -->
+    <div class="da-tab-content" id="menu-publish">
+        <div class="da-container">
+            <!-- 楼层切换 -->
+            <div class="da-publish-floor-tabs">
+                <button class="da-floor-tab active" data-floor="1"><i class="fas fa-building"></i> 一楼</button>
+                <button class="da-floor-tab" data-floor="2"><i class="fas fa-building"></i> 二楼</button>
+                <button class="da-floor-tab" data-floor="3"><i class="fas fa-building"></i> 三楼</button>
+            </div>
+
+            <!-- 模块1：每日推荐餐单（图片上传） -->
+            <div class="da-publish-card">
+                <div class="da-publish-card-header">
+                    <h3><i class="fas fa-star" style="color:#f59e0b"></i> 每日推荐餐单</h3>
+                    <span class="da-publish-tip">上传菜品图片，学生端对应楼层将自动同步显示</span>
+                </div>
+                <div class="da-publish-section">
+                    <label class="da-publish-label">选择时段</label>
+                    <div class="da-meal-tabs" id="recommendMealTabs">
+                        <button class="da-meal-tab active" data-meal="breakfast"><i class="fas fa-sun"></i> 早餐</button>
+                        <button class="da-meal-tab" data-meal="lunch"><i class="fas fa-cloud-sun"></i> 午餐</button>
+                        <button class="da-meal-tab" data-meal="dinner"><i class="fas fa-moon"></i> 晚餐</button>
+                    </div>
+                </div>
+                <div class="da-publish-form">
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">菜品名称</label>
+                        <input type="text" class="da-publish-input" id="recDishName" placeholder="如：红烧肉">
+                    </div>
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">菜品描述</label>
+                        <input type="text" class="da-publish-input" id="recDishDesc" placeholder="如：本店招牌，肥而不腻">
+                    </div>
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">价格（元）</label>
+                        <input type="number" class="da-publish-input" id="recDishPrice" placeholder="如：18" min="0" step="0.5">
+                    </div>
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">菜品图片</label>
+                        <div class="da-image-upload" id="recImageUpload">
+                            <input type="file" id="recImageFile" accept="image/*" hidden>
+                            <div class="da-image-preview" id="recImagePreview">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>点击上传图片</span>
+                            </div>
+                            <button type="button" class="da-image-clear" id="recImageClear" style="display:none;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="da-publish-actions">
+                        <button class="da-btn-accept" id="recAddBtn"><i class="fas fa-plus"></i> 添加推荐</button>
+                        <button class="da-btn-detail" id="recClearAllBtn"><i class="fas fa-trash"></i> 清空当前时段</button>
+                    </div>
+                </div>
+                <div class="da-publish-preview" id="recPreviewList"></div>
+            </div>
+
+            <!-- 模块2：今日窗口菜单（文字录入） -->
+            <div class="da-publish-card">
+                <div class="da-publish-card-header">
+                    <h3><i class="fas fa-store-alt" style="color:#ea580c"></i> 今日窗口菜单</h3>
+                    <span class="da-publish-tip">录入各窗口主推菜品文字信息，提交后实时同步至学生端</span>
+                </div>
+                <div class="da-publish-form">
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">窗口名称</label>
+                        <input type="text" class="da-publish-input" id="winName" placeholder="如：一号窗口 / 川菜窗口">
+                    </div>
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">主推菜品</label>
+                        <input type="text" class="da-publish-input" id="winDish" placeholder="如：麻辣香锅、酸辣粉">
+                    </div>
+                    <div class="da-publish-row">
+                        <label class="da-publish-label">备注说明（可选）</label>
+                        <input type="text" class="da-publish-input" id="winDesc" placeholder="如：现做现卖，限量供应">
+                    </div>
+                    <div class="da-publish-actions">
+                        <button class="da-btn-process" id="winAddBtn"><i class="fas fa-plus"></i> 添加窗口</button>
+                        <button class="da-btn-detail" id="winClearAllBtn"><i class="fas fa-trash"></i> 清空本楼全部窗口</button>
+                    </div>
+                </div>
+                <div class="da-publish-preview" id="winPreviewList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天弹窗 -->
+    <div class="da-chat-modal" id="chatModal">
+        <div class="da-chat-content">
+            <div class="da-chat-header">
+                <h3><i class="fas fa-comments"></i> 与学生沟通</h3>
+                <button class="da-chat-close" id="chatClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="da-chat-messages" id="chatMessages"></div>
+            <div class="da-chat-input">
+                <input type="text" id="chatInput" placeholder="输入消息...">
+                <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单详情弹窗 -->
+    <div class="da-detail-modal" id="detailModal">
+        <div class="da-detail-content">
+            <div class="da-detail-header">
+                <h3><i class="fas fa-receipt"></i> 订单详情</h3>
+                <button class="da-chat-close" id="detailClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="da-detail-body" id="detailBody"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="da-toast" id="daToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="daToastMsg">操作成功</span>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>青园在线</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="life.html">生活服务</a></li>
+                    <li><a href="dining.html">学生端</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：济南幼儿师范高等专科学校</p>
+                <p>电话：010-12345678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 青园在线综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dining-admin.js"></script>
+</body>
+</html>

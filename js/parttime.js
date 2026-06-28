@@ -62,7 +62,6 @@
     })();
 
     function init() {
-        initHeroSlider();
         animateStats();
         initTabs();
         renderJobs('all');

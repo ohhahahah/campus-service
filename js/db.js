@@ -1,6 +1,6 @@
 (function(window) {
-    var DB_VERSION = '3.1';
-    var DB_INIT_KEY = 'campus_db_initialized';
+    var DB_VERSION = '7.0';
+    var DB_INIT_KEY = 'campus_db_initialized_v7';
 
     var tables = {
         students: 'campus_students',
@@ -20,7 +20,9 @@
         blockLog: 'campus_block_log',
         visitCount: 'campus_visit_count',
         pets: 'campus_pets',
-        announcementRead: 'campus_announcement_read'
+        announcementRead: 'campus_announcement_read',
+        merchants: 'campus_merchants',
+        merchantOrders: 'campus_merchant_orders'
     };
 
     function _get(key, defaultVal) {
@@ -47,13 +49,14 @@
     }
 
     var defaultStudents = [
-        { stuId: '2024001', name: '张三', password: '123456', dept: '计算机学院', phone: '13800138001', grade: '2024级', reputation: '良好', regTime: '2026-03-01T08:00:00.000Z' },
-        { stuId: '2024002', name: '李四', password: '123456', dept: '电子信息学院', phone: '13800138002', grade: '2024级', reputation: '优秀', regTime: '2026-03-02T09:00:00.000Z' },
-        { stuId: '2024003', name: '王五', password: '123456', dept: '经济管理学院', phone: '13800138003', grade: '2023级', reputation: '良好', regTime: '2026-02-15T10:00:00.000Z' },
-        { stuId: '2024004', name: '赵六', password: '123456', dept: '艺术设计学院', phone: '13800138004', grade: '2024级', reputation: '一般', regTime: '2026-03-05T11:00:00.000Z' },
-        { stuId: '2024005', name: '孙七', password: '123456', dept: '机械工程学院', phone: '13800138005', grade: '2023级', reputation: '良好', regTime: '2026-02-20T14:00:00.000Z' },
+        { stuId: '2024001', name: '张三', password: '123456', dept: '计算机学院', phone: '13800138001', grade: '2024级', reputation: '良好', regTime: '2026-03-01T08:00:00.000Z', status: 'approved' },
+        { stuId: '2024002', name: '李四', password: '123456', dept: '电子信息学院', phone: '13800138002', grade: '2024级', reputation: '优秀', regTime: '2026-03-02T09:00:00.000Z', status: 'approved' },
+        { stuId: '2024003', name: '王五', password: '123456', dept: '经济管理学院', phone: '13800138003', grade: '2023级', reputation: '良好', regTime: '2026-02-15T10:00:00.000Z', status: 'approved' },
+        { stuId: '2024004', name: '赵六', password: '123456', dept: '艺术设计学院', phone: '13800138004', grade: '2024级', reputation: '一般', regTime: '2026-03-05T11:00:00.000Z', status: 'approved' },
+        { stuId: '2024005', name: '孙七', password: '123456', dept: '机械工程学院', phone: '13800138005', grade: '2023级', reputation: '良好', regTime: '2026-02-20T14:00:00.000Z', status: 'approved' },
         { stuId: '2024006', name: '周违规', password: '123456', dept: '法学院', phone: '13800138006', grade: '2024级', reputation: '较差', regTime: '2026-04-10T09:00:00.000Z', status: 'banned', banExpiry: '2026-07-10T00:00:00.000Z', banReason: '发布违规内容：赌博、代开发票', banTime: '2026-06-01T14:30:00.000Z' },
-        { stuId: '2024007', name: '吴永久', password: '123456', dept: '外国语学院', phone: '13800138007', grade: '2023级', reputation: '差', regTime: '2026-01-15T10:00:00.000Z', status: 'banned', banExpiry: 'permanent', banReason: '多次发布严重违规内容', banTime: '2026-05-20T16:00:00.000Z' }
+        { stuId: '2024007', name: '吴永久', password: '123456', dept: '外国语学院', phone: '13800138007', grade: '2023级', reputation: '差', regTime: '2026-01-15T10:00:00.000Z', status: 'banned', banExpiry: 'permanent', banReason: '多次发布严重违规内容', banTime: '2026-05-20T16:00:00.000Z' },
+        { stuId: '2024008', name: '郑待审', password: '123456', dept: '数学与统计学院', phone: '13800138008', grade: '2024级', reputation: '良好', regTime: '2026-06-20T08:00:00.000Z', status: 'pending' }
     ];
 
     var defaultSecondhand = [
@@ -254,6 +257,16 @@
         if (!needsInit) {
             /* 已初始化且版本匹配：只确保表存在，不覆盖已有数据 */
             _ensureTable(tables.students, defaultStudents);
+            /* 每次启动修复缺失的 status 字段 */
+            var curStudents = _get(tables.students, []);
+            var dirty = false;
+            curStudents.forEach(function(s) {
+                if (!s.status) {
+                    s.status = s.banExpiry ? 'banned' : 'approved';
+                    dirty = true;
+                }
+            });
+            if (dirty) _set(tables.students, curStudents);
             _ensureTable(tables.secondhand, defaultSecondhand);
             _ensureTable(tables.rentalBooks, defaultRentalBooks);
             _ensureTable(tables.chat, {});
@@ -269,6 +282,8 @@
             _ensureTable(tables.blockLog, defaultBlockLog);
             _ensureTable(tables.visitCount, 0);
             _ensureTable(tables.pets, defaultPets);
+            _ensureTable(tables.merchants, []);
+            _ensureTable(tables.merchantOrders, []);
             return;
         }
 
@@ -282,6 +297,12 @@
             defaultStudents.forEach(function(ds) {
                 if (existingIds.indexOf(ds.stuId) === -1) {
                     existingStudents.push(ds);
+                }
+            });
+            /* v6迁移：为旧用户补充 status 字段 */
+            existingStudents.forEach(function(s) {
+                if (!s.status) {
+                    s.status = s.banExpiry ? 'banned' : 'approved';
                 }
             });
             _set(tables.students, existingStudents);
@@ -318,6 +339,8 @@
         _ensureTable(tables.blockLog, defaultBlockLog);
         _ensureTable(tables.visitCount, 0);
         _ensureTable(tables.pets, defaultPets);
+        _ensureTable(tables.merchants, []);
+        _ensureTable(tables.merchantOrders, []);
 
         _set(DB_INIT_KEY, { version: DB_VERSION, initTime: new Date().toISOString() });
     }
@@ -991,6 +1014,101 @@
                 found.status = status;
                 this.saveOrders(orders);
             }
+        },
+
+        /* ========== 商家入驻相关接口 ========== */
+        getMerchants: function() {
+            return _get(tables.merchants, []);
+        },
+        saveMerchants: function(list) {
+            _set(tables.merchants, list);
+        },
+        addMerchant: function(data) {
+            var list = this.getMerchants();
+            data.id = 'M' + Date.now();
+            data.status = 'pending';
+            data.createTime = new Date().toLocaleString();
+            data.reviewTime = '';
+            data.reviewer = '';
+            data.rejectReason = '';
+            list.unshift(data);
+            this.saveMerchants(list);
+            return data;
+        },
+        getMerchantById: function(id) {
+            return this.getMerchants().find(function(m) { return m.id === id; }) || null;
+        },
+        getMerchantByAccount: function(account) {
+            return this.getMerchants().find(function(m) { return m.account === account; }) || null;
+        },
+        getApprovedMerchants: function() {
+            return this.getMerchants().filter(function(m) { return m.status === 'approved'; });
+        },
+        getApprovedMerchantsByCategory: function(category) {
+            return this.getMerchants().filter(function(m) { return m.status === 'approved' && m.category === category; });
+        },
+        reviewMerchant: function(id, status, reviewer, rejectReason) {
+            var list = this.getMerchants();
+            var found = list.find(function(m) { return m.id === id; });
+            if (!found) return false;
+            /* 防止重复审核：已审核过的不能再改 */
+            if (found.status === 'approved' || found.status === 'rejected') return false;
+            found.status = status;
+            found.reviewer = reviewer || '';
+            found.reviewTime = new Date().toLocaleString();
+            found.rejectReason = rejectReason || '';
+            this.saveMerchants(list);
+            return true;
+        },
+        /* 商家工单 */
+        getMerchantOrders: function() {
+            return _get(tables.merchantOrders, []);
+        },
+        saveMerchantOrders: function(list) {
+            _set(tables.merchantOrders, list);
+        },
+        addMerchantOrder: function(data) {
+            var list = this.getMerchantOrders();
+            data.id = 'MO' + Date.now();
+            data.status = '待接单';
+            data.createTime = new Date().toLocaleString();
+            data.acceptTime = '';
+            data.doneTime = '';
+            data.acceptor = '';
+            data.acceptorName = '';
+            list.unshift(data);
+            this.saveMerchantOrders(list);
+            return data;
+        },
+        acceptMerchantOrder: function(id, acceptorName) {
+            var list = this.getMerchantOrders();
+            var found = list.find(function(o) { return o.id === id; });
+            if (found) {
+                found.status = '已接单';
+                found.acceptTime = new Date().toLocaleString();
+                found.acceptorName = acceptorName || '';
+                this.saveMerchantOrders(list);
+            }
+        },
+        finishMerchantOrder: function(id) {
+            var list = this.getMerchantOrders();
+            var found = list.find(function(o) { return o.id === id; });
+            if (found) {
+                found.status = '已办结';
+                found.doneTime = new Date().toLocaleString();
+                this.saveMerchantOrders(list);
+            }
+        },
+        rejectMerchantOrder: function(id) {
+            var list = this.getMerchantOrders();
+            var found = list.find(function(o) { return o.id === id; });
+            if (found) {
+                found.status = '已驳回';
+                this.saveMerchantOrders(list);
+            }
+        },
+        getMerchantOrdersByMerchantId: function(merchantId) {
+            return this.getMerchantOrders().filter(function(o) { return o.merchantId === merchantId; });
         }
     };
 

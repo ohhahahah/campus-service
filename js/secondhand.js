@@ -1,39 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     /* ============================================================
-     * Hero 轮播
-     * ============================================================ */
-    (function initHeroSlider() {
-        var slides = document.querySelectorAll('.sh-hero-slide');
-        if (!slides.length) return;
-        var current = 0;
-        var total = slides.length;
-        var timer = null;
-
-        function goTo(index) {
-            slides[current].classList.remove('active');
-            current = index % total;
-            slides[current].classList.add('active');
-        }
-
-        function startAuto() {
-            stopAuto();
-            timer = setInterval(function() { goTo(current + 1); }, 5000);
-        }
-
-        function stopAuto() {
-            if (timer) { clearInterval(timer); timer = null; }
-        }
-
-        var hero = document.querySelector('.sh-hero');
-        if (hero) {
-            hero.addEventListener('mouseenter', stopAuto);
-            hero.addEventListener('mouseleave', startAuto);
-        }
-
-        startAuto();
-    })();
-
-    /* ============================================================
      * 工具函数
      * ============================================================ */
     function getCurrentUser() {
@@ -60,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var productCoverImages = {
         1:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop',
         2:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&h=400&fit=crop',
-        3:'https://images.unsplash.com/photo-1592656034223-8f862b5b4946?w=600&h=400&fit=crop',
-        4:'https://images.unsplash.com/photo-1586953208270-767fc2b4be75?w=600&h=400&fit=crop',
+        3:'https://images.pexels.com/photos/6078292/pexels-photo-6078292.jpeg?auto=compress&cs=tinysrgb&w=600',
+        4:'https://images.pexels.com/photos/6348022/pexels-photo-6348022.jpeg?auto=compress&cs=tinysrgb&w=600',
         5:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&h=400&fit=crop',
         6:'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&h=400&fit=crop',
         7:'https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&h=400&fit=crop',
@@ -70,26 +36,26 @@ document.addEventListener('DOMContentLoaded', function() {
         10:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&h=400&fit=crop',
         11:'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=600&h=400&fit=crop',
         12:'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop',
-        13:'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=400&fit=crop',
-        14:'https://images.unsplash.com/photo-1522338242992-e1a54571a9f7?w=600&h=400&fit=crop',
+        13:'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop',
+        14:'https://images.pexels.com/photos/4145354/pexels-photo-4145354.jpeg?auto=compress&cs=tinysrgb&w=600',
         15:'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&h=400&fit=crop',
-        16:'https://images.unsplash.com/photo-1530124566582-a45a7e3e29f0?w=600&h=400&fit=crop',
-        17:'https://images.unsplash.com/photo-1570222094114-d054a816e5e4?w=600&h=400&fit=crop',
+        16:'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600',
+        17:'https://images.pexels.com/photos/1123262/pexels-photo-1123262.jpeg?auto=compress&cs=tinysrgb&w=600',
         18:'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=400&fit=crop',
         19:'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=600&h=400&fit=crop',
-        20:'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop',
+        20:'https://images.pexels.com/photos/6329952/pexels-photo-6329952.jpeg?auto=compress&cs=tinysrgb&w=600',
         21:'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&h=400&fit=crop',
         22:'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&h=400&fit=crop',
-        23:'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&h=400&fit=crop',
+        23:'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=600',
         24:'https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=600&h=400&fit=crop',
         25:'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?w=600&h=400&fit=crop',
         26:'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=400&fit=crop',
         27:'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&h=400&fit=crop',
         28:'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=400&fit=crop',
-        29:'https://images.unsplash.com/photo-1585771724684-38269d6639db?w=600&h=400&fit=crop',
+        29:'https://images.pexels.com/photos/266874/pexels-photo-266874.jpeg?auto=compress&cs=tinysrgb&w=600',
         30:'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&h=400&fit=crop',
         31:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop',
-        32:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop',
+        32:'https://images.pexels.com/photos/459703/pexels-photo-459703.jpeg?auto=compress&cs=tinysrgb&w=600',
         33:'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=600&h=400&fit=crop'
     };
 
@@ -344,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var statusTag = (p.status === '已售出' || p.status === '已售罄') ? '<span class="sh-product-card-sold">' + (p.status === '已售罄' ? '已售罄' : '已售') + '</span>' : '';
             var reviewTag = p.reviewStatus === 'pending' ? '<span class="sh-product-card-review" style="position:absolute;top:8px;right:8px;background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;z-index:2">审核中</span>' : (p.reviewStatus === 'rejected' ? '<span class="sh-product-card-review" style="position:absolute;top:8px;right:8px;background:#ef4444;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;z-index:2">已拒绝</span>' : '');
             var imgUrl = getProductImage(p);
-            card.innerHTML = '<div class="sh-product-card-img"><img src="' + imgUrl + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="sh-product-card-icon-fallback"><i class="' + (categoryIcons[p.category] || 'fas fa-box') + '"></i></div><span class="sh-product-card-tag">' + p.category + '</span>' + statusTag + reviewTag + '</div><div class="sh-product-card-body"><h3>' + p.name + '</h3><div class="sh-product-card-price">¥' + p.price + '</div><div class="sh-product-card-meta"><span><i class="fas fa-user"></i> ' + p.seller + '</span><span><i class="fas fa-eye"></i> ' + p.views + '</span></div><div class="sh-product-card-actions"><button class="sh-card-chat-btn" data-id="' + p.id + '"><i class="fas fa-comment-dots"></i> 私信</button><button class="sh-card-collect-btn ' + (isCollected(p.id) ? 'collected' : '') + '" data-id="' + p.id + '"><i class="' + (isCollected(p.id) ? 'fas' : 'far') + ' fa-heart"></i></button></div></div>';
+            card.innerHTML = '<div class="sh-product-card-img"><img src="' + imgUrl + '" alt="' + p.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="sh-product-card-icon-fallback"><i class="' + (categoryIcons[p.category] || 'fas fa-box') + '"></i></div><span class="sh-product-card-tag">' + p.category + '</span>' + statusTag + reviewTag + '</div><div class="sh-product-card-body"><h3>' + p.name + '</h3><div class="sh-product-card-price">¥' + p.price + '</div><div class="sh-product-card-meta"><span><i class="fas fa-user"></i> ' + p.seller + '</span><span><i class="fas fa-eye"></i> ' + p.views + '</span></div><div class="sh-product-card-actions"><button class="sh-card-chat-btn" data-id="' + p.id + '"><i class="fas fa-paper-plane"></i> 私信</button><button class="sh-card-collect-btn ' + (isCollected(p.id) ? 'collected' : '') + '" data-id="' + p.id + '"><i class="' + (isCollected(p.id) ? 'fas' : 'far') + ' fa-heart"></i></button></div></div>';
             card.addEventListener('click', function(e) {
                 if (e.target.closest('.sh-card-chat-btn') || e.target.closest('.sh-card-collect-btn')) return;
                 window.location.href = 'detail.html?id=' + p.id;

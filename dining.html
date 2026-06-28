@@ -1,21 +1,19 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>餐饮服务 - 智慧校园</title>
+    <title>餐饮服务 - 青园在线</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/life.css">
-<link rel="stylesheet" href="css/robot-assistant.css">
+    <link rel="stylesheet" href="css/life-modern.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link">二手市场</a>
@@ -37,6 +35,7 @@
 
     <!-- 餐饮主题轮播图 -->
     <section class="page-header dining-hero">
+        <a href="life.html" class="hero-back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
         <div class="page-header-slides" id="heroSlides">
             <div class="page-header-slide active" style="background-image:url('https://images.unsplash.com/photo-1567521464027-f127ff144326?w=1400&h=500&fit=crop')"></div>
             <div class="page-header-slide" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&h=500&fit=crop')"></div>
@@ -61,16 +60,16 @@
     </div>
 
     <div class="content-section">
-        <a href="life.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+        <a href="dining-admin-login.html" class="back-btn" style="background:linear-gradient(135deg,#c2410c,#ea580c);color:#fff;border:none;"><i class="fas fa-concierge-bell"></i> 食堂管理员后台</a>
     </div>
 
     <!-- 筛选栏：食堂+时段 -->
     <section class="content-section" style="padding-bottom:0">
         <div class="dining-filter-bar">
             <div class="tab-group" id="canteenTabs">
-                <button class="tab-btn active" data-canteen="1">一食堂</button>
-                <button class="tab-btn" data-canteen="2">二食堂</button>
-                <button class="tab-btn" data-canteen="3">三食堂</button>
+                <button class="tab-btn active" data-canteen="1">一楼</button>
+                <button class="tab-btn" data-canteen="2">二楼</button>
+                <button class="tab-btn" data-canteen="3">三楼</button>
             </div>
             <div class="tab-group" id="mealTabs">
                 <button class="tab-btn" data-meal="breakfast"><i class="fas fa-sun"></i> 早餐</button>
@@ -87,6 +86,17 @@
             <span class="recommend-hint">当日食堂精选招牌菜</span>
         </div>
         <div class="recommend-scroll" id="recommendScroll"></div>
+    </section>
+
+    <!-- 第一部分B：今日窗口菜单（管理员后台发布，分楼层实时同步） -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-store-alt" style="color:#ea580c"></i> 今日窗口菜单</h2>
+            <span class="recommend-hint" id="windowMenuHint">各楼层窗口主推菜品（实时同步）</span>
+        </div>
+        <div class="window-menu-wrap" id="windowMenuWrap">
+            <!-- JS 动态渲染 -->
+        </div>
     </section>
 
     <!-- 第二部分：食堂菜单浏览 -->
@@ -146,9 +156,9 @@
         </div>
         <div class="order-filter-bar">
             <div class="tab-group" id="orderCanteenTabs">
-                <button class="tab-btn active" data-canteen="1">一食堂</button>
-                <button class="tab-btn" data-canteen="2">二食堂</button>
-                <button class="tab-btn" data-canteen="3">三食堂</button>
+                <button class="tab-btn active" data-canteen="1">一楼</button>
+                <button class="tab-btn" data-canteen="2">二楼</button>
+                <button class="tab-btn" data-canteen="3">三楼</button>
             </div>
             <div class="tab-group" id="orderMealTabs">
                 <button class="tab-btn" data-meal="breakfast"><i class="fas fa-sun"></i> 早餐</button>
@@ -263,7 +273,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>智慧校园</h3>
+                <h3>青园在线</h3>
                 <p>一站式校园服务平台</p>
             </div>
             <div class="footer-section">
@@ -281,7 +291,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 智慧校园综合服务平台</p>
+            <p>&copy; 2026 青园在线综合服务平台</p>
         </div>
     </footer>
 

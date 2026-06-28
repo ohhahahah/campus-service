@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超市后台登录 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 50%, #5b21b6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 125, 59, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(137, 85, 224, 0.22) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(36, 104, 205, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .shop-login-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 22px;
+            padding: 40px 36px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            color: #fff;
+        }
+        .shop-login-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #FF7D3B 0%, #E84C50 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 18px;
+            box-shadow: 0 10px 26px rgba(255, 125, 59, 0.45);
+        }
+        .shop-login-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 4px;
+            letter-spacing: 1px;
+        }
+        .shop-login-subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.75);
+            margin: 0 0 30px;
+        }
+        .shop-login-field {
+            margin-bottom: 18px;
+        }
+        .shop-login-field label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .shop-login-input-wrap {
+            position: relative;
+        }
+        .shop-login-input-wrap i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+        .shop-login-input {
+            width: 100%;
+            padding: 13px 16px 13px 42px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        .shop-login-input:focus {
+            outline: none;
+            border-color: #FF7D3B;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 4px rgba(255, 125, 59, 0.18);
+        }
+        .shop-login-input::placeholder { color: rgba(255, 255, 255, 0.55); }
+        .shop-login-quick-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #FF7D3B 0%, #E84C50 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 22px rgba(255, 125, 59, 0.4);
+            letter-spacing: 1px;
+        }
+        .shop-login-quick-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 125, 59, 0.55);
+        }
+        .shop-login-quick-btn:active { transform: translateY(0); }
+        .shop-login-secondary {
+            width: 100%;
+            padding: 11px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .shop-login-secondary:hover {
+            background: rgba(255, 255, 255, 0.22);
+        }
+        .shop-login-hint {
+            margin-top: 22px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 3px solid #34C787;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.78);
+        }
+        .shop-login-hint strong {
+            color: #34C787;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .shop-login-toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(232, 76, 80, 0.95);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+            pointer-events: none;
+        }
+        .shop-login-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (max-width: 480px) {
+            .shop-login-card { padding: 30px 22px 24px; }
+            .shop-login-title { font-size: 21px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="shop-login-card">
+        <div class="shop-login-logo"><i class="fas fa-store"></i></div>
+        <h1 class="shop-login-title">校园超市后台</h1>
+        <p class="shop-login-subtitle">管理员登录 · 实时接单 · 配送管理</p>
+
+        <form id="loginForm" autocomplete="off">
+            <div class="shop-login-field">
+                <label>管理员账号</label>
+                <div class="shop-login-input-wrap">
+                    <i class="fas fa-user-shield"></i>
+                    <input type="text" id="loginUser" class="shop-login-input" value="admin" placeholder="请输入账号" required>
+                </div>
+            </div>
+            <div class="shop-login-field">
+                <label>登录密码</label>
+                <div class="shop-login-input-wrap">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPwd" class="shop-login-input" value="123456" placeholder="请输入密码" required>
+                </div>
+            </div>
+            <button type="submit" class="shop-login-quick-btn" id="quickLoginBtn">
+                <i class="fas fa-bolt"></i> 一键登录
+            </button>
+        </form>
+
+        <a href="life.html" class="shop-login-secondary">
+            <i class="fas fa-arrow-left"></i> 返回生活服务
+        </a>
+
+        <div class="shop-login-hint">
+            <strong><i class="fas fa-info-circle"></i> 预置账号</strong>
+            账号：admin　密码：123456<br>
+            已自动填充完毕，点击「一键登录」即可进入管理后台。
+        </div>
+    </div>
+
+    <div class="shop-login-toast" id="loginToast"></div>
+
+    <script>
+        (function() {
+            /* 如果已登录则直接跳转 */
+            try {
+                var sess = JSON.parse(localStorage.getItem('campus_shop_admin_session') || 'null');
+                if (sess && sess.user === 'admin' && Date.now() < sess.expire) {
+                    location.href = 'shopping-admin.html';
+                    return;
+                }
+            } catch (e) {}
+
+            var form = document.getElementById('loginForm');
+            var toast = document.getElementById('loginToast');
+
+            function showToast(msg, ok) {
+                toast.textContent = msg;
+                toast.style.background = ok ? 'rgba(52, 199, 135, 0.95)' : 'rgba(232, 76, 80, 0.95)';
+                toast.classList.add('show');
+                setTimeout(function() { toast.classList.remove('show'); }, 2200);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var u = document.getElementById('loginUser').value.trim();
+                var p = document.getElementById('loginPwd').value.trim();
+                if (!u || !p) {
+                    showToast('请填写账号和密码', false);
+                    return;
+                }
+                if (u === 'admin' && p === '123456') {
+                    showToast('登录成功，正在跳转后台...', true);
+                    localStorage.setItem('campus_shop_admin_session', JSON.stringify({
+                        user: 'admin',
+                        name: '超市管理员',
+                        loginAt: Date.now(),
+                        expire: Date.now() + 8 * 60 * 60 * 1000
+                    }));
+                    setTimeout(function() {
+                        location.href = 'shopping-admin.html';
+                    }, 700);
+                } else {
+                    showToast('账号或密码错误', false);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

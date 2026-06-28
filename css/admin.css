@@ -2,6 +2,8 @@ html,body{overflow-x:hidden;max-width:100%}
 /* 管理后台导航栏：隐藏前台链接后居中logo */
 .navbar-admin .nav-container{justify-content:space-between}
 .navbar-admin .menu-toggle{display:none}
+/* 移动端显示菜单按钮，用于打开/关闭侧边栏抽屉 */
+@media(max-width:768px){.navbar-admin .menu-toggle{display:block}}
 .adm-page{display:flex;min-height:100vh;padding-top:70px;background:var(--bg-secondary);overflow-x:hidden;position:relative}
 .adm-sidebar{width:240px;background:linear-gradient(180deg,#0f172a,#1e293b);color:#fff;position:fixed;top:70px;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;transition:all 0.3s;overflow:hidden}
 .adm-sidebar-header{display:flex;align-items:center;gap:10px;padding:20px;font-size:18px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -196,6 +198,62 @@ html,body{overflow-x:hidden;max-width:100%}
 @media(max-width:768px){.adm-sidebar{transform:translateX(-100%)}.adm-sidebar.open{transform:translateX(0)}.adm-main{margin-left:0;max-width:100vw}.adm-row{grid-template-columns:1fr}.adm-stats-grid{grid-template-columns:1fr 1fr}.adm-quick-actions{grid-template-columns:1fr}}
 @media(max-width:480px){.adm-stats-grid{grid-template-columns:1fr}.adm-panel-header{flex-direction:column;align-items:flex-start}}
 
+/* ========== 管理后台移动端自适应补全（≤768px 生效） ========== */
+@media (max-width: 768px){
+    html,body{overflow-x:hidden;max-width:100%}
+    *{box-sizing:border-box}
+    /* 顶栏：缩小内边距，隐藏次要文案 */
+    .navbar-admin .nav-container{padding:10px 14px}
+    .navbar-admin .nav-logo{font-size:18px}
+    .navbar-admin .nav-user .nav-user-name{display:none}
+    /* 主区域：去除左侧留白，全宽显示 */
+    .adm-page{padding-top:60px}
+    .adm-main{padding:14px 12px;margin-left:0;max-width:100vw}
+    /* 侧边栏：抽屉式，移动端默认收起，需点击菜单按钮打开 */
+    .adm-sidebar{top:60px;width:80%;max-width:280px;box-shadow:0 0 30px rgba(0,0,0,.3)}
+    .adm-sidebar-toggle{display:flex!important;position:fixed;top:14px;left:14px;z-index:101;width:40px;height:40px;border-radius:10px;background:#1e293b;color:#fff;border:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+    /* 遮罩：侧边栏打开时覆盖主区域 */
+    .adm-sidebar-mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+    .adm-sidebar-mask.active{display:block}
+    /* 面板标题：堆叠排列 */
+    .adm-panel-header{flex-direction:column;align-items:flex-start;gap:10px}
+    .adm-panel-header h2{font-size:18px}
+    .adm-panel-actions{width:100%}
+    .adm-panel-actions input,.adm-panel-actions select{max-width:100%;width:100%}
+    /* 统计卡片：双列 */
+    .adm-stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+    .adm-stat-card{padding:14px;gap:10px}
+    .adm-stat-icon{width:40px;height:40px;font-size:18px}
+    /* 表格：横向滚动，不挤压 */
+    .adm-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;display:block;max-width:100%}
+    .adm-table{min-width:640px}
+    .adm-table th,.adm-table td{padding:10px 12px;font-size:12px;white-space:nowrap}
+    /* 模态框：全宽 */
+    .adm-modal{padding:12px}
+    .adm-modal-content{max-width:100%!important;width:100%!important;max-height:88vh;overflow-y:auto}
+    .adm-reject-modal{max-width:100%!important;width:100%!important}
+    /* 表单：堆叠 */
+    .adm-form-row,.form-row{flex-direction:column;gap:10px}
+    .adm-form-row > *,.form-row > *{width:100%;max-width:100%}
+    input,select,textarea{font-size:16px;max-width:100%;box-sizing:border-box}
+    /* 快捷操作：单列 */
+    .adm-quick-actions{grid-template-columns:1fr 1fr;gap:10px}
+    /* 详情/网格：单列 */
+    .adm-detail-grid,.mch-detail-grid{grid-template-columns:1fr!important}
+    .mch-detail-photos{grid-template-columns:repeat(2,1fr)!important}
+    /* 拒绝理由弹窗按钮：堆叠 */
+    .adm-reject-footer{flex-direction:column;gap:8px}
+    .adm-reject-btn{width:100%;justify-content:center}
+    /* 浮动铃铛与AI助手：调整位置避免遮挡 */
+    .ann-float-bell{width:48px;height:48px;font-size:20px;border-radius:14px}
+}
+@media (max-width: 480px){
+    .adm-stats-grid{grid-template-columns:1fr}
+    .adm-quick-actions{grid-template-columns:1fr}
+    .mch-detail-photos{grid-template-columns:1fr!important}
+    .adm-panel-header h2{font-size:16px}
+}
+
 /* 拒绝理由弹窗 */
 .adm-reject-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:3000;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity 0.25s ease}
 .adm-reject-overlay.active{display:flex;opacity:1}
@@ -219,3 +277,74 @@ html,body{overflow-x:hidden;max-width:100%}
 .adm-reject-confirm{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
 .adm-reject-confirm:hover{box-shadow:0 6px 16px rgba(59,130,246,0.4);transform:translateY(-1px)}
 @media(max-width:480px){.adm-reject-modal{max-width:calc(100vw - 40px);margin:0 auto}.adm-reject-footer{flex-direction:column}.adm-reject-btn{justify-content:center}}
+
+/* ========== 商家审核 ========== */
+.adm-mch-stats{display:flex;gap:20px;margin-bottom:16px;padding:16px 20px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:12px;border:1px solid #e9d5ff}
+.adm-mch-filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+/* 商家审核表格紫色主题（与其他审核一致） */
+#panel-merchants .adm-review-table th{background:#f5f3ff;color:#6d28d9;font-weight:600;font-size:13px}
+#panel-merchants .adm-review-table td{font-size:13px;vertical-align:middle}
+#panel-merchants .adm-review-table tr:hover td{background:#faf5ff}
+/* ======== 商家详情弹窗 ======== */
+.mch-detail-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;padding:20px;animation:mchFadeIn .2s ease}
+.mch-detail-overlay.active{display:flex}
+@keyframes mchFadeIn{from{opacity:0}to{opacity:1}}
+.mch-detail-modal{background:#fff;border-radius:12px;width:780px;max-width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.18);animation:mchSlideIn .25s ease}
+@keyframes mchSlideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mch-detail-header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid #e8ecf0;flex-shrink:0}
+.mch-detail-header h3{font-size:17px;font-weight:700;color:#1f2937;margin:0;display:flex;align-items:center;gap:8px}
+.mch-detail-header h3 i{color:#3b82f6;font-size:18px}
+.mch-detail-close{width:32px;height:32px;border-radius:8px;border:none;background:#f1f5f9;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
+.mch-detail-close:hover{background:#e2e8f0;color:#1f2937}
+.mch-detail-body{padding:24px 28px;overflow-y:auto;flex:1}
+.mch-detail-section{margin-bottom:24px;padding-bottom:20px;border-bottom:1px dashed #e8ecf0}
+.mch-detail-section:last-child{margin-bottom:0;border-bottom:none;padding-bottom:0}
+.mch-detail-section-title{font-size:14px;font-weight:700;color:#1f2937;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.mch-detail-section-title i{color:#3b82f6;font-size:15px}
+.mch-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 32px}
+.mch-detail-item{display:flex;flex-direction:column;gap:4px}
+.mch-detail-item.full{grid-column:span 2}
+.mch-detail-label{font-size:12px;font-weight:600;color:#94a3b8;display:flex;align-items:center;gap:4px}
+.mch-detail-label i{font-size:10px;color:#cbd5e1}
+.mch-detail-value{font-size:14px;font-weight:500;color:#1f2937;word-break:break-all;line-height:1.5}
+.mch-detail-photos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.mch-photo-card{border:1px solid #e8ecf0;border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;background:#f8fafc}
+.mch-photo-card:hover{border-color:#3b82f6;box-shadow:0 4px 12px rgba(59,130,246,.12)}
+.mch-photo-label{font-size:12px;font-weight:600;color:#64748b;padding:10px 14px;background:#f1f5f9;display:flex;align-items:center;gap:6px}
+.mch-photo-label i{color:#3b82f6}
+.mch-photo-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#f1f5f5}
+.mch-photo-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#f8fafc;color:#94a3b8;font-size:13px;gap:6px}
+.mch-detail-footer{display:flex;gap:12px;padding:18px 28px;border-top:1px solid #e8ecf0;flex-shrink:0}
+.mch-detail-btn{flex:1;padding:11px 0;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.mch-detail-btn-close{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0}
+.mch-detail-btn-close:hover{background:#e2e8f0;color:#475569}
+.mch-detail-btn-approve{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.25)}
+.mch-detail-btn-approve:hover:not(:disabled){box-shadow:0 4px 16px rgba(16,185,129,.35);transform:translateY(-1px)}
+.mch-detail-btn-reject{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 2px 8px rgba(239,68,68,.2)}
+.mch-detail-btn-reject:hover:not(:disabled){box-shadow:0 4px 16px rgba(239,68,68,.3);transform:translateY(-1px)}
+.mch-detail-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+/* 图片放大 */
+.mch-lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out}
+.mch-lightbox.active{display:flex}
+.mch-lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.mch-lightbox-close{position:fixed;top:20px;right:24px;color:#fff;font-size:24px;cursor:pointer;z-index:10000;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.1);transition:all .2s}
+.mch-lightbox-close:hover{background:rgba(255,255,255,.25)}
+/* 驳回弹窗 */
+.mch-reject-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:4000;align-items:center;justify-content:center;padding:20px}
+.mch-reject-overlay.active{display:flex}
+.mch-reject-modal{background:#fff;border-radius:12px;max-width:420px;width:100%;box-shadow:0 12px 48px rgba(0,0,0,.18);animation:mchSlideIn .25s ease}
+.mch-reject-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #e8ecf0}
+.mch-reject-header h3{font-size:15px;font-weight:700;color:#1f2937;display:flex;align-items:center;gap:6px;margin:0}
+.mch-reject-header h3 i{color:#ef4444}
+.mch-reject-close{width:28px;height:28px;border-radius:6px;border:none;background:transparent;color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:12px}
+.mch-reject-close:hover{background:#fef2f2;color:#ef4444}
+.mch-reject-body{padding:18px}
+.mch-reject-textarea{width:100%;min-height:100px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:inherit;color:#1f2937;background:#f8fafc;resize:vertical;box-sizing:border-box;line-height:1.5;transition:all .2s}
+.mch-reject-textarea:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.mch-reject-footer{display:flex;gap:10px;padding:0 20px 18px;justify-content:flex-end}
+.mch-reject-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.mch-reject-cancel{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0}
+.mch-reject-cancel:hover{background:#e2e8f0;color:#475569}
+.mch-reject-confirm{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 1px 4px rgba(239,68,68,.15)}
+.mch-reject-confirm:hover{box-shadow:0 4px 12px rgba(239,68,68,.25)}
+@media(max-width:768px){.mch-detail-modal{max-width:100%}.mch-detail-grid{grid-template-columns:1fr}.mch-detail-photos{grid-template-columns:1fr}}

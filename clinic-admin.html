@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医务室 - 校医后台 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/clinic-admin.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="life.html" class="ca-back-btn" title="返回生活服务"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="clinic.html" class="nav-link active">医务室</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <div class="ca-staff-badge"><i class="fas fa-user-md"></i> 校医工作台</div>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="ca-hero">
+        <div class="ca-hero-content">
+            <h1><i class="fas fa-user-md"></i> 校医工作台</h1>
+            <p>实时接单 · 在线问诊 · 药品配送 · 高效办结</p>
+            <div class="ca-hero-stats">
+                <div class="ca-stat">
+                    <span class="ca-stat-num" id="statPending">0</span>
+                    <span class="ca-stat-label">待接单</span>
+                </div>
+                <div class="ca-stat">
+                    <span class="ca-stat-num" id="statAccepted">0</span>
+                    <span class="ca-stat-label">已接单</span>
+                </div>
+                <div class="ca-stat">
+                    <span class="ca-stat-num" id="statProcessing">0</span>
+                    <span class="ca-stat-label">办理中</span>
+                </div>
+                <div class="ca-stat">
+                    <span class="ca-stat-num" id="statDone">0</span>
+                    <span class="ca-stat-label">已办结</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab -->
+    <section class="ca-tabs-section">
+        <div class="ca-tabs-header">
+            <button class="ca-tab active" data-tab="pending"><i class="fas fa-bell"></i><span>待接单</span><em id="pendingBadge" class="ca-badge">0</em></button>
+            <button class="ca-tab" data-tab="accepted"><i class="fas fa-check-circle"></i><span>已接单</span></button>
+            <button class="ca-tab" data-tab="processing"><i class="fas fa-cog"></i><span>办理中</span></button>
+            <button class="ca-tab" data-tab="done"><i class="fas fa-flag-checkered"></i><span>已办结</span></button>
+            <button class="ca-tab" data-tab="history"><i class="fas fa-history"></i><span>历史记录</span></button>
+        </div>
+    </section>
+
+    <!-- 待接单 -->
+    <div class="ca-tab-content active" id="pending">
+        <div class="ca-container" id="pendingList"></div>
+    </div>
+    <!-- 已接单 -->
+    <div class="ca-tab-content" id="accepted">
+        <div class="ca-container" id="acceptedList"></div>
+    </div>
+    <!-- 办理中 -->
+    <div class="ca-tab-content" id="processing">
+        <div class="ca-container" id="processingList"></div>
+    </div>
+    <!-- 已办结 -->
+    <div class="ca-tab-content" id="done">
+        <div class="ca-container" id="doneList"></div>
+    </div>
+    <!-- 历史记录 -->
+    <div class="ca-tab-content" id="history">
+        <div class="ca-container" id="historyList"></div>
+    </div>
+
+    <!-- 聊天弹窗 -->
+    <div class="ca-chat-modal" id="chatModal">
+        <div class="ca-chat-content">
+            <div class="ca-chat-header">
+                <h3><i class="fas fa-comments"></i> 与学生沟通</h3>
+                <button class="ca-chat-close" id="chatClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="ca-chat-messages" id="chatMessages"></div>
+            <div class="ca-chat-input">
+                <input type="text" id="chatInput" placeholder="输入消息...">
+                <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 处理方式弹窗 -->
+    <div class="ca-handle-modal" id="handleModal">
+        <div class="ca-handle-content">
+            <div class="ca-handle-header">
+                <h3><i class="fas fa-stethoscope"></i> 选择处理方式</h3>
+                <button class="ca-handle-close" id="handleClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="ca-handle-body">
+                <div class="ca-handle-option" data-type="线上问诊">
+                    <div class="ca-handle-icon"><i class="fas fa-laptop-medical"></i></div>
+                    <strong>线上问诊</strong>
+                    <p>给出诊疗建议，线上回复学生</p>
+                </div>
+                <div class="ca-handle-option" data-type="药品配送">
+                    <div class="ca-handle-icon"><i class="fas fa-truck-medical"></i></div>
+                    <strong>药品配送</strong>
+                    <p>安排药品配送到宿舍</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录拦截弹窗 -->
+    <div class="ca-login-guard-overlay" id="caLoginGuardOverlay">
+        <div class="ca-login-guard-modal">
+            <div class="ca-login-guard-header">
+                <h3><i class="fas fa-user-md"></i> 校医身份验证</h3>
+            </div>
+            <div class="ca-login-guard-body">
+                <div class="ca-login-guard-icon"><i class="fas fa-lock"></i></div>
+                <p class="ca-login-guard-tip">请先完成校医登录验证后进入工作台</p>
+                <div class="ca-login-guard-hint">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>当前已预设账号密码，点击即可登录</span>
+                </div>
+                <div class="ca-login-guard-form">
+                    <div class="ca-login-guard-field">
+                        <label class="ca-login-guard-label"><i class="fas fa-id-badge"></i> 账号</label>
+                        <input type="text" class="ca-login-guard-input" id="caGuardAccount" value="school_doc" autocomplete="off" readonly>
+                    </div>
+                    <div class="ca-login-guard-field">
+                        <label class="ca-login-guard-label"><i class="fas fa-key"></i> 密码</label>
+                        <input type="text" class="ca-login-guard-input" id="caGuardPassword" value="123456" readonly>
+                    </div>
+                </div>
+                <button type="button" class="ca-login-guard-btn" id="caLoginGuardBtn"><i class="fas fa-sign-in-alt"></i> 一键登录</button>
+                <a href="clinic.html" class="ca-login-guard-back"><i class="fas fa-arrow-left"></i> 返回学生端</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="ca-toast" id="caToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="caToastMsg">操作成功</span>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>青园在线</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="life.html">生活服务</a></li>
+                    <li><a href="clinic.html">学生端</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：济南幼儿师范高等专科学校</p>
+                <p>电话：010-12345678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 青园在线综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/clinic-admin.js"></script>
+</body>
+</html>

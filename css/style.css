@@ -99,14 +99,71 @@ body::before {
 .nav-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 24px;
-    font-weight: 700;
-    color: white;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 1.5px;
+    font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Source Han Sans CN", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.nav-logo span {
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 1.5px;
 }
 
 .nav-logo i {
     font-size: 30px;
+}
+
+/* 青园在线品牌 Logo（原创科技感设计：三道波弧 + 节点 + 在线光核） */
+.nav-logo .brand-logo {
+    width: 46px;
+    height: 46px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    filter:
+        drop-shadow(0 0 4px rgba(125, 240, 217, 0.85))
+        drop-shadow(0 0 10px rgba(56, 189, 248, 0.45))
+        drop-shadow(0 2px 8px rgba(45, 212, 191, 0.35));
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+.nav-logo:hover .brand-logo {
+    transform: rotate(-3deg) scale(1.06);
+    filter:
+        drop-shadow(0 0 6px rgba(125, 240, 217, 1))
+        drop-shadow(0 0 14px rgba(56, 189, 248, 0.65))
+        drop-shadow(0 2px 10px rgba(45, 212, 191, 0.55));
+}
+/* 外层信号波呼吸 */
+.nav-logo .brand-logo .brand-wave {
+    transform-origin: 20px 20px;
+    animation: brandWave 3.2s ease-in-out infinite;
+}
+@keyframes brandWave {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+}
+/* 中心光核脉冲 */
+.nav-logo .brand-logo .brand-core {
+    transform-origin: 20px 20px;
+    animation: brandCore 2.4s ease-in-out infinite;
+}
+@keyframes brandCore {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+}
+/* 在线脉冲点 */
+.nav-logo .brand-logo .brand-pulse {
+    transform-origin: 32px 7px;
+    animation: brandPulse 1.8s ease-in-out infinite;
+}
+@keyframes brandPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
 }
 
 .nav-menu {
@@ -169,6 +226,31 @@ body::before {
 .login-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-merchant-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.25);
+    white-space: nowrap;
+}
+
+.nav-merchant-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-1px);
+}
+
+.nav-merchant-btn i {
+    font-size: 14px;
 }
 
 .nav-user{position:relative;display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 12px;border-radius:25px;transition:all 0.3s}
@@ -1341,6 +1423,17 @@ body::before {
 .nav-icon-btn .ann-badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #1e40af;line-height:1}
 [data-theme="dark"] .nav-icon-btn .ann-badge{border-color:#1e3a8a}
 
+/* 左下角浮动公告铃铛（可拖拽 + 闪烁 + 未读红点） */
+.ann-float-bell{position:fixed;left:24px;bottom:24px;width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:grab;z-index:99998;box-shadow:0 6px 20px rgba(30,64,175,.4);transition:transform .25s,box-shadow .25s;user-select:none}
+.ann-float-bell:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(30,64,175,.55)}
+.ann-float-bell:active{cursor:grabbing}
+.ann-float-bell .ann-float-badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff;line-height:1;box-shadow:0 2px 8px rgba(239,68,68,.5)}
+/* 闪烁动画：未读时持续闪烁提醒 */
+@keyframes annFloatBlink{0%,100%{box-shadow:0 6px 20px rgba(30,64,175,.4),0 0 0 0 rgba(239,68,68,.7)}50%{box-shadow:0 6px 20px rgba(30,64,175,.4),0 0 0 14px rgba(239,68,68,0)}}
+.ann-float-bell.ann-float-blink{animation:annFloatBlink 1.4s ease-in-out infinite}
+.ann-float-bell.ann-float-blink i{animation:annBellSwing 1.4s ease-in-out infinite}
+@keyframes annBellSwing{0%,100%{transform:rotate(0)}25%{transform:rotate(12deg)}75%{transform:rotate(-12deg)}}
+
 /* 公告弹窗通用 */
 .ann-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:20px}
 .ann-overlay.active{display:flex}
@@ -1636,4 +1729,99 @@ body::before {
         display: flex;
         gap: 10px;
     }
+}
+
+/* ============================================================
+   全站移动端自适应补全（前台全部板块通用）
+   - 仅在 ≤768px 生效，电脑端布局完全不受影响
+   - 仅做"防溢出/防错乱"安全网，不覆盖各页面已调好的栅格规则
+   ============================================================ */
+@media (max-width: 768px) {
+    /* ---- 全局防横向溢出 ---- */
+    html,body{overflow-x:hidden;max-width:100%}
+    *{box-sizing:border-box}
+    img{max-width:100%;height:auto}
+
+    /* ---- 导航栏 ---- */
+    .navbar{padding:0}
+    .nav-container{padding:10px 14px;flex-wrap:wrap;gap:8px}
+    .nav-logo{font-size:18px;gap:8px}
+    .nav-logo img{width:30px;height:30px}
+    .nav-menu{top:60px;padding:14px;max-height:calc(100vh - 60px);overflow-y:auto}
+    .nav-link{padding:12px 14px;font-size:14px}
+    .nav-right{gap:8px}
+    .nav-user .nav-user-name{display:none}
+
+    /* ---- 页面通用容器：收窄内边距，防止超出屏幕 ---- */
+    .container,.page-container,.sh-container,.booking-container,.life-container,
+    .pets-container,.pt-container,.shop-container,.detail-container,
+    .publish-container,.profile-container,.chat-container,.news-container,
+    .express-container,.repair-container,.clinic-container,.telecom-container,
+    .dining-container,.education-container,.bigdata-container,
+    .merchant-container,.orders-container,.messages-container{padding:0 12px;max-width:100%;width:100%}
+    .page{padding-top:70px}
+    main{padding:14px 0}
+
+    /* ---- 页面头部横幅 ---- */
+    .page-header{min-height:180px;padding:30px 14px}
+    .page-header h1,.page-header h2{font-size:22px!important;line-height:1.3}
+    .page-header p{font-size:13px!important}
+
+    /* ---- 章节标题 ---- */
+    .section-header{flex-direction:column;align-items:flex-start;gap:8px}
+    .section-header h2{font-size:20px}
+    .section-header .view-more{font-size:13px}
+
+    /* ---- 筛选/工具栏：允许换行 + 横向滚动兜底 ---- */
+    [class*="filter-bar"],[class*="filter-tags"],[class*="toolbar"],[class*="filter-row"]{
+        flex-wrap:wrap;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%
+    }
+    [class*="filter-tag"]{padding:6px 12px;font-size:12px;white-space:nowrap}
+
+    /* ---- 表单行堆叠（仅针对显式声明为行的容器） ---- */
+    .form-row,.form-grid,[class*="form-row"],[class*="form-grid"]{flex-direction:column;gap:12px}
+    .form-row > *,.form-grid > *,[class*="form-row"] > *,[class*="form-grid"] > *{width:100%;max-width:100%}
+
+    /* ---- 输入框防 iOS 自动放大（≥16px）+ 不超出屏幕 ---- */
+    input[type="text"],input[type="email"],input[type="tel"],input[type="password"],
+    input[type="number"],input[type="search"],input[type="date"],input[type="time"],
+    select,textarea{
+        font-size:16px;max-width:100%;box-sizing:border-box
+    }
+
+    /* ---- 表格横向滚动兜底 ---- */
+    [class*="table-wrap"],[class*="table-container"]{overflow-x:auto;-webkit-overflow-scrolling:touch;display:block;max-width:100%}
+    table{min-width:520px}
+
+    /* ---- 按钮区允许换行，保证可点击 ---- */
+    [class*="actions"],[class*="btn-group"],[class*="buttons"]{flex-wrap:wrap;gap:8px}
+    button,.btn,[class*="btn"]{min-height:40px}
+
+    /* ---- 弹窗/模态框：全宽适配 ---- */
+    [class*="overlay"][class*="active"],.ann-overlay.active{padding:12px}
+    [class*="modal-content"],[class*="-modal"]:not([class*="modal-header"]):not([class*="modal-footer"]){
+        max-width:calc(100vw - 24px)!important;width:100%!important;max-height:88vh;overflow-y:auto
+    }
+
+    /* ---- 详情页两栏布局兜底堆叠 ---- */
+    [class*="detail-grid"],[class*="detail-layout"]{grid-template-columns:1fr!important;gap:14px}
+    [class*="detail-main"],[class*="detail-side"]{width:100%!important}
+
+    /* ---- 标签/徽章不溢出 ---- */
+    [class*="tag"],[class*="badge"]{white-space:nowrap;font-size:11px}
+
+    /* ---- 底部 ---- */
+    footer{padding:24px 14px}
+    .footer-content{grid-template-columns:1fr!important}
+
+    /* ---- 浮动铃铛与AI助手：移动端调整避免遮挡 ---- */
+    .ann-float-bell{width:48px;height:48px;font-size:20px;border-radius:14px}
+    .robot-fab{width:52px!important;height:52px!important;bottom:80px!important}
+    .robot-chat-window{width:100vw!important;height:100vh!important;max-height:100vh;border-radius:0!important;right:0!important;bottom:0!important}
+    .robot-chat-messages{height:calc(100vh - 130px)!important}
+}
+
+@media (max-width: 480px) {
+    .nav-logo{font-size:16px}
+    .page-header h1,.page-header h2{font-size:20px!important}
 }

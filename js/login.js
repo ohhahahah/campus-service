@@ -115,6 +115,15 @@
             var students = getStudents();
             var found = students.find(function(s) { return s.stuId === stuId && s.password === pwd; });
             if (!found) { showToast('学号或密码错误，请检查后重试', 'error'); return; }
+            /* 检查用户审核状态 */
+            if (found.status === 'pending') {
+                showToast('注册申请正在审核中，请等待管理员审批', 'error');
+                return;
+            }
+            if (found.status === 'rejected') {
+                showToast('注册申请未通过审核，请联系管理员', 'error');
+                return;
+            }
             /* 检查用户是否被封禁 */
             if (found.status === 'banned') {
                 /* 检查是否已到期自动解封 */
@@ -122,7 +131,7 @@
                     var expiry = new Date(found.banExpiry);
                     if (new Date() >= expiry) {
                         /* 自动解封 */
-                        found.status = 'normal';
+                        found.status = 'approved';
                         found.banExpiry = null;
                         found.banReason = '';
                         found.banTime = null;
@@ -184,9 +193,9 @@
             var exists = students.find(function(s) { return s.stuId === stuId; });
             if (exists) { showToast('该学号已注册，请直接登录', 'error'); return; }
 
-            students.push({ stuId: stuId, name: name, password: pwd, dept: dept, phone: phone, regTime: new Date().toISOString() });
+            students.push({ stuId: stuId, name: name, password: pwd, dept: dept, phone: phone, regTime: new Date().toISOString(), status: 'pending' });
             saveStudents(students);
-            showToast('注册成功！请登录', 'success');
+            showToast('注册成功！请等待管理员审核通过后登录', 'success');
             this.reset();
             setTimeout(function() { switchTab('studentLogin'); }, 800);
         });

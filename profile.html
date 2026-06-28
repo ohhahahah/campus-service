@@ -1,9 +1,9 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人中心 - 智慧校园</title>
+    <title>个人中心 - 青园在线</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/profile.css">
@@ -13,10 +13,7 @@
     <!-- 导航栏 -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link">二手市场</a>
@@ -212,28 +209,10 @@
             <section class="profile-section" id="bookings">
                 <div class="section-header">
                     <h2>场地预约记录</h2>
+                    <a href="booking.html" class="section-more">去预约 <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="records-list">
-                    <div class="record-item">
-                        <div class="record-icon">
-                            <i class="fas fa-basketball"></i>
-                        </div>
-                        <div class="record-info">
-                            <h4>体育馆羽毛球场</h4>
-                            <p>2024-03-01 14:00-16:00</p>
-                        </div>
-                        <span class="record-status confirmed">已确认</span>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="record-info">
-                            <h4>第一会议室</h4>
-                            <p>2024-03-02 10:00-12:00</p>
-                        </div>
-                        <span class="record-status pending">待确认</span>
-                    </div>
+                <div class="records-list" id="bookingRecordsList">
+                    <div class="record-empty">加载中...</div>
                 </div>
             </section>
 
@@ -328,7 +307,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>智慧校园</h3>
+                <h3>青园在线</h3>
                 <p>一站式校园服务平台</p>
             </div>
             <div class="footer-section">
@@ -346,7 +325,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 智慧校园综合服务平台 | 大学生网页设计大赛参赛作品</p>
+            <p>&copy; 2024 青园在线综合服务平台 | 大学生网页设计大赛参赛作品</p>
         </div>
     </footer>
 

@@ -1,9 +1,9 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的租用订单 - 智慧校园二手市场</title>
+    <title>我的租用订单 - 青园在线二手市场</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/secondhand.css">
@@ -12,10 +12,7 @@
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link active">二手市场</a>
@@ -28,7 +25,7 @@
                     <i class="fas fa-moon"></i>
                 </button>
                 <div class="sh-nav-links">
-                    <a href="orders.html" class="sh-nav-link" title="我的订单" style="color:var(--primary-light)"><i class="fas fa-receipt"></i></a>
+                    <a href="orders.html" class="sh-nav-link active" title="我的订单"><i class="fas fa-receipt"></i></a>
                     <a href="purchases.html" class="sh-nav-link" title="我的购买记录"><i class="fas fa-shopping-bag"></i></a>
                 </div>
                 <a href="login.html" class="login-btn">登录</a>
@@ -39,10 +36,10 @@
         </div>
     </nav>
 
-    <div class="sh-page-container" style="padding-top:90px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-            <h1 class="sh-page-title" style="margin-bottom:0"><i class="fas fa-receipt" style="color:#f97316"></i> 我的租用订单</h1>
-            <span id="orderCount" style="color:var(--text-secondary);font-size:14px"></span>
+    <div class="sh-page-container">
+        <div class="sh-order-header">
+            <h1 class="sh-page-title sh-page-title-inline"><i class="fas fa-receipt"></i> 我的租用订单</h1>
+            <span id="orderCount" class="sh-order-count"></span>
         </div>
         <div id="orderList" class="sh-order-list"></div>
     </div>
@@ -173,7 +170,7 @@
                     '<div class="sh-order-meta">' +
                         '<div><i class="fas fa-user"></i> 出租方：' + seller + (sellerDept ? '（' + sellerDept + '）' : '') + '</div>' +
                         (rentStart ? '<div><i class="fas fa-calendar-alt"></i> 租用时间：' + rentStart + ' 至 ' + rentEnd + '</div>' : '') +
-                        '<div><i class="fas fa-coins"></i> 租金：¥' + price + '/天' + (days ? ' × ' + days + '天 = <strong style="color:#f97316">¥' + totalPrice + '</strong>' : '') + '</div>' +
+                        '<div><i class="fas fa-coins"></i> 租金：¥' + price + '/天' + (days ? ' × ' + days + '天 = <strong>¥' + totalPrice + '</strong>' : '') + '</div>' +
                         (building ? '<div><i class="fas fa-map-marker-alt"></i> 配送至：' + building + '</div>' : '') +
                         (note ? '<div><i class="fas fa-sticky-note"></i> 备注：' + note + '</div>' : '') +
                         (time ? '<div><i class="fas fa-clock"></i> 下单时间：' + time + '</div>' : '') +
@@ -202,7 +199,7 @@
         }
 
         if (!user) {
-            listEl.innerHTML = '<div class="sh-page-empty" style="text-align:center;padding:60px 20px"><i class="fas fa-lock" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">请先登录后查看订单</p><a href="login.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去登录</a></div>';
+            listEl.innerHTML = '<div class="sh-page-empty"><i class="fas fa-lock"></i><p>请先登录后查看订单</p><a href="login.html">去登录</a></div>';
             if (countEl) countEl.textContent = '';
             return;
         }

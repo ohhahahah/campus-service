@@ -1,9 +1,9 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>发布闲置 - 智慧校园二手市场</title>
+    <title>发布闲置 - 青园在线二手市场</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/secondhand.css">
@@ -13,10 +13,7 @@
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link active">二手市场</a>
@@ -48,13 +45,16 @@
 
     <div class="pub-main">
         <div class="pub-header">
-            <h1><i class="fas fa-plus-circle"></i> 发布闲置商品</h1>
+            <span class="pub-header-eyebrow"><i class="fas fa-feather-alt"></i> Publish · 好物换新</span>
+            <h1>发布闲置<span class="pub-header-amp">/</span>新主人</h1>
             <p>填写商品信息，让闲置物品找到新主人</p>
+            <div class="pub-header-deco"></div>
         </div>
 
+        <div class="pub-layout">
         <form class="pub-form" id="publishForm">
             <div class="pub-section">
-                <div class="pub-section-title"><i class="fas fa-camera"></i> 商品图片</div>
+                <div class="pub-section-title"><span class="pub-step">01</span><span class="pub-step-label"><i class="fas fa-camera"></i> 商品图片</span></div>
                 <div class="pub-upload-area" id="uploadArea">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <span>点击或拖拽上传图片</span>
@@ -65,7 +65,7 @@
             </div>
 
             <div class="pub-section">
-                <div class="pub-section-title"><i class="fas fa-info-circle"></i> 基本信息</div>
+                <div class="pub-section-title"><span class="pub-step">02</span><span class="pub-step-label"><i class="fas fa-info-circle"></i> 基本信息</span></div>
                 <div class="pub-form-row">
                     <div class="pub-form-group">
                         <label><i class="fas fa-tag"></i> 商品名称 <span class="required">*</span></label>
@@ -117,7 +117,7 @@
             </div>
 
             <div class="pub-section">
-                <div class="pub-section-title"><i class="fas fa-clipboard-list"></i> 详细信息</div>
+                <div class="pub-section-title"><span class="pub-step">03</span><span class="pub-step-label"><i class="fas fa-clipboard-list"></i> 详细信息</span></div>
                 <div class="pub-form-row">
                     <div class="pub-form-group">
                         <label><i class="fas fa-calendar-alt"></i> 购买时间</label>
@@ -150,7 +150,7 @@
             </div>
 
             <div class="pub-section">
-                <div class="pub-section-title"><i class="fas fa-user"></i> 联系方式</div>
+                <div class="pub-section-title"><span class="pub-step">04</span><span class="pub-step-label"><i class="fas fa-user"></i> 联系方式</span></div>
                 <div class="pub-form-row">
                     <div class="pub-form-group">
                         <label><i class="fas fa-phone"></i> 联系电话</label>
@@ -163,7 +163,14 @@
                 </div>
             </div>
 
-            <div class="pub-tips">
+            <div class="pub-actions">
+                <button type="button" class="pub-btn-cancel" id="cancelBtn"><i class="fas fa-times"></i> 取消</button>
+                <button type="submit" class="pub-btn-submit"><i class="fas fa-paper-plane"></i> 发布商品</button>
+            </div>
+        </form>
+
+        <aside class="pub-sidebar">
+            <div class="pub-sidebar-card pub-tips">
                 <h4><i class="fas fa-lightbulb"></i> 发布提示</h4>
                 <ul>
                     <li>商品信息请真实准确，虚假信息将被管理员下架</li>
@@ -172,12 +179,13 @@
                     <li>交易请选择校内当面交易，注意安全</li>
                 </ul>
             </div>
-
-            <div class="pub-actions">
-                <button type="button" class="pub-btn-cancel" id="cancelBtn"><i class="fas fa-times"></i> 取消</button>
-                <button type="submit" class="pub-btn-submit"><i class="fas fa-paper-plane"></i> 发布商品</button>
+            <div class="pub-sidebar-card pub-side-info">
+                <div class="pub-side-info-icon"><i class="fas fa-leaf"></i></div>
+                <h5>Slow Living · 闲置流转</h5>
+                <p>每一件被认真描述的物品，都会找到欣赏它的人。把它的故事，继续讲下去。</p>
             </div>
-        </form>
+        </aside>
+        </div>
     </div>
 
     <div class="pub-toast" id="pubToast">

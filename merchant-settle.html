@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家入驻 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/merchant-settle.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a><a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="ms-hero">
+        <div class="ms-hero-content">
+            <h1><i class="fas fa-store"></i> 商家入驻</h1>
+            <p>入驻青园在线生活服务平台，服务全校师生</p>
+            <div class="ms-hero-features">
+                <div class="ms-feature"><i class="fas fa-check-circle"></i><span>审核通过即可上线营业</span></div>
+                <div class="ms-feature"><i class="fas fa-check-circle"></i><span>自动绑定对应服务板块</span></div>
+                <div class="ms-feature"><i class="fas fa-check-circle"></i><span>在线接单 · 高效管理</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 入驻表单 -->
+    <section class="ms-form-section">
+        <div class="ms-container">
+            <div class="ms-form-layout">
+                <div class="ms-form-card">
+                    <h2><i class="fas fa-file-alt"></i> 填写入驻信息</h2>
+                    <form id="settleForm">
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-store"></i> 店铺名称</label>
+                            <input type="text" id="shopName" placeholder="请输入店铺名称" required>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-tags"></i> 经营类目</label>
+                            <select id="shopCategory" required>
+                                <option value="">请选择经营类目</option>
+                                <option value="餐饮服务">餐饮服务</option>
+                                <option value="快递服务">快递服务</option>
+                                <option value="校园超市">校园超市</option>
+                                <option value="通信营业厅">通信营业厅</option>
+                                <option value="医务室">医务室</option>
+                            </select>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-user"></i> 联系人</label>
+                            <input type="text" id="contactName" placeholder="请输入联系人姓名" required>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-phone"></i> 联系电话</label>
+                            <input type="tel" id="contactPhone" placeholder="请输入联系电话" required>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-lock"></i> 登录账号</label>
+                            <input type="text" id="merchantAccount" placeholder="设置商家登录账号（字母/数字，4-20位）" required>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-key"></i> 登录密码</label>
+                            <input type="password" id="merchantPwd" placeholder="设置登录密码（6位以上）" required>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-id-card"></i> 营业执照照片</label>
+                            <div class="ms-upload-area" id="licenseUpload">
+                                <input type="file" id="licensePhoto" accept="image/*" hidden>
+                                <div class="ms-upload-placeholder" id="licensePlaceholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>点击上传营业执照</span>
+                                    <small>支持 jpg/png，不超过5MB</small>
+                                </div>
+                                <div class="ms-upload-preview" id="licensePreview" style="display:none">
+                                    <img id="licenseImg" src="" alt="预览">
+                                    <button type="button" class="ms-upload-remove" id="licenseRemove"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ms-form-group">
+                            <label><i class="fas fa-camera"></i> 门店实拍照片</label>
+                            <div class="ms-upload-area" id="storeUpload">
+                                <input type="file" id="storePhoto" accept="image/*" hidden>
+                                <div class="ms-upload-placeholder" id="storePlaceholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>点击上传门店照片</span>
+                                    <small>支持 jpg/png，不超过5MB</small>
+                                </div>
+                                <div class="ms-upload-preview" id="storePreview" style="display:none">
+                                    <img id="storeImg" src="" alt="预览">
+                                    <button type="button" class="ms-upload-remove" id="storeRemove"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="ms-submit-btn">
+                            <i class="fas fa-paper-plane"></i> 提交入驻申请
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 侧栏 -->
+                <div class="ms-sidebar">
+                    <div class="ms-sidebar-card">
+                        <h3><i class="fas fa-route"></i> 入驻流程</h3>
+                        <div class="ms-steps">
+                            <div class="ms-step"><div class="ms-step-num">1</div><div class="ms-step-text"><strong>填写信息</strong><p>店铺名称、类目、联系方式</p></div></div>
+                            <div class="ms-step"><div class="ms-step-num">2</div><div class="ms-step-text"><strong>上传资质</strong><p>营业执照、门店照片</p></div></div>
+                            <div class="ms-step"><div class="ms-step-num">3</div><div class="ms-step-text"><strong>等待审核</strong><p>管理员审核入驻资质</p></div></div>
+                            <div class="ms-step"><div class="ms-step-num">4</div><div class="ms-step-text"><strong>上线营业</strong><p>审核通过后自动绑定板块</p></div></div>
+                        </div>
+                    </div>
+                    <div class="ms-sidebar-card ms-sidebar-tips">
+                        <h3><i class="fas fa-info-circle"></i> 注意事项</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> 营业执照必须真实有效</li>
+                            <li><i class="fas fa-check"></i> 门店照片需为实地拍摄</li>
+                            <li><i class="fas fa-check"></i> 审核通过后账号方可登录</li>
+                            <li><i class="fas fa-check"></i> 如有疑问请联系管理员</li>
+                        </ul>
+                    </div>
+                    <a href="login.html" class="ms-sidebar-card ms-login-entry">
+                        <h3><i class="fas fa-sign-in-alt"></i> 商家登录</h3>
+                        <p>已有账号？点击登录商家后台 →</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 入驻状态弹窗 -->
+    <div class="ms-result-modal" id="resultModal">
+        <div class="ms-result-content">
+            <div class="ms-result-icon" id="resultIcon"><i class="fas fa-paper-plane"></i></div>
+            <h3 id="resultTitle">申请已发送成功</h3>
+            <p id="resultMsg">您的入驻申请已成功提交，请耐心等待管理员审核。审核通过后即可使用账号登录商家后台。</p>
+            <div class="ms-result-actions">
+                <a href="index.html" class="ms-result-btn"><i class="fas fa-home"></i> 返回首页</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="ms-toast" id="msToast"><i class="fas fa-check-circle"></i><span id="msToastMsg">操作成功</span></div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>青园在线</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="life.html">生活服务</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：济南幼儿师范高等专科学校</p><p>电话：010-12345678</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 青园在线综合服务平台</p></div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/merchant-settle.js"></script>
+    <script src="js/robot-assistant.js"></script>
+</body>
+</html>

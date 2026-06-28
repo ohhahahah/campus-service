@@ -1,0 +1,770 @@
+/* ============================================================
+ * 医务室 - 校医后台样式
+ * ============================================================ */
+
+/* ---------- Hero ---------- */
+.ca-hero {
+    padding: 120px 20px 60px;
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #dc2626 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ca-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    animation: caHeroFloat 15s ease-in-out infinite;
+}
+
+@keyframes caHeroFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+}
+
+.ca-hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+.ca-hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.ca-hero h1 i { margin-right: 10px; }
+.ca-hero p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; }
+
+.ca-hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.ca-stat { text-align: center; min-width: 80px; }
+.ca-stat-num { display: block; font-size: 36px; font-weight: 700; color: #fff; }
+.ca-stat-label { font-size: 14px; color: rgba(255,255,255,0.7); }
+
+/* ---------- 校医标识 ---------- */
+.ca-staff-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Tabs ---------- */
+.ca-tabs-section {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+}
+
+.ca-tabs-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 12px 20px;
+}
+
+.ca-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+    position: relative;
+}
+
+.ca-tab:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.ca-tab.active {
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(127,29,29,0.3);
+}
+
+.ca-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px; height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: #f59e0b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    font-style: normal;
+    line-height: 1;
+}
+
+.ca-badge:empty,
+.ca-badge[data-count="0"] { display: none; }
+
+.ca-tab-content { display: none; padding: 30px 20px; animation: caFadeIn 0.4s ease; }
+.ca-tab-content.active { display: block; }
+
+@keyframes caFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ca-container { max-width: 1200px; margin: 0 auto; }
+
+/* ---------- 工单卡片 ---------- */
+.ca-orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+}
+
+.ca-order-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+
+.ca-order-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.ca-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.ca-order-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ca-order-type i { color: #dc2626; }
+
+.ca-order-id {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 3px 10px;
+    border-radius: 10px;
+}
+
+.ca-order-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ca-order-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.ca-order-info-item i { color: #f87171; width: 14px; }
+
+.ca-order-symptom {
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    line-height: 1.6;
+    background: #fef2f2;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border-left: 3px solid #dc2626;
+}
+
+.ca-order-symptom strong { color: #dc2626; }
+
+.ca-order-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+
+.ca-badge-medicine {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.ca-badge-delivery {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.ca-badge-handle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.ca-order-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ca-order-time i { color: #f87171; }
+
+.ca-order-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.ca-order-actions button {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ca-btn-accept {
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+}
+
+.ca-btn-accept:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(127,29,29,0.3);
+}
+
+.ca-btn-process {
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+}
+
+.ca-btn-process:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(153,27,27,0.3);
+}
+
+.ca-btn-finish {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+}
+
+.ca-btn-finish:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5,150,105,0.3);
+}
+
+.ca-btn-chat {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.ca-btn-chat:hover { background: #e5e7eb; }
+
+/* ---------- 空状态 ---------- */
+.ca-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-secondary);
+}
+
+.ca-empty i { font-size: 56px; opacity: 0.15; display: block; margin-bottom: 16px; }
+.ca-empty p { font-size: 15px; }
+
+/* ---------- 处理方式弹窗 ---------- */
+.ca-handle-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10001;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.ca-handle-modal.active { display: flex; }
+
+.ca-handle-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: caModalIn 0.3s ease;
+}
+
+@keyframes caModalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ca-handle-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ca-handle-header h3 { font-size: 16px; font-weight: 600; }
+.ca-handle-header h3 i { margin-right: 8px; }
+
+.ca-handle-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.ca-handle-close:hover { background: rgba(255,255,255,0.3); }
+
+.ca-handle-body {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ca-handle-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 16px;
+    border-radius: 16px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.ca-handle-option:hover {
+    border-color: #dc2626;
+    background: rgba(220,38,38,0.05);
+    transform: translateY(-3px);
+}
+
+.ca-handle-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.ca-handle-option strong { font-size: 15px; color: var(--text-primary); }
+.ca-handle-option p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+/* ---------- 聊天弹窗 ---------- */
+.ca-chat-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.ca-chat-modal.active { display: flex; }
+
+.ca-chat-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: caModalIn 0.3s ease;
+}
+
+.ca-chat-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ca-chat-header h3 { font-size: 16px; font-weight: 600; }
+.ca-chat-header h3 i { margin-right: 8px; }
+
+.ca-chat-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.ca-chat-close:hover { background: rgba(255,255,255,0.3); }
+
+.ca-chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+}
+
+.ca-msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.ca-msg-self {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.ca-msg-other {
+    align-self: flex-start;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+}
+
+.ca-msg-time { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+
+.ca-chat-input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+.ca-chat-input input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    outline: none;
+}
+
+.ca-chat-input input:focus { border-color: #dc2626; }
+
+.ca-chat-input button {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.ca-chat-input button:hover { transform: scale(1.08); }
+
+/* ---------- 登录拦截弹窗 ---------- */
+.ca-login-guard-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.ca-login-guard-overlay.active { display: flex; }
+
+.ca-login-guard-modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: caLoginGuardIn 0.3s ease;
+}
+
+@keyframes caLoginGuardIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ca-login-guard-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+}
+.ca-login-guard-header h3 { font-size: 17px; font-weight: 600; }
+.ca-login-guard-header h3 i { margin-right: 8px; }
+
+.ca-login-guard-body {
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ca-login-guard-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(220,38,38,0.1);
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 16px;
+}
+
+.ca-login-guard-tip {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 20px;
+    text-align: center;
+}
+
+.ca-login-guard-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 500;
+}
+.ca-login-guard-hint i { color: #16a34a; }
+
+.ca-login-guard-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.ca-login-guard-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.ca-login-guard-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.ca-login-guard-label i { margin-right: 6px; color: #991b1b; }
+
+.ca-login-guard-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+.ca-login-guard-input:focus {
+    outline: none;
+    border-color: #dc2626;
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+
+.ca-login-guard-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.ca-login-guard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(153,27,27,0.35);
+}
+.ca-login-guard-btn:active { transform: translateY(0); }
+
+.ca-login-guard-back {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.ca-login-guard-back:hover { color: #dc2626; }
+.ca-login-guard-back i { margin-right: 4px; }
+
+/* ---------- 返回生活服务按钮 ---------- */
+.ca-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(153,27,27,0.3);
+}
+.ca-back-btn:hover {
+    transform: translateX(-2px);
+    box-shadow: 0 4px 12px rgba(153,27,27,0.4);
+}
+.ca-back-btn i { font-size: 13px; }
+
+/* ---------- Toast ---------- */
+.ca-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #065f46;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.ca-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 新工单提醒 ---------- */
+.ca-new-alert {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: linear-gradient(135deg, #7f1d1d, #dc2626);
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(127,29,29,0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: caAlertSlide 0.5s ease;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ca-new-alert:hover { transform: translateY(-3px); }
+
+@keyframes caAlertSlide {
+    from { opacity: 0; transform: translateX(100px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.ca-new-alert i { font-size: 20px; animation: caBell 0.6s ease infinite; }
+
+@keyframes caBell {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(15deg); }
+    75% { transform: rotate(-15deg); }
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+    .ca-hero h1 { font-size: 28px; }
+    .ca-hero p { font-size: 14px; }
+    .ca-hero-stats { gap: 16px; }
+    .ca-stat-num { font-size: 26px; }
+    .ca-orders-grid { grid-template-columns: 1fr; }
+    .ca-tabs-header { overflow-x: auto; }
+    .ca-tab { padding: 10px 16px; font-size: 13px; }
+    .ca-handle-body { grid-template-columns: 1fr; }
+}

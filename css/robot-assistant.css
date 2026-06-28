@@ -45,10 +45,17 @@
 .robot-msg .msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
 .robot-msg.bot .msg-avatar{background:linear-gradient(135deg,#0E42D2,#165DFF);color:#fff}
 .robot-msg.user .msg-avatar{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-
+/* 消息气泡 */
 .robot-msg .msg-bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.6;word-break:break-word}
 .robot-msg.bot .msg-bubble{background:#fff;color:#1e293b;border-top-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .robot-msg.user .msg-bubble{background:linear-gradient(135deg,#0E42D2,#165DFF);color:#fff;border-top-right-radius:4px}
+
+/* 消息内嵌操作按钮（导航指令） */
+.msg-actions{margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;display:flex;flex-direction:column;gap:6px}
+.msg-action-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:linear-gradient(135deg,#F0F5FF,#E0EAFF);border:1px solid #bfdbfe;color:#165DFF;font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:all .2s ease}
+.msg-action-btn:hover{background:linear-gradient(135deg,#165DFF,#4080FF);color:#fff;border-color:transparent;transform:translateX(3px);box-shadow:0 3px 10px rgba(22,93,255,.3)}
+.msg-action-btn i{font-size:13px;width:18px;text-align:center}
+.msg-action-btn .arrow{margin-left:auto;font-size:11px;opacity:.6}
 
 /* 打字动画 */
 .robot-typing{display:flex;gap:4px;padding:4px 0}

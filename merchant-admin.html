@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家后台 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/merchant-admin.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="ma-hero">
+        <div class="ma-hero-content">
+            <h1><i class="fas fa-store"></i> <span id="maShopName">商家工作台</span></h1>
+            <p>接单管理 · 在线沟通 · 高效办结</p>
+            <div class="ma-hero-stats">
+                <div class="ma-stat"><span class="ma-stat-num" id="statPending">0</span><span class="ma-stat-label">待接单</span></div>
+                <div class="ma-stat"><span class="ma-stat-num" id="statAccepted">0</span><span class="ma-stat-label">已接单</span></div>
+                <div class="ma-stat"><span class="ma-stat-num" id="statDone">0</span><span class="ma-stat-label">已办结</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab -->
+    <section class="ma-tabs-section">
+        <div class="ma-tabs-header">
+            <button class="ma-tab active" data-tab="pending"><i class="fas fa-bell"></i><span>待接单</span><em id="pendingBadge" class="ma-badge">0</em></button>
+            <button class="ma-tab" data-tab="accepted"><i class="fas fa-check-circle"></i><span>已接单</span></button>
+            <button class="ma-tab" data-tab="done"><i class="fas fa-flag-checkered"></i><span>已办结</span></button>
+            <button class="ma-tab" data-tab="all"><i class="fas fa-history"></i><span>全部记录</span></button>
+            <button class="ma-tab" data-tab="delivery"><i class="fas fa-truck"></i><span>配送服务</span></button>
+        </div>
+    </section>
+
+    <!-- 待接单 -->
+    <div class="ma-tab-content active" id="pending">
+        <div class="ma-container" id="pendingList"></div>
+    </div>
+    <!-- 已接单 -->
+    <div class="ma-tab-content" id="accepted">
+        <div class="ma-container" id="acceptedList"></div>
+    </div>
+    <!-- 已办结 -->
+    <div class="ma-tab-content" id="done">
+        <div class="ma-container" id="doneList"></div>
+    </div>
+    <!-- 全部 -->
+    <div class="ma-tab-content" id="all">
+        <div class="ma-container" id="allList"></div>
+    </div>
+
+    <!-- 配送服务（新增模块，不影响原有订单功能） -->
+    <div class="ma-tab-content" id="delivery">
+        <div class="ma-container">
+            <!-- 配送信息录入表单 -->
+            <div class="ma-delivery-card">
+                <div class="ma-delivery-header">
+                    <h3><i class="fas fa-truck-loading"></i> 配送信息录入</h3>
+                    <span class="ma-delivery-tip">新增配送服务字段，保存后用于订单配送管理</span>
+                </div>
+                <form id="deliveryForm" class="ma-delivery-form" autocomplete="off">
+                    <div class="ma-delivery-row">
+                        <label class="ma-delivery-label"><i class="fas fa-map-marker-alt"></i> 配送地址</label>
+                        <input type="text" id="deliveryAddress" class="ma-delivery-input" placeholder="如：济南幼师高专南门" required>
+                    </div>
+                    <div class="ma-delivery-row">
+                        <label class="ma-delivery-label"><i class="fas fa-building"></i> 宿舍楼栋</label>
+                        <select id="deliveryBuilding" class="ma-delivery-input" required>
+                            <option value="">请选择宿舍楼栋</option>
+                            <option value="1号楼">1号楼</option>
+                            <option value="2号楼">2号楼</option>
+                            <option value="3号楼">3号楼</option>
+                            <option value="4号楼">4号楼</option>
+                            <option value="5号楼">5号楼</option>
+                            <option value="6号楼">6号楼</option>
+                            <option value="研究生楼">研究生楼</option>
+                            <option value="教职工楼">教职工楼</option>
+                        </select>
+                    </div>
+                    <div class="ma-delivery-row">
+                        <label class="ma-delivery-label"><i class="fas fa-clock"></i> 配送时段</label>
+                        <select id="deliveryTimeSlot" class="ma-delivery-input" required>
+                            <option value="">请选择配送时段</option>
+                            <option value="08:00-10:00">08:00-10:00</option>
+                            <option value="10:00-12:00">10:00-12:00</option>
+                            <option value="12:00-14:00">12:00-14:00</option>
+                            <option value="14:00-16:00">14:00-16:00</option>
+                            <option value="16:00-18:00">16:00-18:00</option>
+                            <option value="18:00-20:00">18:00-20:00</option>
+                            <option value="20:00-22:00">20:00-22:00</option>
+                        </select>
+                    </div>
+                    <div class="ma-delivery-row">
+                        <label class="ma-delivery-label"><i class="fas fa-info-circle"></i> 配送状态</label>
+                        <select id="deliveryStatus" class="ma-delivery-input" required>
+                            <option value="">请选择配送状态</option>
+                            <option value="待配送">待配送</option>
+                            <option value="配送中">配送中</option>
+                            <option value="已送达">已送达</option>
+                            <option value="已取消">已取消</option>
+                        </select>
+                    </div>
+                    <div class="ma-delivery-row ma-delivery-row-full">
+                        <label class="ma-delivery-label"><i class="fas fa-sticky-note"></i> 备注（可选）</label>
+                        <input type="text" id="deliveryRemark" class="ma-delivery-input" placeholder="如：放至楼下快递柜">
+                    </div>
+                    <div class="ma-delivery-actions">
+                        <button type="submit" class="ma-btn-accept" id="deliverySubmitBtn"><i class="fas fa-check"></i> 保存配送信息</button>
+                        <button type="button" class="ma-btn-detail" id="deliveryResetBtn"><i class="fas fa-undo"></i> 重置表单</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 已保存配送记录列表 -->
+            <div class="ma-delivery-card">
+                <div class="ma-delivery-header">
+                    <h3><i class="fas fa-list"></i> 配送记录</h3>
+                    <span class="ma-delivery-tip" id="deliveryCountTip">共 0 条记录</span>
+                </div>
+                <div id="deliveryListWrap" class="ma-delivery-list-wrap">
+                    <div class="ma-delivery-empty">
+                        <i class="fas fa-inbox"></i>
+                        <p>暂无配送记录</p>
+                        <span>请在上方录入配送信息</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天弹窗 -->
+    <div class="ma-chat-modal" id="chatModal">
+        <div class="ma-chat-content">
+            <div class="ma-chat-header">
+                <h3><i class="fas fa-comments"></i> 与学生沟通</h3>
+                <button class="ma-chat-close" id="chatClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="ma-chat-messages" id="chatMessages"></div>
+            <div class="ma-chat-input">
+                <input type="text" id="chatInput" placeholder="输入回复...">
+                <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="ma-toast" id="maToast"><i class="fas fa-check-circle"></i><span id="maToastMsg">操作成功</span></div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>青园在线</h3><p>一站式校园服务平台</p></div>
+            <div class="footer-section"><h4>快速链接</h4><ul><li><a href="index.html">首页</a></li><li><a href="life.html">生活服务</a></li></ul></div>
+            <div class="footer-section"><h4>联系我们</h4><p>地址：济南幼儿师范高等专科学校</p><p>电话：010-12345678</p></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 青园在线综合服务平台</p></div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/merchant-admin.js"></script>
+</body>
+</html>

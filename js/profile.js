@@ -839,4 +839,62 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() { loadPurchaseRecords(); }, 100);
         });
     }
+
+    /* ============ 场地预约记录渲染 ============ */
+    function getMyBookings() {
+        if (window.CampusDB) return CampusDB.getBookings();
+        try { return JSON.parse(localStorage.getItem('campus_bookings') || '[]'); } catch(e) { return []; }
+    }
+
+    function renderBookingRecords() {
+        var list = getMyBookings();
+        var container = document.getElementById('bookingRecordsList');
+        if (!container) return;
+
+        if (!list.length) {
+            container.innerHTML = '<div class="record-empty" style="padding:40px 20px;text-align:center;color:#999">'
+                + '<i class="fas fa-calendar-times" style="font-size:32px;display:block;margin-bottom:10px;opacity:0.4"></i>'
+                + '暂无预约记录<br>'
+                + '<a href="booking.html" style="color:#a890c5;text-decoration:underline;margin-top:8px;display:inline-block">去预约场地</a>'
+                + '</div>';
+            return;
+        }
+
+        var iconMap = { study: 'fa-book-reader', sport: 'fa-basketball-ball', heal: 'fa-spa', multi: 'fa-people-group' };
+        var statusMap = {
+            confirmed: { text: '已确认', cls: 'confirmed' },
+            pending: { text: '待确认', cls: 'pending' },
+            cancelled: { text: '已取消', cls: 'cancelled' },
+            completed: { text: '已完成', cls: 'completed' }
+        };
+
+        var html = list.map(function(b) {
+            var icon = iconMap[b.venueCat] || 'fa-calendar-check';
+            var st = statusMap[b.status] || statusMap.confirmed;
+            var catTag = b.venueCatName ? '<span style="font-size:11px;color:#a890c5;background:rgba(168,144,197,0.12);padding:2px 8px;border-radius:10px;margin-left:6px">' + b.venueCatName + '</span>' : '';
+            var seatTag = b.seatNo != null ? '<span style="font-size:11px;color:#6b8c9c;background:rgba(107,140,156,0.12);padding:2px 8px;border-radius:10px;margin-left:4px">座位 ' + b.seatNo + ' 号</span>' : '';
+            var noteRow = b.note ? '<p style="margin:4px 0 0;font-size:12px;color:#999">备注：' + b.note + '</p>' : '';
+            return '<div class="record-item">' +
+                '<div class="record-icon"><i class="fas ' + icon + '"></i></div>' +
+                '<div class="record-info">' +
+                    '<h4>' + b.venueName + catTag + seatTag + '</h4>' +
+                    '<p>' + b.date + ' ' + (b.timeSlot || (b.startTime + '-' + b.endTime)) + '</p>' +
+                    '<p style="margin:2px 0 0;font-size:12px;color:#999">用途：' + (b.purpose || '-') + ' · 预约人：' + (b.name || '') + '</p>' +
+                    noteRow +
+                '</div>' +
+                '<span class="record-status ' + st.cls + '">' + st.text + '</span>' +
+            '</div>';
+        }).join('');
+
+        container.innerHTML = html;
+    }
+
+    renderBookingRecords();
+
+    var bookingsNavItem = document.querySelector('.nav-item[data-section="bookings"]');
+    if (bookingsNavItem) {
+        bookingsNavItem.addEventListener('click', function() {
+            setTimeout(renderBookingRecords, 100);
+        });
+    }
 });

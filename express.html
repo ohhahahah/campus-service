@@ -1,22 +1,20 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>快递服务 - 智慧校园</title>
+    <title>快递服务 - 青园在线</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/life.css">
     <link rel="stylesheet" href="css/express.css">
+    <link rel="stylesheet" href="css/life-modern.css">
 <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link">二手市场</a>
@@ -39,6 +37,7 @@
 
     <!-- 快递服务轮播横幅（标题叠加在轮播图上） -->
     <div class="express-carousel">
+        <a href="life.html" class="hero-back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
         <div class="express-carousel-track" id="expressCarouselTrack">
             <div class="express-carousel-slide active" style="background-image:url('https://picsum.photos/1400/500?express1')"></div>
             <div class="express-carousel-slide" style="background-image:url('https://picsum.photos/1400/500?express2')"></div>
@@ -67,7 +66,7 @@
     </div>
 
     <div class="content-section">
-        <a href="life.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+        <!-- 标准化【返回生活服务】按钮已在顶部 hero 区，无需重复 -->
     </div>
 
     <section class="content-section">
@@ -84,9 +83,6 @@
                         <select id="stationName" required>
                             <option value="">请选择驿站</option>
                             <option>南门驿站</option>
-                            <option>北门驿站</option>
-                            <option>一食堂旁驿站</option>
-                            <option>二食堂旁驿站</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -174,27 +170,6 @@
                             <p>南门入口左侧 · 8:00-21:00</p>
                         </div>
                     </div>
-                    <div class="express-station-item">
-                        <div class="station-icon"><i class="fas fa-store"></i></div>
-                        <div class="station-info">
-                            <h4>北门驿站</h4>
-                            <p>北门快递中心 · 8:00-22:00</p>
-                        </div>
-                    </div>
-                    <div class="express-station-item">
-                        <div class="station-icon"><i class="fas fa-store"></i></div>
-                        <div class="station-info">
-                            <h4>一食堂旁驿站</h4>
-                            <p>一食堂东侧20米 · 9:00-20:00</p>
-                        </div>
-                    </div>
-                    <div class="express-station-item">
-                        <div class="station-icon"><i class="fas fa-store"></i></div>
-                        <div class="station-info">
-                            <h4>二食堂旁驿站</h4>
-                            <p>二食堂北侧15米 · 9:00-20:00</p>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="express-aux-card">
@@ -267,7 +242,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>智慧校园</h3>
+                <h3>青园在线</h3>
                 <p>一站式校园服务平台</p>
             </div>
             <div class="footer-section">
@@ -285,7 +260,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 智慧校园综合服务平台 | 大学生网页设计大赛参赛作品</p>
+            <p>&copy; 2024 青园在线综合服务平台 | 大学生网页设计大赛参赛作品</p>
         </div>
     </footer>
 

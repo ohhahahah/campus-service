@@ -24,5 +24,7 @@ const services = [
   { name: '后勤报修', desc: '宿舍·教室·设施', link: 'repair.html', icon: 'fas fa-wrench', bg: 'linear-gradient(135deg, #f59e0b, #d97706)' },
   { name: '兼职拼车', desc: '兼职·互助·出行', link: 'parttime.html', icon: 'fas fa-hands-helping', bg: 'linear-gradient(135deg, #ef4444, #dc2626)' },
   { name: '生活服务', desc: '食堂·快递·出行', link: 'life.html', icon: 'fas fa-concierge-bell', bg: 'linear-gradient(135deg, #06b6d4, #0891b2)' },
+  { name: '通信营业厅', desc: '办卡·套餐·宽带', link: 'telecom.html', icon: 'fas fa-phone-alt', bg: 'linear-gradient(135deg, #6d28d9, #8b5cf6)' },
+  { name: '医务室', desc: '问诊·送药·预约', link: 'clinic.html', icon: 'fas fa-plus-circle', bg: 'linear-gradient(135deg, #ef4444, #f87171)' },
 ]
 </script>

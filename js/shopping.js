@@ -99,6 +99,14 @@
         localStorage.setItem('campus_shop_orders', JSON.stringify(list));
     }
 
+    /* 超市后台配送订单池（学生下单后自动同步到后台） */
+    function getShopDeliveryOrders() {
+        try { return JSON.parse(localStorage.getItem('campus_shop_delivery_orders') || '[]'); } catch(e) { return []; }
+    }
+    function saveShopDeliveryOrders(list) {
+        localStorage.setItem('campus_shop_delivery_orders', JSON.stringify(list));
+    }
+
     function getCartFromStorage() {
         try { return JSON.parse(localStorage.getItem('campus_shop_cart') || '[]'); } catch(e) { return []; }
     }
@@ -142,7 +150,9 @@
         var grid = document.getElementById('productGrid');
         var items = products[currentCat] || [];
         var theme = catThemes[currentCat];
-        grid.innerHTML = items.map(function(item) {
+        /* 跳过已下架的商品，前端不展示 */
+        var visibleItems = items.filter(function(it) { return !it.offShelf; });
+        grid.innerHTML = visibleItems.map(function(item) {
             var inCart = cart.find(function(c) { return c.id === item.id; });
             var cartQty = inCart ? inCart.qty : 0;
             return '<div class="product-item product-cat-' + currentCat + '">' +
@@ -443,21 +453,23 @@
                 showToast('请至少选择一件商品', 'error');
                 return;
             }
+            var name = document.getElementById('addrName').value.trim();
             var building = document.getElementById('addrBuilding').value;
-            var room = document.getElementById('addrRoom').value;
-            var phone = document.getElementById('addrPhone').value;
-            if (!building || !room || !phone) {
-                showToast('请填写完整的配送地址', 'error');
+            var room = document.getElementById('addrRoom').value.trim();
+            var phone = document.getElementById('addrPhone').value.trim();
+            var timeSlot = document.getElementById('addrTimeSlot').value;
+            if (!name || !building || !room || !phone || !timeSlot) {
+                showToast('请填写完整的姓名、楼栋、房间号、电话与配送时段', 'error');
                 return;
             }
 
             /* 显示订单确认弹窗 */
-            showOrderConfirm(selectedItems, building, room, phone);
+            showOrderConfirm(selectedItems, name, building, room, phone, timeSlot);
         });
     }
 
     /* ===== 订单确认弹窗 ===== */
-    function showOrderConfirm(selectedItems, building, room, phone) {
+    function showOrderConfirm(selectedItems, name, building, room, phone, timeSlot) {
         var total = selectedItems.reduce(function(s, i) { return s + i.price * i.qty; }, 0);
         var itemsHtml = selectedItems.map(function(i) {
             return '<div class="confirm-order-item">' +
@@ -478,8 +490,11 @@
             '</div>' +
             '<div class="order-confirm-body">' +
             '<div class="confirm-section"><h4><i class="fas fa-box"></i> 商品清单</h4>' + itemsHtml + '</div>' +
-            '<div class="confirm-section"><h4><i class="fas fa-map-marker-alt"></i> 配送地址</h4>' +
-            '<p>' + building + ' ' + room + '</p><p>联系电话：' + phone + '</p></div>' +
+            '<div class="confirm-section"><h4><i class="fas fa-map-marker-alt"></i> 配送信息</h4>' +
+            '<p>姓名：' + name + '</p>' +
+            '<p>楼栋：' + building + '　房间号：' + room + '</p>' +
+            '<p>配送时段：' + timeSlot + '</p>' +
+            '<p>联系电话：' + phone + '</p></div>' +
             '<div class="confirm-total-row"><span>合计</span><span class="confirm-total-price">¥' + total.toFixed(1) + '</span></div>' +
             '</div>' +
             '<div class="order-confirm-footer">' +
@@ -504,16 +519,31 @@
                 var timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
 
                 var orders = getShopOrders();
-                orders.unshift({
-                    orderId: 'ORD' + Date.now(),
+                /* 同时为后台配送管理写入独立订单记录（campus_shop_delivery_orders） */
+                var deliveryOrders = getShopDeliveryOrders();
+
+                var orderId = 'ORD' + Date.now();
+                var orderRecord = {
+                    orderId: orderId,
                     items: selectedItems.map(function(i) { return { name: i.name, qty: i.qty, price: i.price }; }),
                     total: total,
+                    name: name,
+                    building: building,
+                    room: room,
                     address: building + ' ' + room,
                     phone: phone,
+                    timeSlot: timeSlot,
                     time: timeStr,
-                    status: 'pending'
-                });
+                    status: 'pending',
+                    customerRole: getUser() ? (getUser().role || 'student') : 'student'
+                };
+
+                orders.unshift(orderRecord);
                 saveShopOrders(orders);
+
+                /* 推送到超市后台的配送订单池 */
+                deliveryOrders.unshift(Object.assign({ highlighted: true, readAt: null }, orderRecord));
+                saveShopDeliveryOrders(deliveryOrders);
 
                 /* 清除已选商品 */
                 cart = cart.filter(function(c) { return c.selected === false; });
@@ -525,10 +555,12 @@
                 renderCart();
                 renderOrders();
                 updateFloatingCart();
+                document.getElementById('addrName').value = '';
                 document.getElementById('addrBuilding').value = '';
                 document.getElementById('addrRoom').value = '';
                 document.getElementById('addrPhone').value = '';
-                showToast('下单成功！合计 ¥' + total.toFixed(1));
+                document.getElementById('addrTimeSlot').value = '';
+                showToast('下单成功！合计 ¥' + total.toFixed(1) + '，请等待超市后台接单');
             }, 600);
         });
     }
@@ -550,6 +582,34 @@
         initCategoryTabs();
         initCheckout();
         initFloatingCart();
+
+        /* 从后台同步商品数据（首次进入将默认商品写入 localStorage，之后由后台管理） */
+        try {
+            var storedProducts = JSON.parse(localStorage.getItem('campus_shop_products') || 'null');
+            if (storedProducts && typeof storedProducts === 'object') {
+                products = storedProducts;
+                renderProducts();
+            } else {
+                localStorage.setItem('campus_shop_products', JSON.stringify(products));
+            }
+        } catch (e) {}
+
+        /* 监听后台商品变更，实时刷新前端 */
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'campus_shop_products') {
+                try {
+                    var p = JSON.parse(e.newValue || 'null');
+                    if (p && typeof p === 'object') {
+                        products = p;
+                        renderProducts();
+                    }
+                } catch (err) {}
+            }
+            if (e.key === 'campus_shop_delivery_orders') {
+                /* 后台改了订单状态，刷新前端订单列表 */
+                renderOrders();
+            }
+        });
 
         /* 每30秒刷新订单状态 */
         setInterval(function() { renderOrders(); }, 30000);

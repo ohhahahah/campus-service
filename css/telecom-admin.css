@@ -1,0 +1,475 @@
+/* ============================================================
+ * 通信营业厅 - 业务员后台样式
+ * ============================================================ */
+
+/* ---------- Hero ---------- */
+.ta-hero {
+    padding: 120px 20px 60px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ta-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    animation: taHeroFloat 15s ease-in-out infinite;
+}
+
+@keyframes taHeroFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+}
+
+.ta-hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+.ta-hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.ta-hero h1 i { margin-right: 10px; }
+.ta-hero p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; }
+
+.ta-hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.ta-stat { text-align: center; min-width: 80px; }
+.ta-stat-num { display: block; font-size: 36px; font-weight: 700; color: #fff; }
+.ta-stat-label { font-size: 14px; color: rgba(255,255,255,0.7); }
+
+/* ---------- 业务员标识 ---------- */
+.ta-staff-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Tabs ---------- */
+.ta-tabs-section {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+}
+
+.ta-tabs-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 12px 20px;
+}
+
+.ta-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+    position: relative;
+}
+
+.ta-tab:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.ta-tab.active {
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(49,46,129,0.3);
+}
+
+.ta-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    font-style: normal;
+    line-height: 1;
+}
+
+.ta-badge:empty,
+.ta-badge[data-count="0"] { display: none; }
+
+.ta-tab-content { display: none; padding: 30px 20px; animation: taFadeIn 0.4s ease; }
+.ta-tab-content.active { display: block; }
+
+@keyframes taFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Container ---------- */
+.ta-container { max-width: 1200px; margin: 0 auto; }
+
+/* ---------- 工单卡片 ---------- */
+.ta-orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+}
+
+.ta-order-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+
+.ta-order-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.ta-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.ta-order-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ta-order-type i { color: #4338ca; }
+
+.ta-order-id {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 3px 10px;
+    border-radius: 10px;
+}
+
+.ta-order-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ta-order-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.ta-order-info-item i { color: #818cf8; width: 14px; }
+
+.ta-order-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.6;
+    background: var(--bg-secondary);
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+.ta-order-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ta-order-time i { color: #818cf8; }
+
+.ta-order-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.ta-order-actions button {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ta-btn-accept {
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+}
+
+.ta-btn-accept:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(49,46,129,0.3);
+}
+
+.ta-btn-process {
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+    color: #fff;
+}
+
+.ta-btn-process:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(91,33,182,0.3);
+}
+
+.ta-btn-finish {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+}
+
+.ta-btn-finish:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5,150,105,0.3);
+}
+
+.ta-btn-chat {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.ta-btn-chat:hover { background: #e5e7eb; }
+
+/* ---------- 空状态 ---------- */
+.ta-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-secondary);
+}
+
+.ta-empty i { font-size: 56px; opacity: 0.15; display: block; margin-bottom: 16px; }
+.ta-empty p { font-size: 15px; }
+
+/* ---------- 聊天弹窗 ---------- */
+.ta-chat-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.ta-chat-modal.active { display: flex; }
+
+.ta-chat-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: taChatIn 0.3s ease;
+}
+
+@keyframes taChatIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ta-chat-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ta-chat-header h3 { font-size: 16px; font-weight: 600; }
+.ta-chat-header h3 i { margin-right: 8px; }
+
+.ta-chat-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.ta-chat-close:hover { background: rgba(255,255,255,0.3); }
+
+.ta-chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+}
+
+.ta-msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.ta-msg-self {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.ta-msg-other {
+    align-self: flex-start;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+}
+
+.ta-msg-time {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 4px;
+}
+
+.ta-chat-input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+.ta-chat-input input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.ta-chat-input input:focus { border-color: #4338ca; }
+
+.ta-chat-input button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.ta-chat-input button:hover { transform: scale(1.08); }
+
+/* ---------- Toast ---------- */
+.ta-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #065f46;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.ta-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 新工单提醒 ---------- */
+.ta-new-order-alert {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(49,46,129,0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: taAlertSlide 0.5s ease;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ta-new-order-alert:hover { transform: translateY(-3px); }
+
+@keyframes taAlertSlide {
+    from { opacity: 0; transform: translateX(100px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.ta-new-order-alert i { font-size: 20px; animation: taBell 0.6s ease infinite; }
+
+@keyframes taBell {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(15deg); }
+    75% { transform: rotate(-15deg); }
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+    .ta-hero h1 { font-size: 28px; }
+    .ta-hero p { font-size: 14px; }
+    .ta-hero-stats { gap: 16px; }
+    .ta-stat-num { font-size: 26px; }
+    .ta-orders-grid { grid-template-columns: 1fr; }
+    .ta-tabs-header { overflow-x: auto; }
+    .ta-tab { padding: 10px 16px; font-size: 13px; }
+}

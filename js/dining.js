@@ -183,22 +183,22 @@
     }
 
     var billData = [
-        { id: 1, date: todayStr, canteen: '一食堂', dish: '红烧肉', price: 18, qty: 1 },
-        { id: 2, date: todayStr, canteen: '一食堂', dish: '番茄鸡蛋汤', price: 8, qty: 1 },
-        { id: 3, date: todayStr, canteen: '二食堂', dish: '糖醋排骨', price: 22, qty: 1 },
-        { id: 4, date: todayStr, canteen: '二食堂', dish: '蛋炒饭', price: 10, qty: 2 },
-        { id: 5, date: todayStr, canteen: '三食堂', dish: '水煮牛肉', price: 28, qty: 1 },
-        { id: 6, date: todayStr, canteen: '三食堂', dish: '紫菜蛋花汤', price: 6, qty: 1 },
-        { id: 7, date: yesterdayStr, canteen: '一食堂', dish: '宫保鸡丁', price: 15, qty: 1 },
-        { id: 8, date: yesterdayStr, canteen: '一食堂', dish: '蒜蓉西兰花', price: 12, qty: 1 },
-        { id: 9, date: yesterdayStr, canteen: '二食堂', dish: '麻婆豆腐', price: 12, qty: 1 },
-        { id: 10, date: yesterdayStr, canteen: '二食堂', dish: '皮蛋瘦肉粥', price: 8, qty: 1 },
-        { id: 11, date: yesterdayStr, canteen: '三食堂', dish: '鱼香肉丝', price: 16, qty: 1 },
-        { id: 12, date: yesterdayStr, canteen: '三食堂', dish: '担担面', price: 14, qty: 1 },
-        { id: 13, date: dayBeforeStr, canteen: '一食堂', dish: '清蒸鲈鱼', price: 28, qty: 1 },
-        { id: 14, date: dayBeforeStr, canteen: '二食堂', dish: '酸菜鱼', price: 25, qty: 1 },
-        { id: 15, date: dayBeforeStr, canteen: '三食堂', dish: '白切鸡', price: 25, qty: 1 },
-        { id: 16, date: dayBeforeStr, canteen: '三食堂', dish: '干锅花菜', price: 15, qty: 1 }
+        { id: 1, date: todayStr, canteen: '一楼', dish: '红烧肉', price: 18, qty: 1 },
+        { id: 2, date: todayStr, canteen: '一楼', dish: '番茄鸡蛋汤', price: 8, qty: 1 },
+        { id: 3, date: todayStr, canteen: '二楼', dish: '糖醋排骨', price: 22, qty: 1 },
+        { id: 4, date: todayStr, canteen: '二楼', dish: '蛋炒饭', price: 10, qty: 2 },
+        { id: 5, date: todayStr, canteen: '三楼', dish: '水煮牛肉', price: 28, qty: 1 },
+        { id: 6, date: todayStr, canteen: '三楼', dish: '紫菜蛋花汤', price: 6, qty: 1 },
+        { id: 7, date: yesterdayStr, canteen: '一楼', dish: '宫保鸡丁', price: 15, qty: 1 },
+        { id: 8, date: yesterdayStr, canteen: '一楼', dish: '蒜蓉西兰花', price: 12, qty: 1 },
+        { id: 9, date: yesterdayStr, canteen: '二楼', dish: '麻婆豆腐', price: 12, qty: 1 },
+        { id: 10, date: yesterdayStr, canteen: '二楼', dish: '皮蛋瘦肉粥', price: 8, qty: 1 },
+        { id: 11, date: yesterdayStr, canteen: '三楼', dish: '鱼香肉丝', price: 16, qty: 1 },
+        { id: 12, date: yesterdayStr, canteen: '三楼', dish: '担担面', price: 14, qty: 1 },
+        { id: 13, date: dayBeforeStr, canteen: '一楼', dish: '清蒸鲈鱼', price: 28, qty: 1 },
+        { id: 14, date: dayBeforeStr, canteen: '二楼', dish: '酸菜鱼', price: 25, qty: 1 },
+        { id: 15, date: dayBeforeStr, canteen: '三楼', dish: '白切鸡', price: 25, qty: 1 },
+        { id: 16, date: dayBeforeStr, canteen: '三楼', dish: '干锅花菜', price: 15, qty: 1 }
     ];
 
     var currentCanteen = '1';
@@ -208,9 +208,20 @@
 
     /* 购物车数据 */
     var cart = [];
-    /* 订单数据 */
-    var orders = [];
-    var nextOrderId = 1;
+    /* 订单数据 - 持久化到 localStorage，供食堂管理员后台实时读取 */
+    var ORDERS_KEY = 'campus_dining_orders';
+    var NEXT_ID_KEY = 'campus_dining_next_id';
+    function _loadOrders() {
+        try {
+            var v = localStorage.getItem(ORDERS_KEY);
+            return v ? JSON.parse(v) : [];
+        } catch(e) { return []; }
+    }
+    function _saveOrders(list) {
+        try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e) {}
+    }
+    var orders = _loadOrders();
+    var nextOrderId = parseInt(localStorage.getItem(NEXT_ID_KEY) || '1', 10) || 1;
     /* 当前弹窗菜品 */
     var currentDishItem = null;
     var dishQty = 1;
@@ -259,7 +270,10 @@
      * ============================================================ */
     function renderRecommend() {
         var wrap = document.getElementById('recommendScroll');
-        var items = (recommendData[currentCanteen] || {})[currentMeal] || [];
+        var defaultItems = (recommendData[currentCanteen] || {})[currentMeal] || [];
+        /* 合并后台发布的每日推荐（按楼层+时段过滤） */
+        var adminItems = loadAdminRecommend(currentCanteen, currentMeal);
+        var items = adminItems.length > 0 ? adminItems : defaultItems;
         wrap.innerHTML = items.map(function(item) {
             return '<div class="recommend-card">' +
                 '<div class="recommend-img-wrap">' +
@@ -271,8 +285,86 @@
                 '<span class="recommend-price">¥' + item.price + '</span>' +
                 '</div></div>';
         }).join('');
-        console.log('[餐饮服务] 推荐菜品渲染，食堂:', currentCanteen, '时段:', currentMeal, '数量:', items.length);
+        console.log('[餐饮服务] 推荐菜品渲染，楼层:', currentCanteen, '时段:', currentMeal, '数量:', items.length, adminItems.length > 0 ? '(后台发布)' : '(默认)');
     }
+
+    /* ============================================================
+     * 渲染今日窗口菜单（分楼层，由管理员后台发布）
+     * ============================================================ */
+    function renderWindowMenu() {
+        var wrap = document.getElementById('windowMenuWrap');
+        if (!wrap) return;
+        var floorName = { '1': '一楼', '2': '二楼', '3': '三楼' }[currentCanteen] || '当前楼层';
+        var hint = document.getElementById('windowMenuHint');
+        var list = loadAdminWindowMenu(currentCanteen);
+
+        if (list.length === 0) {
+            wrap.innerHTML = '<div class="window-menu-empty">' +
+                '<i class="fas fa-store-slash"></i>' +
+                '<p>' + floorName + '今日暂未发布窗口菜单</p>' +
+                '<span>管理员发布后将自动同步显示</span>' +
+                '</div>';
+            if (hint) hint.textContent = floorName + ' · 暂无窗口菜单数据';
+            return;
+        }
+
+        var html = '<div class="window-menu-header">' +
+            '<span class="window-menu-floor-badge">' + floorName + '</span>' +
+            '<span class="window-menu-floor-tip">共 ' + list.length + ' 个窗口已发布</span>' +
+            '</div>';
+        html += '<div class="window-menu-grid">';
+        list.forEach(function(w, idx) {
+            html += '<div class="window-menu-card">' +
+                '<div class="window-menu-no">' + (idx + 1) + '</div>' +
+                '<div class="window-menu-content">' +
+                '<div class="window-menu-name">' +
+                '<i class="fas fa-store"></i> ' + (w.name || ('窗口' + (idx + 1))) +
+                '</div>' +
+                '<div class="window-menu-dish">' + (w.dish || '今日特色') + '</div>' +
+                (w.desc ? '<div class="window-menu-desc">' + w.desc + '</div>' : '') +
+                '</div>' +
+                '</div>';
+        });
+        html += '</div>';
+
+        wrap.innerHTML = html;
+        if (hint) hint.textContent = floorName + ' · 实时同步 · ' + list.length + ' 个窗口';
+        console.log('[餐饮服务] 窗口菜单渲染，楼层:', currentCanteen, '数量:', list.length);
+    }
+
+    /* ============================================================
+     * 读取后台发布的每日推荐菜品（按楼层+时段）
+     * 数据 key: campus_dining_admin_recommend
+     * 结构: { '1': { 'breakfast': [{name,desc,price,img}], 'lunch': [...] }, '2': {...} }
+     * ============================================================ */
+    var ADMIN_RECOMMEND_KEY = 'campus_dining_admin_recommend';
+    function loadAdminRecommend(floor, meal) {
+        try {
+            var data = JSON.parse(localStorage.getItem(ADMIN_RECOMMEND_KEY) || '{}');
+            return ((data[floor] || {})[meal] || []).filter(function(it) { return it && it.name; });
+        } catch(e) { return []; }
+    }
+
+    /* ============================================================
+     * 读取后台发布的今日窗口菜单（按楼层）
+     * 数据 key: campus_dining_admin_window_menu
+     * 结构: { '1': [{name,dish,desc}], '2': [...], '3': [...] }
+     * ============================================================ */
+    var ADMIN_WINDOW_KEY = 'campus_dining_admin_window_menu';
+    function loadAdminWindowMenu(floor) {
+        try {
+            var data = JSON.parse(localStorage.getItem(ADMIN_WINDOW_KEY) || '{}');
+            return (data[floor] || []).filter(function(it) { return it && (it.dish || it.name); });
+        } catch(e) { return []; }
+    }
+
+    /* 监听 storage 事件，实现跨页面实时同步 */
+    window.addEventListener('storage', function(e) {
+        if (e.key === ADMIN_RECOMMEND_KEY || e.key === ADMIN_WINDOW_KEY) {
+            renderRecommend();
+            renderWindowMenu();
+        }
+    });
 
     /* ============================================================
      * 渲染菜品卡片列表（浏览+详情）
@@ -466,11 +558,11 @@
             address = document.getElementById('deliveryAddress').value;
         }
         var totalPrice = cart.reduce(function(s, c) { return s + c.price * c.qty; }, 0);
-        var canteenNames = { '1': '一食堂', '2': '二食堂', '3': '三食堂' };
+        var canteenNames = { '1': '一楼', '2': '二楼', '3': '三楼' };
         var order = {
             id: nextOrderId++,
             items: cart.map(function(c) { return { name: c.name, price: c.price, qty: c.qty }; }),
-            canteen: canteenNames[cart[0].canteen] || '一食堂',
+            canteen: canteenNames[cart[0].canteen] || '一楼',
             deliveryType: deliveryType,
             address: address,
             totalPrice: totalPrice,
@@ -480,6 +572,8 @@
             estimatedTime: deliveryType === 'dinein' ? '15-20分钟' : '25-35分钟'
         };
         orders.unshift(order);
+        localStorage.setItem(NEXT_ID_KEY, String(nextOrderId));
+        _saveOrders(orders);
         cart = [];
         updateCartUI();
         renderOrderGrid();
@@ -490,7 +584,7 @@
         simulateOrderProgress(order.id);
     }
 
-    /* 模拟订单状态自动推进 */
+    /* 模拟订单状态自动推进（学生端模拟，后台也可手动接管） */
     function simulateOrderProgress(orderId) {
         var statusFlow = [
             { status: 'cooking', text: '制作中', delay: 8000 },
@@ -500,10 +594,17 @@
         var currentStep = 0;
         function advance() {
             if (currentStep >= statusFlow.length) return;
+            /* 每次从 localStorage 取最新数据，避免覆盖后台手动操作 */
+            orders = _loadOrders();
             var order = orders.find(function(o) { return o.id === orderId; });
-            if (!order || order.status === 'cancelled') return;
+            if (!order || order.status === 'cancelled' || order.status === 'delivered') return;
+            /* 若后台已手动推进到更靠后的状态，则停止学生端模拟 */
+            var liveIdx = ['pending','cooking','delivering','delivered'].indexOf(order.status);
+            var simIdx = ['pending','cooking','delivering','delivered'].indexOf(statusFlow[currentStep].status);
+            if (liveIdx >= simIdx) { currentStep++; if (currentStep < statusFlow.length) setTimeout(advance, statusFlow[currentStep].delay - statusFlow[currentStep-1].delay); return; }
             order.status = statusFlow[currentStep].status;
             order.statusText = statusFlow[currentStep].text;
+            _saveOrders(orders);
             renderOrders();
             console.log('[餐饮服务] 订单', orderId, '状态更新:', order.statusText);
             currentStep++;
@@ -582,6 +683,7 @@
                 if (order) {
                     order.status = 'cancelled';
                     order.statusText = '已取消';
+                    _saveOrders(orders);
                     renderOrders();
                     showToast('订单已取消', 'error');
                     console.log('[餐饮服务] 订单取消:', id);
@@ -696,6 +798,7 @@
         renderOrderGrid();
         renderBill();
         renderOrders();
+        renderWindowMenu();
 
         /* 食堂切换（菜单浏览区） */
         document.getElementById('canteenTabs').addEventListener('click', function(e) {
@@ -706,6 +809,7 @@
                 renderRecommend();
                 renderMenu();
                 renderOrderGrid();
+                renderWindowMenu();
                 /* 同步点餐区食堂标签 */
                 document.querySelectorAll('#orderCanteenTabs .tab-btn').forEach(function(t) {
                     t.classList.toggle('active', t.getAttribute('data-canteen') === currentCanteen);
@@ -740,6 +844,7 @@
                 renderRecommend();
                 renderMenu();
                 renderOrderGrid();
+                renderWindowMenu();
                 document.querySelectorAll('#canteenTabs .tab-btn').forEach(function(t) {
                     t.classList.toggle('active', t.getAttribute('data-canteen') === currentCanteen);
                 });

@@ -225,8 +225,39 @@
             btn.addEventListener('click', function() {
                 var panel = btn.getAttribute('data-panel');
                 switchPanel(panel);
+                /* 移动端：点击导航后自动收起侧边栏 */
+                if (window.innerWidth <= 768) closeAdminSidebar();
             });
         });
+        /* 移动端菜单按钮：打开/关闭侧边栏抽屉 */
+        var menuToggle = document.getElementById('menuToggle');
+        if (menuToggle && !menuToggle.dataset.admBound) {
+            menuToggle.dataset.admBound = '1';
+            menuToggle.addEventListener('click', toggleAdminSidebar);
+        }
+    }
+
+    /* 移动端侧边栏抽屉开关 */
+    function toggleAdminSidebar() {
+        var sidebar = document.getElementById('admSidebar');
+        if (!sidebar) return;
+        var isOpen = sidebar.classList.toggle('open');
+        /* 创建/移除遮罩 */
+        var mask = document.querySelector('.adm-sidebar-mask');
+        if (!mask) {
+            mask = document.createElement('div');
+            mask.className = 'adm-sidebar-mask';
+            document.body.appendChild(mask);
+            mask.addEventListener('click', closeAdminSidebar);
+        }
+        if (isOpen) mask.classList.add('active');
+        else mask.classList.remove('active');
+    }
+    function closeAdminSidebar() {
+        var sidebar = document.getElementById('admSidebar');
+        var mask = document.querySelector('.adm-sidebar-mask');
+        if (sidebar) sidebar.classList.remove('open');
+        if (mask) mask.classList.remove('active');
     }
 
     window.switchPanel = function(panel) {
@@ -238,6 +269,7 @@
         if (panelEl) panelEl.classList.add('active');
         if (panel === 'overview') refreshOverview();
         if (panel === 'users') renderUsers();
+        if (panel === 'merchants') renderMerchantLists();
         if (panel === 'sensitive') { renderSensitiveWords(); renderBlockLog(); }
     };
 
@@ -355,7 +387,11 @@
         if (el) el.textContent = new Date().toLocaleString('zh-CN');
     }
 
+    /* 用户审核筛选状态 */
+    var _userFilter = 'pending';
+
     function initUsers() {
+        initUserModals();
         renderUsers();
         document.getElementById('userSearch').addEventListener('input', function() { renderUsers(this.value); });
         document.getElementById('addUserBtn').addEventListener('click', function() { showAddUserModal(); });
@@ -364,80 +400,296 @@
     function renderUsers(search) {
         checkAndAutoUnban();
         var allStudents = getStudents();
+        var pending = allStudents.filter(function(s) { return s.status === 'pending'; });
+        var approved = allStudents.filter(function(s) { return s.status === 'approved'; });
+        var banned = allStudents.filter(function(s) { return s.status === 'banned'; });
+        var rejected = allStudents.filter(function(s) { return s.status === 'rejected'; });
+
+        /* ======== 统计摘要栏 ======== */
+        var statsEl = document.getElementById('userStats');
+        if (statsEl) {
+            statsEl.innerHTML =
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#f59e0b">' + pending.length + '</span><span class="adm-review-stat-label">待审核</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#10b981">' + approved.length + '</span><span class="adm-review-stat-label">已通过</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#ef4444">' + rejected.length + '</span><span class="adm-review-stat-label">已驳回</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#8b5cf6">' + banned.length + '</span><span class="adm-review-stat-label">已封禁</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#6b7280">' + allStudents.length + '</span><span class="adm-review-stat-label">总计</span></div>';
+        }
+
+        /* ======== 筛选按钮栏 ======== */
+        var filterEl = document.getElementById('userFilterBar');
+        if (filterEl) {
+            var filters = [
+                { key: 'pending', label: '待审核', count: pending.length, color: '#f59e0b' },
+                { key: 'approved', label: '已通过', count: approved.length, color: '#10b981' },
+                { key: 'rejected', label: '已驳回', count: rejected.length, color: '#ef4444' },
+                { key: 'banned', label: '已封禁', count: banned.length, color: '#8b5cf6' },
+                { key: 'all', label: '全部', count: allStudents.length, color: '#6b7280' }
+            ];
+            var fhtml = '';
+            filters.forEach(function(f) {
+                var isActive = _userFilter === f.key;
+                fhtml += '<button class="adm-filter-btn ' + (isActive ? 'active' : '') + '" data-filter="' + f.key + '" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (isActive ? f.color : 'var(--bg-secondary)') + ';color:' + (isActive ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px;font-weight:500;transition:all .2s">' + f.label + ' (' + f.count + ')</button>';
+            });
+            filterEl.innerHTML = fhtml;
+            filterEl.querySelectorAll('.adm-filter-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    _userFilter = btn.getAttribute('data-filter');
+                    renderUsers(search);
+                });
+            });
+        }
+
+        /* ======== 数据筛选 ======== */
         var students = allStudents;
-        var tbody = document.getElementById('usersTableBody');
+        if (_userFilter === 'pending') students = pending;
+        else if (_userFilter === 'approved') students = approved;
+        else if (_userFilter === 'rejected') students = rejected;
+        else if (_userFilter === 'banned') students = banned;
+
         if (search) {
             search = search.toLowerCase();
             students = students.filter(function(s) { return s.stuId.toLowerCase().indexOf(search) > -1 || s.name.toLowerCase().indexOf(search) > -1; });
         }
+
+        var wrap = document.getElementById('userListWrap');
         if (students.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-secondary);padding:30px">暂无用户数据</td></tr>';
+            var emptyLabel = _userFilter === 'pending' ? '待审核' : _userFilter === 'approved' ? '已通过' : _userFilter === 'rejected' ? '已驳回' : _userFilter === 'banned' ? '已封禁' : '';
+            wrap.innerHTML = '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + emptyLabel + '用户</p></div>';
             return;
         }
-        tbody.innerHTML = students.map(function(s, i) {
-            var adminAvatars2 = {};
-            if (window.CampusDB) { adminAvatars2 = CampusDB.getAvatars(); } else {
-                try { adminAvatars2 = JSON.parse(localStorage.getItem('campus_avatars') || '{}'); } catch(e2) {}
+
+        var html = '<div class="adm-table-wrap"><table class="adm-table adm-review-table"><thead><tr>' +
+            '<th>学号</th><th>姓名</th><th>院系</th><th>联系电话</th><th>状态</th><th>注册时间</th><th>操作</th>' +
+            '</tr></thead><tbody>';
+
+        students.forEach(function(s) {
+            var statusHtml = '';
+            if (s.status === 'pending') statusHtml = '<span class="adm-status-badge adm-status-pending">待审核</span>';
+            else if (s.status === 'rejected') statusHtml = '<span class="adm-status-badge adm-status-rejected">已驳回</span>';
+            else if (s.status === 'banned') statusHtml = '<span class="adm-status-badge adm-status-banned">已封禁</span>';
+            else statusHtml = '<span class="adm-status-badge adm-status-approved">已通过</span>';
+
+            var actions = '<button class="adm-btn-sm" data-action="detail" data-stuid="' + s.stuId + '" style="background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe"><i class="fas fa-eye"></i> 详情</button> ';
+
+            if (s.status === 'pending') {
+                actions += '<button class="adm-btn-sm" data-action="approve" data-stuid="' + s.stuId + '" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0"><i class="fas fa-check"></i> 通过</button> ';
+                actions += '<button class="adm-btn-sm" data-action="reject" data-stuid="' + s.stuId + '" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca"><i class="fas fa-times"></i> 驳回</button>';
+            } else if (s.status === 'approved') {
+                actions += '<button class="adm-btn-sm" data-action="ban" data-stuid="' + s.stuId + '" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca"><i class="fas fa-ban"></i> 封禁</button>';
+            } else if (s.status === 'banned') {
+                actions += '<button class="adm-btn-sm" data-action="unban" data-stuid="' + s.stuId + '" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0"><i class="fas fa-unlock"></i> 解封</button>';
             }
-            var avHtml2 = '<div style="width:32px;height:32px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#64748b;margin:0 auto">' + s.name.charAt(0) + '</div>';
-            if (adminAvatars2[s.stuId]) {
-                avHtml2 = '<div style="width:32px;height:32px;border-radius:50%;overflow:hidden;margin:0 auto"><img src="' + adminAvatars2[s.stuId] + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML=\'' + s.name.charAt(0) + '\'"></div>';
-            }
-            var statusHtml = '<span class="adm-status-badge adm-status-normal">正常</span>';
-            var banExpiryHtml = '-';
-            if (s.status === 'banned') {
-                statusHtml = '<span class="adm-status-badge adm-status-banned">封禁</span>';
-                if (s.banExpiry === 'permanent') {
-                    banExpiryHtml = '永久';
-                } else if (s.banExpiry) {
-                    banExpiryHtml = formatDate(s.banExpiry);
-                }
-            }
-            var actionBtns = '<button class="adm-btn-sm adm-btn-edit" data-stuid="' + s.stuId + '"><i class="fas fa-edit"></i></button> <button class="adm-btn-sm adm-btn-del" data-stuid="' + s.stuId + '"><i class="fas fa-trash"></i></button>';
-            if (s.status === 'banned') {
-                actionBtns += ' <button class="adm-btn-sm adm-btn-unban" data-stuid="' + s.stuId + '" title="解封" style="color:#059669"><i class="fas fa-unlock"></i></button>';
-            } else {
-                actionBtns += ' <button class="adm-btn-sm adm-btn-ban" data-stuid="' + s.stuId + '" title="封号" style="color:#ef4444"><i class="fas fa-ban"></i></button>';
-            }
-            return '<tr><td>' + avHtml2 + '</td><td>' + s.stuId + '</td><td>' + s.name + '</td><td>' + s.dept + '</td><td>' + statusHtml + '</td><td>' + banExpiryHtml + '</td><td>' + formatDate(s.regTime) + '</td><td>' + actionBtns + '</td></tr>';
-        }).join('');
-        tbody.querySelectorAll('.adm-btn-del').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                if (confirm('确定删除该用户？')) {
-                    var stuId = btn.getAttribute('data-stuid');
-                    var list = getStudents();
-                    var idx = list.findIndex(function(u) { return u.stuId === stuId; });
-                    if (idx !== -1) list.splice(idx, 1);
-                    saveStudents(list);
-                    renderUsers(search);
-                    showToast('用户已删除', 'success');
-                }
-            });
+
+            html += '<tr><td style="font-weight:600">' + s.stuId + '</td><td>' + escHtml(s.name) + '</td><td>' + escHtml(s.dept) + '</td><td>' + escHtml(s.phone || '-') + '</td><td>' + statusHtml + '</td><td style="font-size:12px;color:var(--text-secondary)">' + formatDate(s.regTime) + '</td><td style="white-space:nowrap">' + actions + '</td></tr>';
         });
-        tbody.querySelectorAll('.adm-btn-edit').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var stuId = btn.getAttribute('data-stuid');
-                var list = getStudents();
-                var s = list.find(function(u) { return u.stuId === stuId; });
-                if (s) showEditUserModal(s);
-            });
-        });
-        tbody.querySelectorAll('.adm-btn-unban').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var stuId = btn.getAttribute('data-stuid');
-                if (confirm('确定解封该用户？')) unbanUser(stuId);
-            });
-        });
-        tbody.querySelectorAll('.adm-btn-ban').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var stuId = btn.getAttribute('data-stuid');
+
+        html += '</tbody></table></div>';
+        wrap.innerHTML = html;
+
+        /* 绑定操作按钮（事件委托） */
+        var detailBtns = wrap.querySelectorAll('[data-action="detail"]');
+        var approveBtns = wrap.querySelectorAll('[data-action="approve"]');
+        var rejectBtns = wrap.querySelectorAll('[data-action="reject"]');
+        console.log('[用户审核] 渲染完成，按钮数：详情=' + detailBtns.length + ' 通过=' + approveBtns.length + ' 驳回=' + rejectBtns.length);
+
+        wrap.onclick = function(e) {
+            var btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            var action = btn.getAttribute('data-action');
+            var stuId = btn.getAttribute('data-stuid');
+            console.log('[用户审核] 按钮点击：action=' + action + ' stuId=' + stuId);
+
+            if (action === 'detail') {
+                openUserDetail(stuId);
+            } else if (action === 'approve') {
+                if (!confirm('确定审核通过该用户注册申请？')) return;
+                var result = doUserReview(stuId, 'approved', '');
+                console.log('[用户审核] doUserReview 返回=', result);
+                if (result) { showToast('审核通过', 'success'); _userFilter = 'approved'; renderUsers(search); }
+                else { showToast('操作失败', 'error'); }
+            } else if (action === 'reject') {
+                _currentUserId = stuId;
+                document.getElementById('userRejectReason').value = '';
+                document.getElementById('userRejectOverlay').classList.add('active');
+            } else if (action === 'ban') {
                 var students = getStudents();
                 var s = students.find(function(u) { return u.stuId === stuId; });
                 if (s) {
                     currentBanLogEntry = { source: s.name + '(' + s.stuId + ')', text: '管理员手动封号', words: [], targetStuId: stuId };
                     openBanModal(currentBanLogEntry);
                 }
+            } else if (action === 'unban') {
+                if (confirm('确定解封该用户？')) { unbanUser(stuId); _userFilter = 'approved'; renderUsers(search); }
+            }
+        };
+    }
+
+    /* 当前弹窗中的用户学号 */
+    var _currentUserId = null;
+
+    /* 执行用户审核 */
+    function doUserReview(stuId, status, rejectReason) {
+        try {
+            console.log('[用户审核] doUserReview 开始，stuId=' + stuId + ' status=' + status);
+            var list = getStudents();
+            var found = list.find(function(s) { return s.stuId === stuId; });
+            if (!found) { console.log('[用户审核] 未找到用户', stuId); return false; }
+            console.log('[用户审核] 找到用户，当前status=' + found.status);
+            if (status === 'approved' && found.status !== 'pending' && found.status !== 'rejected') {
+                console.log('[用户审核] 状态不允许通过');
+                return false;
+            }
+            found.status = status;
+            found.reviewTime = new Date().toLocaleString();
+            found.reviewer = 'admin';
+            if (rejectReason) found.rejectReason = rejectReason;
+            if (status === 'approved') found.rejectReason = '';
+            saveStudents(list);
+            console.log('[用户审核] 保存成功，新status=' + found.status);
+            return true;
+        } catch(e) { console.error('[用户审核] doUserReview 异常', e); return false; }
+    }
+
+    /* 打开用户详情弹窗 */
+    function openUserDetail(stuId) {
+        var students = getStudents();
+        var s = students.find(function(u) { return u.stuId === stuId; });
+        if (!s) { showToast('未找到用户信息', 'error'); return; }
+        _currentUserId = stuId;
+        var isPending = s.status === 'pending';
+        var isApproved = s.status === 'approved';
+        var isRejected = s.status === 'rejected';
+        var isBanned = s.status === 'banned';
+
+        var infoHtml =
+            '<div class="mch-detail-section">' +
+                '<div class="mch-detail-section-title"><i class="fas fa-user"></i> 基本信息</div>' +
+                '<div class="mch-detail-grid">' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-id-card"></i> 学号</span><span class="mch-detail-value">' + escHtml(s.stuId) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-user"></i> 姓名</span><span class="mch-detail-value">' + escHtml(s.name) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-building"></i> 院系</span><span class="mch-detail-value">' + escHtml(s.dept) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-phone"></i> 联系电话</span><span class="mch-detail-value">' + escHtml(s.phone || '-') + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-graduation-cap"></i> 年级</span><span class="mch-detail-value">' + escHtml(s.grade || '-') + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-calendar-alt"></i> 注册时间</span><span class="mch-detail-value">' + formatDate(s.regTime) + '</span></div>' +
+                '</div>' +
+            '</div>';
+
+        /* 审核信息区 */
+        var reviewHtml = '';
+        if (s.reviewTime || s.rejectReason || s.banReason) {
+            reviewHtml = '<div class="mch-detail-section">' +
+                '<div class="mch-detail-section-title"><i class="fas fa-gavel"></i> 审核信息</div>' +
+                '<div class="mch-detail-grid">' +
+                    (s.reviewTime ? '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-clock"></i> 审核时间</span><span class="mch-detail-value">' + escHtml(s.reviewTime) + '</span></div>' : '') +
+                    (s.reviewer ? '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-user-shield"></i> 审核人</span><span class="mch-detail-value">' + escHtml(s.reviewer) + '</span></div>' : '') +
+                    (s.rejectReason ? '<div class="mch-detail-item full"><span class="mch-detail-label"><i class="fas fa-comment-slash"></i> 驳回原因</span><span class="mch-detail-value" style="color:#ef4444">' + escHtml(s.rejectReason) + '</span></div>' : '') +
+                    (s.banReason ? '<div class="mch-detail-item full"><span class="mch-detail-label"><i class="fas fa-ban"></i> 封禁原因</span><span class="mch-detail-value" style="color:#ef4444">' + escHtml(s.banReason) + '</span></div>' : '') +
+                    (s.banExpiry ? '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-calendar-times"></i> 封禁到期</span><span class="mch-detail-value" style="color:#ef4444">' + (s.banExpiry === 'permanent' ? '永久' : formatDate(s.banExpiry)) + '</span></div>' : '') +
+                '</div>' +
+            '</div>';
+        }
+
+        document.getElementById('userDetailBody').innerHTML = infoHtml + reviewHtml;
+
+        /* 底部按钮 */
+        var footerHtml = '';
+        if (isPending) {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="userCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-approve" id="userApproveBtn"><i class="fas fa-check"></i> 通过审核</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-reject" id="userRejectBtn"><i class="fas fa-times"></i> 驳回申请</button>';
+        } else if (isBanned) {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="userCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn" id="userUnbanBtn" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,.25)"><i class="fas fa-unlock"></i> 解除封禁</button>';
+        } else if (isRejected) {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="userCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-approve" id="userApproveBtn"><i class="fas fa-check"></i> 重新通过</button>';
+        } else {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="userCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-approve" disabled><i class="fas fa-check-circle"></i> 已通过</button>';
+        }
+        document.getElementById('userDetailFooter').innerHTML = footerHtml;
+
+        document.getElementById('userDetailOverlay').classList.add('active');
+
+        /* 绑定关闭 */
+        var closeBtn = document.getElementById('userCloseBtn');
+        if (closeBtn) closeBtn.addEventListener('click', closeUserDetail);
+
+        /* 绑定通过 */
+        var approveBtn = document.getElementById('userApproveBtn');
+        if (approveBtn && (isPending || isRejected)) {
+            approveBtn.addEventListener('click', function() {
+                if (!confirm('确定审核通过该用户？')) return;
+                var result = doUserReview(_currentUserId, 'approved', '');
+                if (result) { showToast('审核通过', 'success'); closeUserDetail(); _userFilter = 'approved'; renderUsers(); }
+                else { showToast('操作失败', 'error'); }
             });
+        }
+
+        /* 绑定驳回 */
+        var rejectBtn = document.getElementById('userRejectBtn');
+        if (rejectBtn && isPending) {
+            rejectBtn.addEventListener('click', function() {
+                document.getElementById('userRejectReason').value = '';
+                document.getElementById('userRejectOverlay').classList.add('active');
+            });
+        }
+
+        /* 绑定解封 */
+        var unbanBtn = document.getElementById('userUnbanBtn');
+        if (unbanBtn && isBanned) {
+            unbanBtn.addEventListener('click', function() {
+                if (!confirm('确定解封该用户？')) return;
+                unbanUser(_currentUserId);
+                closeUserDetail();
+                _userFilter = 'approved';
+                renderUsers();
+            });
+        }
+    }
+
+    /* 关闭用户详情弹窗 */
+    function closeUserDetail() {
+        document.getElementById('userDetailOverlay').classList.remove('active');
+        _currentUserId = null;
+    }
+
+    /* 初始化用户弹窗事件 */
+    function initUserModals() {
+        /* 详情弹窗关闭 */
+        document.getElementById('userDetailClose').addEventListener('click', closeUserDetail);
+        document.getElementById('userDetailOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeUserDetail();
+        });
+
+        /* 驳回弹窗 */
+        document.getElementById('userRejectClose').addEventListener('click', function() {
+            document.getElementById('userRejectOverlay').classList.remove('active');
+        });
+        document.getElementById('userRejectCancel').addEventListener('click', function() {
+            document.getElementById('userRejectOverlay').classList.remove('active');
+        });
+        document.getElementById('userRejectOverlay').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+        document.getElementById('userRejectConfirm').addEventListener('click', function() {
+            var reason = document.getElementById('userRejectReason').value.trim();
+            if (!reason) reason = '不符合注册要求';
+            document.getElementById('userRejectOverlay').classList.remove('active');
+            var result = doUserReview(_currentUserId, 'rejected', reason);
+            if (result) {
+                showToast('已驳回申请', 'success');
+                closeUserDetail();
+                _userFilter = 'rejected';
+                renderUsers();
+            } else {
+                showToast('操作失败', 'error');
+            }
         });
     }
 
@@ -1494,7 +1746,7 @@
         var students = getStudents();
         var s = students.find(function(u) { return u.stuId === stuId; });
         if (s) {
-            s.status = 'normal';
+            s.status = 'approved';
             s.banExpiry = null;
             s.banReason = '';
             s.banTime = null;
@@ -1509,7 +1761,7 @@
         var s = students.find(function(u) { return u.stuId === stuId; });
         if (s) {
             if (newDuration === 'unban') {
-                s.status = 'normal';
+                s.status = 'approved';
                 s.banExpiry = null;
                 s.banReason = '';
                 s.banTime = null;
@@ -1537,7 +1789,7 @@
             if (s.status === 'banned' && s.banExpiry && s.banExpiry !== 'permanent') {
                 var expiry = new Date(s.banExpiry);
                 if (now >= expiry) {
-                    s.status = 'normal';
+                    s.status = 'approved';
                     s.banExpiry = null;
                     s.banReason = '';
                     s.banTime = null;
@@ -1683,5 +1935,337 @@
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
+    }
+
+    /* ========== 商家审核 ========== */
+    function initMerchants() {
+        initMerchantModals();
+        renderMerchantLists();
+    }
+
+    function getMerchants() {
+        if (window.CampusDB) {
+            try {
+                return CampusDB.getMerchants();
+            } catch(e) {
+                console.error('[商家审核] CampusDB.getMerchants 异常:', e);
+            }
+        }
+        try {
+            var raw = localStorage.getItem('campus_merchants');
+            return raw ? JSON.parse(raw) : [];
+        } catch(e) {
+            return [];
+        }
+    }
+
+    function saveMerchants(list) {
+        if (window.CampusDB) {
+            try { CampusDB.saveMerchants(list); return; } catch(e) { console.error('[商家审核] CampusDB.saveMerchants 异常:', e); }
+        }
+        localStorage.setItem('campus_merchants', JSON.stringify(list));
+    }
+
+    /* 商家审核筛选状态 */
+    var _mchFilter = 'pending';
+
+    function renderMerchantLists() {
+        var merchants = getMerchants();
+        var pending = merchants.filter(function(m) { return m.status === 'pending'; });
+        var approved = merchants.filter(function(m) { return m.status === 'approved'; });
+        var rejected = merchants.filter(function(m) { return m.status === 'rejected'; });
+
+        /* ======== 统计摘要栏 ======== */
+        var statsEl = document.getElementById('merchantStats');
+        if (statsEl) {
+            statsEl.innerHTML =
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#f59e0b">' + pending.length + '</span><span class="adm-review-stat-label">待审核</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#10b981">' + approved.length + '</span><span class="adm-review-stat-label">已通过</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#ef4444">' + rejected.length + '</span><span class="adm-review-stat-label">已驳回</span></div>' +
+                '<div class="adm-review-stat-item"><span class="adm-review-stat-num" style="color:#6b7280">' + merchants.length + '</span><span class="adm-review-stat-label">总计</span></div>';
+        }
+
+        /* ======== 筛选按钮栏 ======== */
+        var filterEl = document.getElementById('merchantFilterBar');
+        if (filterEl) {
+            var filters = [
+                { key: 'pending', label: '待审核', count: pending.length, color: '#3b82f6' },
+                { key: 'approved', label: '已通过', count: approved.length, color: '#10b981' },
+                { key: 'rejected', label: '已驳回', count: rejected.length, color: '#ef4444' },
+                { key: 'all', label: '全部', count: merchants.length, color: '#6b7280' }
+            ];
+            var fhtml = '';
+            filters.forEach(function(f) {
+                var isActive = _mchFilter === f.key;
+                fhtml += '<button class="adm-filter-btn ' + (isActive ? 'active' : '') + '" data-filter="' + f.key + '" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color);background:' + (isActive ? f.color : 'var(--bg-secondary)') + ';color:' + (isActive ? '#fff' : 'var(--text-secondary)') + ';cursor:pointer;font-size:13px;font-weight:500;transition:all .2s">' + f.label + ' (' + f.count + ')</button>';
+            });
+            filterEl.innerHTML = fhtml;
+
+            filterEl.querySelectorAll('.adm-filter-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    _mchFilter = this.getAttribute('data-filter');
+                    renderMerchantLists();
+                });
+            });
+        }
+
+        /* ======== 数据表格 ======== */
+        var data = _mchFilter === 'all' ? merchants : merchants.filter(function(m) { return m.status === _mchFilter; });
+        var wrap = document.getElementById('merchantListWrap');
+
+        if (data.length === 0) {
+            var emptyLabel = _mchFilter === 'pending' ? '待审核' : _mchFilter === 'approved' ? '已通过' : _mchFilter === 'rejected' ? '已驳回' : '';
+            wrap.innerHTML = '<div class="adm-empty-state"><i class="fas fa-inbox"></i><p>暂无' + emptyLabel + '入驻申请</p></div>';
+        } else {
+            var html = '<div class="adm-table-wrap"><table class="adm-table adm-review-table"><thead><tr>' +
+                '<th>店铺名称</th><th>经营类目</th><th>联系人</th><th>联系电话</th><th>状态</th><th>申请时间</th><th>操作</th>' +
+                '</tr></thead><tbody>';
+
+            data.forEach(function(m) {
+                var statusHtml = m.status === 'pending' ? '<span class="adm-status-badge adm-status-pending">待审核</span>' :
+                    m.status === 'approved' ? '<span class="adm-status-badge adm-status-approved">已通过</span>' :
+                    '<span class="adm-status-badge adm-status-rejected">已驳回</span>';
+
+                var actions = '<button class="adm-btn-sm" data-action="detail" data-id="' + m.id + '" style="background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe"><i class="fas fa-eye"></i> 详情</button> ';
+                if (m.status === 'pending') {
+                    actions += '<button class="adm-btn-sm adm-btn-approve" data-action="approve" data-id="' + m.id + '" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0"><i class="fas fa-check"></i> 通过</button> ';
+                    actions += '<button class="adm-btn-sm adm-btn-reject" data-action="reject" data-id="' + m.id + '" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca"><i class="fas fa-times"></i> 驳回</button>';
+                } else if (m.status === 'approved') {
+                    actions += '<span style="font-size:11px;color:#059669"><i class="fas fa-check-circle"></i> ' + escHtml(m.reviewer || '') + ' ' + escHtml(m.reviewTime || '') + '</span>';
+                } else {
+                    actions += '<span style="font-size:11px;color:#ef4444"><i class="fas fa-times-circle"></i> ' + escHtml(m.rejectReason || '已驳回') + '</span>';
+                }
+
+                html += '<tr><td style="font-weight:600">' + escHtml(m.shopName) + '</td><td>' + escHtml(m.category) + '</td><td>' + escHtml(m.contactName) + '</td><td>' + escHtml(m.contactPhone) + '</td><td>' + statusHtml + '</td><td style="font-size:12px;color:var(--text-secondary)">' + escHtml(m.createTime || '-') + '</td><td style="white-space:nowrap">' + actions + '</td></tr>';
+            });
+
+            html += '</tbody></table></div>';
+            wrap.innerHTML = html;
+
+            /* 绑定操作按钮 */
+            wrap.querySelectorAll('[data-action="detail"]').forEach(function(btn) {
+                btn.addEventListener('click', function() { openMerchantDetail(this.getAttribute('data-id')); });
+            });
+            wrap.querySelectorAll('[data-action="approve"]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (!confirm('确定审核通过该商家入驻申请？')) return;
+                    var result = doMerchantReview(this.getAttribute('data-id'), 'approved', 'admin', '');
+                    if (result) { showToast('审核通过', 'success'); renderMerchantLists(); }
+                    else { showToast('操作失败', 'error'); }
+                });
+            });
+            wrap.querySelectorAll('[data-action="reject"]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    _currentMchId = this.getAttribute('data-id');
+                    document.getElementById('mchRejectReason').value = '';
+                    document.getElementById('mchRejectOverlay').classList.add('active');
+                });
+            });
+        }
+
+        /* 更新时间 */
+        var merchantTime = document.getElementById('merchantTime');
+        if (merchantTime) {
+            merchantTime.textContent = '刷新时间：' + new Date().toLocaleString();
+        }
+    }
+
+    /* 当前弹窗中的商家ID（用于审批操作） */
+    var _currentMchId = null;
+
+    /* 打开商家详情弹窗 */
+    function openMerchantDetail(id) {
+        var merchants = getMerchants();
+        var m = merchants.find(function(item) { return item.id === id; });
+        if (!m) { showToast('未找到商家信息', 'error'); return; }
+        _currentMchId = id;
+        var isPending = m.status === 'pending';
+        var isApproved = m.status === 'approved';
+        var isRejected = m.status === 'rejected';
+
+        /* 区块1：店铺基础信息 */
+        var infoHtml =
+            '<div class="mch-detail-section">' +
+                '<div class="mch-detail-section-title"><i class="fas fa-store"></i> 店铺基础信息</div>' +
+                '<div class="mch-detail-grid">' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-store-alt"></i> 店铺名称</span><span class="mch-detail-value">' + escHtml(m.shopName) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-tags"></i> 经营类目</span><span class="mch-detail-value">' + escHtml(m.category) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-map-marker-alt"></i> 所属校区</span><span class="mch-detail-value">' + escHtml(m.campus || '-') + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-user"></i> 联系人</span><span class="mch-detail-value">' + escHtml(m.contactName) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-phone"></i> 联系电话</span><span class="mch-detail-value">' + escHtml(m.contactPhone) + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-location-dot"></i> 营业地址</span><span class="mch-detail-value">' + escHtml(m.address || '-') + '</span></div>' +
+                    '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-calendar-alt"></i> 申请时间</span><span class="mch-detail-value">' + escHtml(m.createTime || '-') + '</span></div>' +
+                    (m.reviewTime ? '<div class="mch-detail-item"><span class="mch-detail-label"><i class="fas fa-gavel"></i> 审核时间</span><span class="mch-detail-value">' + escHtml(m.reviewTime) + '</span></div>' : '') +
+                    (m.rejectReason ? '<div class="mch-detail-item full"><span class="mch-detail-label"><i class="fas fa-comment-slash"></i> 驳回原因</span><span class="mch-detail-value" style="color:#ef4444">' + escHtml(m.rejectReason) + '</span></div>' : '') +
+                '</div>' +
+            '</div>';
+
+        /* 区块2：资质资料区 */
+        var licenseHtml = '';
+        if (m.licensePhoto && m.licensePhoto.indexOf('data:') === 0) {
+            licenseHtml = '<img class="mch-photo-img" src="' + m.licensePhoto + '" alt="营业执照" data-zoom>';
+        } else {
+            licenseHtml = '<div class="mch-photo-placeholder"><i class="fas fa-image"></i> 暂无图片</div>';
+        }
+        var storeHtml = '';
+        if (m.storePhoto && m.storePhoto.indexOf('data:') === 0) {
+            storeHtml = '<img class="mch-photo-img" src="' + m.storePhoto + '" alt="门店照片" data-zoom>';
+        } else {
+            storeHtml = '<div class="mch-photo-placeholder"><i class="fas fa-image"></i> 暂无图片</div>';
+        }
+
+        var photoHtml =
+            '<div class="mch-detail-section">' +
+                '<div class="mch-detail-section-title"><i class="fas fa-file-shield"></i> 资质资料</div>' +
+                '<div class="mch-detail-photos">' +
+                    '<div class="mch-photo-card"><div class="mch-photo-label"><i class="fas fa-id-card"></i> 营业执照</div>' + licenseHtml + '</div>' +
+                    '<div class="mch-photo-card"><div class="mch-photo-label"><i class="fas fa-camera"></i> 门店实拍</div>' + storeHtml + '</div>' +
+                '</div>' +
+            '</div>';
+
+        document.getElementById('mchDetailBody').innerHTML = infoHtml + photoHtml;
+
+        /* 底部三按钮：关闭 + 通过 + 驳回 */
+        var footerHtml = '';
+        if (isPending) {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="mchCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-approve" id="mchApproveBtn"><i class="fas fa-check"></i> 通过审核</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-reject" id="mchRejectBtn"><i class="fas fa-times"></i> 驳回申请</button>';
+        } else if (isApproved) {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="mchCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-approve" disabled><i class="fas fa-check-circle"></i> 已通过</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-reject" disabled><i class="fas fa-ban"></i> 已处理</button>';
+        } else {
+            footerHtml =
+                '<button class="mch-detail-btn mch-detail-btn-close" id="mchCloseBtn"><i class="fas fa-xmark"></i> 关闭</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-approve" disabled><i class="fas fa-ban"></i> 已处理</button>' +
+                '<button class="mch-detail-btn mch-detail-btn-reject" disabled><i class="fas fa-times-circle"></i> 已驳回</button>';
+        }
+        document.getElementById('mchDetailFooter').innerHTML = footerHtml;
+
+        /* 显示弹窗 */
+        document.getElementById('mchDetailOverlay').classList.add('active');
+
+        /* 绑定图片放大 */
+        document.querySelectorAll('#mchDetailBody [data-zoom]').forEach(function(img) {
+            img.addEventListener('click', function() {
+                document.getElementById('mchLightboxImg').src = this.src;
+                document.getElementById('mchLightbox').classList.add('active');
+            });
+        });
+
+        /* 绑定关闭按钮 */
+        var closeBtn = document.getElementById('mchCloseBtn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeMerchantDetail);
+        }
+
+        /* 绑定通过按钮 */
+        var approveBtn = document.getElementById('mchApproveBtn');
+        if (approveBtn && isPending) {
+            approveBtn.addEventListener('click', function() {
+                if (!confirm('确定审核通过该商家入驻申请？')) return;
+                var result = doMerchantReview(_currentMchId, 'approved', 'admin', '');
+                if (result) {
+                    showToast('审核通过', 'success');
+                    closeMerchantDetail();
+                    _mchFilter = 'approved';
+                    renderMerchantLists();
+                } else {
+                    showToast('操作失败，可能已被审核', 'error');
+                }
+            });
+        }
+
+        /* 绑定驳回按钮 */
+        var rejectBtn = document.getElementById('mchRejectBtn');
+        if (rejectBtn && isPending) {
+            rejectBtn.addEventListener('click', function() {
+                document.getElementById('mchRejectReason').value = '';
+                document.getElementById('mchRejectOverlay').classList.add('active');
+            });
+        }
+    }
+
+    /* 关闭商家详情弹窗 */
+    function closeMerchantDetail() {
+        document.getElementById('mchDetailOverlay').classList.remove('active');
+        _currentMchId = null;
+    }
+
+    /* 执行审核操作 */
+    function doMerchantReview(id, status, reviewer, rejectReason) {
+        if (window.CampusDB) {
+            return CampusDB.reviewMerchant(id, status, reviewer, rejectReason);
+        }
+        try {
+            var list = JSON.parse(localStorage.getItem('campus_merchants') || '[]');
+            var found = list.find(function(m) { return m.id === id; });
+            if (!found || found.status !== 'pending') return false;
+            found.status = status;
+            found.reviewer = reviewer;
+            found.reviewTime = new Date().toLocaleString();
+            found.rejectReason = rejectReason || '';
+            localStorage.setItem('campus_merchants', JSON.stringify(list));
+            return true;
+        } catch(e) { return false; }
+    }
+
+    /* 初始化弹窗事件（仅执行一次） */
+    function initMerchantModals() {
+        /* 详情弹窗关闭 */
+        document.getElementById('mchDetailClose').addEventListener('click', closeMerchantDetail);
+        document.getElementById('mchDetailOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeMerchantDetail();
+        });
+
+        /* 图片放大关闭 */
+        document.getElementById('mchLightboxClose').addEventListener('click', function() {
+            document.getElementById('mchLightbox').classList.remove('active');
+        });
+        document.getElementById('mchLightbox').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        /* 驳回弹窗 */
+        document.getElementById('mchRejectClose').addEventListener('click', function() {
+            document.getElementById('mchRejectOverlay').classList.remove('active');
+        });
+        document.getElementById('mchRejectCancel').addEventListener('click', function() {
+            document.getElementById('mchRejectOverlay').classList.remove('active');
+        });
+        document.getElementById('mchRejectOverlay').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+        document.getElementById('mchRejectConfirm').addEventListener('click', function() {
+            var reason = document.getElementById('mchRejectReason').value.trim();
+            if (!reason) reason = '资质不符合要求';
+            document.getElementById('mchRejectOverlay').classList.remove('active');
+            var result = doMerchantReview(_currentMchId, 'rejected', 'admin', reason);
+            if (result) {
+                showToast('已驳回申请', 'success');
+                closeMerchantDetail();
+                _mchFilter = 'rejected';
+                renderMerchantLists();
+            } else {
+                showToast('操作失败，可能已被审核', 'error');
+            }
+        });
+
+        /* ESC 关闭弹窗 */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('mchLightbox').classList.remove('active');
+                document.getElementById('mchRejectOverlay').classList.remove('active');
+                closeMerchantDetail();
+            }
+        });
+    }
+
+    function escHtml(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 })();

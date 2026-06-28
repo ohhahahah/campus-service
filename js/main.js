@@ -277,6 +277,10 @@ function initNavAuth() {
     var navMenu = document.getElementById('navMenu');
     if (!navRight) return;
 
+    /* 移除已存在的商家入驻按钮（如有） */
+    var existingMerchantBtn = document.getElementById('navMerchantBtn');
+    if (existingMerchantBtn) existingMerchantBtn.remove();
+
     if (user) {
         var loginBtn = navRight.querySelector('.login-btn');
         if (loginBtn) loginBtn.remove();
@@ -285,9 +289,9 @@ function initNavAuth() {
         userDiv.className = 'nav-user';
         userDiv.id = 'navUser';
 
-        var roleIcon = user.role === 'admin' ? 'fa-user-shield' : 'fa-user-graduate';
+        var roleIcon = user.role === 'admin' ? 'fa-user-shield' : user.role === 'merchant' ? 'fa-store' : 'fa-user-graduate';
         var roleLabel = user.role === 'admin' ? '管理员' : user.name;
-        var roleColor = user.role === 'admin' ? '#8b5cf6' : '#3b82f6';
+        var roleColor = user.role === 'admin' ? '#8b5cf6' : user.role === 'merchant' ? '#f59e0b' : '#3b82f6';
 
         var navAvatarHtml = '<div class="nav-user-avatar" style="background:' + roleColor + '"><i class="fas ' + roleIcon + '"></i></div>';
         if (user.role === 'student' && user.stuId) {
@@ -303,7 +307,14 @@ function initNavAuth() {
             }
         }
 
-        userDiv.innerHTML = navAvatarHtml + '<span class="nav-user-name">' + roleLabel + '</span><div class="nav-user-dropdown" id="userDropdown"><div class="nav-user-info"><i class="fas ' + roleIcon + '"></i><div><strong>' + (user.name || '') + '</strong><span>' + (user.role === 'admin' ? '系统管理员' : user.stuId + ' · ' + (user.dept || '')) + '</span></div></div>' + (user.role === 'admin' ? '<a href="admin.html" class="nav-dropdown-item"><i class="fas fa-cog"></i> 后台管理</a>' : '<a href="profile.html" class="nav-dropdown-item"><i class="fas fa-user"></i> 个人中心</a><a href="favorites.html" class="nav-dropdown-item"><i class="fas fa-heart"></i> 我的收藏</a><a href="javascript:void(0)" class="nav-dropdown-item" id="navMyChat"><i class="fas fa-comment-dots"></i> 我的私信</a>') + '<a href="javascript:void(0)" class="nav-dropdown-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></div>';
+        var roleDesc = user.role === 'admin' ? '系统管理员' : user.stuId + ' · ' + (user.dept || '');
+        var dropdownLinks = '';
+        if (user.role === 'admin') {
+            dropdownLinks = '<a href="admin.html" class="nav-dropdown-item"><i class="fas fa-cog"></i> 后台管理</a>';
+        } else {
+            dropdownLinks = '<a href="profile.html" class="nav-dropdown-item"><i class="fas fa-user"></i> 个人中心</a><a href="favorites.html" class="nav-dropdown-item"><i class="fas fa-heart"></i> 我的收藏</a><a href="javascript:void(0)" class="nav-dropdown-item" id="navMyChat"><i class="fas fa-comment-dots"></i> 我的私信</a>';
+        }
+        userDiv.innerHTML = navAvatarHtml + '<span class="nav-user-name">' + roleLabel + '</span><div class="nav-user-dropdown" id="userDropdown"><div class="nav-user-info"><i class="fas ' + roleIcon + '"></i><div><strong>' + (user.name || '') + '</strong><span>' + roleDesc + '</span></div></div>' + dropdownLinks + '<a href="javascript:void(0)" class="nav-dropdown-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></div>';
 
         navRight.insertBefore(userDiv, navRight.firstChild);
 
@@ -625,11 +636,12 @@ function _getAnnouncementsWithReadStatus(stuId) {
     } catch(e) { return []; }
 }
 
-/* 更新导航栏公告红点 */
+/* 更新导航栏公告红点 + 左下角浮动铃铛闪烁状态 */
 function _updateAnnouncementBadge() {
     var user = _getAnnUser();
     if (!user || user.role !== 'student') return;
     var count = _getUnreadAnnouncementCount(user.stuId);
+    /* 旧版导航栏铃铛（兼容） */
     var bellBtn = document.getElementById('navAnnBell');
     if (bellBtn) {
         var existingDot = bellBtn.querySelector('.ann-badge');
@@ -641,34 +653,134 @@ function _updateAnnouncementBadge() {
             bellBtn.appendChild(dot);
         }
     }
+    /* 左下角浮动铃铛 */
+    var floatBell = document.getElementById('annFloatingBell');
+    if (floatBell) {
+        /* 更新未读数字 */
+        var badge = floatBell.querySelector('.ann-float-badge');
+        if (count > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'ann-float-badge';
+                floatBell.appendChild(badge);
+            }
+            badge.textContent = count > 99 ? '99+' : count;
+            floatBell.classList.add('ann-float-blink');
+        } else {
+            if (badge) badge.remove();
+            floatBell.classList.remove('ann-float-blink');
+        }
+    }
     /* 派发事件，通知 Vue NavBar 同步 */
     window.dispatchEvent(new CustomEvent('announcement-badge-update', { detail: { count: count } }));
 }
 
-/* 在导航栏添加公告铃铛按钮 */
+/* 在页面左下角添加可拖拽的公告铃铛按钮（替代旧版导航栏铃铛） */
 function _initAnnouncementBell() {
     var user = _getAnnUser();
     if (!user || user.role !== 'student') return;
-    var navRight = document.querySelector('.nav-right');
-    if (!navRight) return;
     /* 避免重复添加 */
-    if (document.getElementById('navAnnBell')) return;
-    var bellBtn = document.createElement('button');
-    bellBtn.className = 'nav-icon-btn';
-    bellBtn.id = 'navAnnBell';
-    bellBtn.title = '公告通知';
-    bellBtn.innerHTML = '<i class="fas fa-bell"></i>';
-    /* 插入到用户头像之前 */
-    var userDiv = navRight.querySelector('.nav-user');
-    if (userDiv) {
-        navRight.insertBefore(bellBtn, userDiv);
-    } else {
-        navRight.insertBefore(bellBtn, navRight.firstChild);
+    if (document.getElementById('annFloatingBell')) {
+        _updateAnnouncementBadge();
+        return;
     }
-    _updateAnnouncementBadge();
-    bellBtn.addEventListener('click', function() {
+    var bell = document.createElement('div');
+    bell.className = 'ann-float-bell';
+    bell.id = 'annFloatingBell';
+    bell.title = '公告通知';
+    bell.innerHTML = '<i class="fas fa-bell"></i>';
+    document.body.appendChild(bell);
+
+    /* 初始位置：左下角 */
+    var pos = { x: 24, y: window.innerHeight - 100 };
+    var drag = { active: false, moved: false, sx: 0, sy: 0, ox: 0, oy: 0 };
+    function applyPos() {
+        bell.style.left = pos.x + 'px';
+        bell.style.top = pos.y + 'px';
+    }
+    function clampPos() {
+        var nx = Math.max(8, Math.min(pos.x, window.innerWidth - 64));
+        var ny = Math.max(8, Math.min(pos.y, window.innerHeight - 64));
+        pos.x = nx; pos.y = ny;
+        applyPos();
+    }
+    applyPos();
+    window.addEventListener('resize', clampPos);
+
+    /* 拖拽 - 鼠标 */
+    bell.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        drag.active = true; drag.moved = false;
+        drag.sx = e.clientX; drag.sy = e.clientY;
+        drag.ox = e.clientX - pos.x; drag.oy = e.clientY - pos.y;
+        bell.classList.remove('ann-float-blink');
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+    function onMove(e) {
+        if (!drag.active) return;
+        var dx = Math.abs(e.clientX - drag.sx);
+        var dy = Math.abs(e.clientY - drag.sy);
+        if (dx > 3 || dy > 3) drag.moved = true;
+        pos.x = e.clientX - drag.ox;
+        pos.y = e.clientY - drag.oy;
+        pos.x = Math.max(8, Math.min(pos.x, window.innerWidth - 64));
+        pos.y = Math.max(8, Math.min(pos.y, window.innerHeight - 64));
+        applyPos();
+    }
+    function onUp() {
+        drag.active = false;
+        /* 拖拽过则不触发点击，恢复闪烁状态 */
+        if (drag.moved) {
+            var user2 = _getAnnUser();
+            if (user2 && _getUnreadAnnouncementCount(user2.stuId) > 0) {
+                bell.classList.add('ann-float-blink');
+            }
+        }
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    }
+
+    /* 拖拽 - 触摸 */
+    bell.addEventListener('touchstart', function(e) {
+        var t = e.touches[0];
+        drag.active = true; drag.moved = false;
+        drag.sx = t.clientX; drag.sy = t.clientY;
+        drag.ox = t.clientX - pos.x; drag.oy = t.clientY - pos.y;
+        bell.classList.remove('ann-float-blink');
+    }, { passive: true });
+    bell.addEventListener('touchmove', function(e) {
+        if (!drag.active) return;
+        e.preventDefault();
+        var t = e.touches[0];
+        var dx = Math.abs(t.clientX - drag.sx);
+        var dy = Math.abs(t.clientY - drag.sy);
+        if (dx > 3 || dy > 3) drag.moved = true;
+        pos.x = t.clientX - drag.ox;
+        pos.y = t.clientY - drag.oy;
+        pos.x = Math.max(8, Math.min(pos.x, window.innerWidth - 64));
+        pos.y = Math.max(8, Math.min(pos.y, window.innerHeight - 64));
+        applyPos();
+    }, { passive: false });
+    bell.addEventListener('touchend', function() {
+        drag.active = false;
+        if (drag.moved) {
+            var user2 = _getAnnUser();
+            if (user2 && _getUnreadAnnouncementCount(user2.stuId) > 0) {
+                bell.classList.add('ann-float-blink');
+            }
+        } else {
+            _openAnnouncementList();
+        }
+    });
+
+    /* 点击打开公告列表（拖拽过则不触发） */
+    bell.addEventListener('click', function() {
+        if (drag.moved) return;
         _openAnnouncementList();
     });
+
+    _updateAnnouncementBadge();
 }
 
 /* 强制阅读弹窗：逐条弹出未读公告 */
@@ -817,19 +929,8 @@ function _closeAnnouncementDetail() {
 
 /* 初始化公告系统 */
 function initAnnouncementSystem() {
-    /* 动态创建弹窗 DOM（确保所有页面都可用） */
-    if (!document.getElementById('annForceOverlay')) {
-        var forceHtml = '<div class="ann-overlay ann-force-overlay" id="annForceOverlay">' +
-            '<div class="ann-modal ann-force-modal">' +
-                '<div class="ann-modal-header"><h3 class="ann-force-title"></h3></div>' +
-                '<div class="ann-force-meta"></div>' +
-                '<div class="ann-force-body"></div>' +
-                '<div class="ann-modal-footer ann-force-footer">' +
-                    '<button class="ann-btn ann-btn-secondary" id="annForceCloseBtn"><i class="fas fa-times"></i> 关闭</button>' +
-                    '<button class="ann-btn ann-btn-primary" id="annForceConfirmBtn"><i class="fas fa-check-circle"></i> 我知道了</button>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
+    /* 动态创建公告面板 DOM（列表 + 详情，已彻底删除强制弹窗组件） */
+    if (!document.getElementById('annListOverlay')) {
         var listHtml = '<div class="ann-overlay ann-list-overlay" id="annListOverlay">' +
             '<div class="ann-modal ann-list-modal">' +
                 '<div class="ann-modal-header">' +
@@ -850,36 +951,20 @@ function initAnnouncementSystem() {
             '</div>' +
         '</div>';
         var wrapper = document.createElement('div');
-        wrapper.innerHTML = forceHtml + listHtml + detailHtml;
+        wrapper.innerHTML = listHtml + detailHtml;
         while (wrapper.firstChild) {
             document.body.appendChild(wrapper.firstChild);
         }
     }
 
     _initAnnouncementBell();
-    /* 登录后自动弹未读公告（仅首页触发） */
-    var isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
-    if (isIndex) {
-        var user = _getAnnUser();
-        if (user && user.role === 'student') {
-            var sessionKey = 'campus_ann_shown_' + user.stuId;
-            var lastShown = sessionStorage.getItem(sessionKey);
-            if (!lastShown) {
-                sessionStorage.setItem(sessionKey, '1');
-                setTimeout(function() { _startUnreadAnnouncementFlow(); }, 800);
-            }
-        }
-    }
-    /* 绑定弹窗按钮事件 */
-    var forceConfirmBtn = document.getElementById('annForceConfirmBtn');
-    if (forceConfirmBtn) forceConfirmBtn.addEventListener('click', _onForceReadConfirm);
-    var forceCloseBtn = document.getElementById('annForceCloseBtn');
-    if (forceCloseBtn) forceCloseBtn.addEventListener('click', _onForceReadConfirm);
+    /* 已彻底删除"打开网页强制弹出公告"逻辑：改为左下角浮动铃铛闪烁+未读红点提醒 */
+    /* 绑定公告面板按钮事件 */
     var listCloseBtn = document.getElementById('annListCloseBtn');
     if (listCloseBtn) listCloseBtn.addEventListener('click', _closeAnnouncementList);
     var detailCloseBtn = document.getElementById('annDetailCloseBtn');
     if (detailCloseBtn) detailCloseBtn.addEventListener('click', _closeAnnouncementDetail);
-    /* 遮罩点击关闭（列表和详情弹窗可关闭，强制阅读不可关闭） */
+    /* 遮罩点击关闭（列表和详情面板可关闭） */
     var listOverlay = document.getElementById('annListOverlay');
     if (listOverlay) listOverlay.addEventListener('click', function(e) { if (e.target === listOverlay) _closeAnnouncementList(); });
     var detailOverlay = document.getElementById('annDetailOverlay');

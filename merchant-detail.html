@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家入驻详情 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background: var(--bg-secondary, #f1f5f9); min-height: 100vh; }
+        .md-page { max-width: 800px; margin: 0 auto; padding: 90px 20px 40px; }
+        .md-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary, #64748b); font-size: 14px; text-decoration: none; margin-bottom: 20px; padding: 8px 16px; border-radius: 8px; transition: all .2s; }
+        .md-back:hover { background: rgba(59,130,246,.08); color: #3b82f6; }
+        .md-card { background: var(--bg-card, #fff); border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+        .md-card-header { display: flex; align-items: center; gap: 16px; padding: 22px 28px; border-bottom: 1px solid var(--border-color, #e2e8f0); }
+        .md-avatar { width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #92400e, #f59e0b); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; flex-shrink: 0; }
+        .md-title { flex: 1; }
+        .md-title h2 { font-size: 20px; font-weight: 700; color: var(--text-primary, #0f172a); margin: 0 0 3px; }
+        .md-title p { font-size: 13px; color: var(--text-secondary, #64748b); margin: 0; }
+        .md-badge { font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
+        .md-badge-pending { background: #fef3c7; color: #92400e; }
+        .md-badge-approved { background: #d1fae5; color: #065f46; }
+        .md-badge-rejected { background: #fee2e2; color: #991b1b; }
+        .md-section { padding: 22px 28px; border-bottom: 1px solid var(--border-color, #e2e8f0); }
+        .md-section:last-of-type { border-bottom: none; }
+        .md-section-title { font-size: 14px; font-weight: 700; color: var(--text-primary, #0f172a); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: .5px; }
+        .md-section-title i { color: #3b82f6; font-size: 13px; }
+        .md-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .md-info-item { display: flex; flex-direction: column; gap: 3px; }
+        .md-info-label { font-size: 12px; color: var(--text-secondary, #64748b); display: flex; align-items: center; gap: 4px; }
+        .md-info-label i { width: 13px; text-align: center; font-size: 10px; color: #94a3b8; }
+        .md-info-value { font-size: 14px; font-weight: 600; color: var(--text-primary, #0f172a); word-break: break-all; }
+        .md-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .md-photo-card { border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; overflow: hidden; cursor: pointer; transition: all .2s; }
+        .md-photo-card:hover { border-color: #3b82f6; box-shadow: 0 4px 12px rgba(59,130,246,.1); }
+        .md-photo-label { font-size: 12px; font-weight: 600; color: var(--text-secondary, #64748b); padding: 8px 12px; background: var(--bg-secondary, #f8fafc); display: flex; align-items: center; gap: 5px; }
+        .md-photo-label i { color: #3b82f6; }
+        .md-photo-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: #f1f5f9; }
+        .md-photo-placeholder { width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; background: #f8fafc; color: var(--text-secondary, #64748b); font-size: 13px; }
+        .md-actions { padding: 22px 28px; display: flex; gap: 12px; }
+        .md-btn { flex: 1; padding: 13px 0; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all .2s; }
+        .md-btn-approve { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
+        .md-btn-approve:hover:not(:disabled) { box-shadow: 0 4px 16px rgba(5,150,105,.3); transform: translateY(-1px); }
+        .md-btn-reject { background: linear-gradient(135deg, #dc2626, #ef4444); color: #fff; }
+        .md-btn-reject:hover:not(:disabled) { box-shadow: 0 4px 16px rgba(220,38,38,.3); transform: translateY(-1px); }
+        .md-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .md-status-bar { padding: 14px 28px; font-size: 13px; display: flex; align-items: center; gap: 7px; }
+        .md-status-bar-approved { background: #ecfdf5; color: #065f46; }
+        .md-status-bar-rejected { background: #fef2f2; color: #991b1b; }
+        /* 图片放大预览 */
+        .md-lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.85); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
+        .md-lightbox.active { display: flex; }
+        .md-lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+        .md-lightbox-close { position: fixed; top: 20px; right: 24px; color: #fff; font-size: 24px; cursor: pointer; z-index: 10000; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,.1); transition: all .2s; }
+        .md-lightbox-close:hover { background: rgba(255,255,255,.25); }
+        .md-empty { text-align: center; padding: 80px 20px; color: var(--text-secondary, #64748b); }
+        .md-empty i { font-size: 48px; color: #d1d5db; margin-bottom: 16px; }
+        /* 驳回弹窗 */
+        .md-reject-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.5); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .md-reject-overlay.active { display: flex; }
+        .md-reject-modal { background: #fff; border-radius: 8px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.2); overflow: hidden; }
+        .md-reject-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border-color, #e2e8f0); }
+        .md-reject-header h3 { font-size: 15px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin: 0; }
+        .md-reject-header h3 i { color: #ef4444; }
+        .md-reject-close { width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--bg-secondary, #f1f5f9); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; font-size: 12px; }
+        .md-reject-close:hover { background: #fee2e2; color: #ef4444; }
+        .md-reject-body { padding: 18px; }
+        .md-reject-textarea { width: 100%; min-height: 100px; padding: 10px 12px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--text-primary); background: var(--bg-secondary, #f8fafc); resize: vertical; box-sizing: border-box; line-height: 1.5; }
+        .md-reject-textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+        .md-reject-footer { display: flex; gap: 10px; padding: 0 18px 18px; justify-content: flex-end; }
+        .md-reject-btn { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; display: inline-flex; align-items: center; gap: 5px; }
+        .md-reject-cancel { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color, #e2e8f0); }
+        .md-reject-cancel:hover { border-color: var(--text-secondary); }
+        .md-reject-confirm { background: linear-gradient(135deg, #dc2626, #ef4444); color: #fff; box-shadow: 0 2px 8px rgba(220,38,38,.2); }
+        .md-reject-confirm:hover { box-shadow: 0 4px 12px rgba(220,38,38,.3); transform: translateY(-1px); }
+        @media (max-width: 600px) {
+            .md-info-grid { grid-template-columns: 1fr; }
+            .md-photos { grid-template-columns: 1fr; }
+            .md-card-header { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-admin" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="md-page" id="mdPage">
+        <a href="admin.html" class="md-back"><i class="fas fa-arrow-left"></i> 返回管理后台</a>
+        <div id="mdContent"></div>
+    </div>
+
+    <!-- 图片放大预览 -->
+    <div class="md-lightbox" id="mdLightbox">
+        <div class="md-lightbox-close" id="mdLightboxClose"><i class="fas fa-times"></i></div>
+        <img id="mdLightboxImg" src="" alt="">
+    </div>
+
+    <!-- 驳回弹窗 -->
+    <div class="md-reject-overlay" id="mdRejectOverlay">
+        <div class="md-reject-modal">
+            <div class="md-reject-header">
+                <h3><i class="fas fa-gavel"></i> 驳回入驻申请</h3>
+                <button class="md-reject-close" id="mdRejectClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="md-reject-body">
+                <textarea class="md-reject-textarea" id="mdRejectReason" placeholder="请输入驳回原因（如不填写将使用默认原因）"></textarea>
+            </div>
+            <div class="md-reject-footer">
+                <button class="md-reject-btn md-reject-cancel" id="mdRejectCancel">取消</button>
+                <button class="md-reject-btn md-reject-confirm" id="mdRejectConfirm"><i class="fas fa-check"></i> 确认驳回</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    (function() {
+        /* 权限检查 */
+        var user = null;
+        if (window.CampusDB) user = CampusDB.getCurrentUser();
+        else { try { user = JSON.parse(localStorage.getItem('campus_current_user') || 'null'); } catch(e) {} }
+        if (!user || user.role !== 'admin') { window.location.href = 'login.html?type=admin'; return; }
+
+        /* 获取商家ID */
+        var params = new URLSearchParams(window.location.search);
+        var id = params.get('id');
+        if (!id) { showEmpty('缺少商家ID参数'); return; }
+
+        /* 读取商家数据 */
+        var merchant = null;
+        if (window.CampusDB) merchant = CampusDB.getMerchantById(id);
+        else {
+            try {
+                var list = JSON.parse(localStorage.getItem('campus_merchants') || '[]');
+                merchant = list.find(function(m) { return m.id === id; }) || null;
+            } catch(e) {}
+        }
+        if (!merchant) { showEmpty('未找到该商家信息'); return; }
+
+        renderDetail(merchant);
+        initLightbox();
+        initRejectDialog();
+
+        function escHtml(s) {
+            if (!s) return '';
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function showEmpty(msg) {
+            document.getElementById('mdContent').innerHTML = '<div class="md-empty"><i class="fas fa-exclamation-circle"></i><p>' + escHtml(msg) + '</p></div>';
+        }
+
+        function renderDetail(m) {
+            var isPending = m.status === 'pending';
+            var isApproved = m.status === 'approved';
+            var isRejected = m.status === 'rejected';
+
+            var badgeClass = 'md-badge-' + m.status;
+            var badgeIcon = isPending ? 'fa-clock' : (isApproved ? 'fa-check-circle' : 'fa-times-circle');
+            var badgeText = isPending ? '待审核' : (isApproved ? '已通过' : '已驳回');
+
+            var licenseHtml = '';
+            if (m.licensePhoto && m.licensePhoto.indexOf('data:') === 0) {
+                licenseHtml = '<img class="md-photo-img" src="' + m.licensePhoto + '" alt="营业执照" onclick="openLightbox(this.src)">';
+            } else {
+                licenseHtml = '<div class="md-photo-placeholder"><i class="fas fa-image"></i> 暂无图片</div>';
+            }
+
+            var storeHtml = '';
+            if (m.storePhoto && m.storePhoto.indexOf('data:') === 0) {
+                storeHtml = '<img class="md-photo-img" src="' + m.storePhoto + '" alt="门店照片" onclick="openLightbox(this.src)">';
+            } else {
+                storeHtml = '<div class="md-photo-placeholder"><i class="fas fa-image"></i> 暂无图片</div>';
+            }
+
+            var statusBar = '';
+            if (isApproved) {
+                statusBar = '<div class="md-status-bar md-status-bar-approved"><i class="fas fa-check-circle"></i> 该申请已审核通过，商家可正常登录。审核时间：' + escHtml(m.reviewTime || '-') + '</div>';
+            } else if (isRejected) {
+                statusBar = '<div class="md-status-bar md-status-bar-rejected"><i class="fas fa-times-circle"></i> 该申请已驳回。驳回原因：' + escHtml(m.rejectReason || '无') + ' &nbsp;|&nbsp; 审核时间：' + escHtml(m.reviewTime || '-') + '</div>';
+            }
+
+            /* 按钮文案根据状态变化 */
+            var approveText = isPending ? '审核通过' : '已审核';
+            var rejectText = isPending ? '驳回申请' : (isApproved ? '已通过' : '已驳回');
+
+            var html =
+                '<div class="md-card">' +
+                    '<div class="md-card-header">' +
+                        '<div class="md-avatar"><i class="fas fa-store"></i></div>' +
+                        '<div class="md-title"><h2>' + escHtml(m.shopName) + '</h2><p>' + escHtml(m.category) + '</p></div>' +
+                        '<span class="md-badge ' + badgeClass + '"><i class="fas ' + badgeIcon + '"></i> ' + badgeText + '</span>' +
+                    '</div>' +
+
+                    /* 第一块：基本信息 */
+                    '<div class="md-section">' +
+                        '<div class="md-section-title"><i class="fas fa-info-circle"></i> 基本信息</div>' +
+                        '<div class="md-info-grid">' +
+                            '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-tags"></i> 经营类目</span><span class="md-info-value">' + escHtml(m.category) + '</span></div>' +
+                            '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-user"></i> 联系人</span><span class="md-info-value">' + escHtml(m.contactName) + '</span></div>' +
+                            '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-phone"></i> 联系电话</span><span class="md-info-value">' + escHtml(m.contactPhone) + '</span></div>' +
+                            '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-user-circle"></i> 登录账号</span><span class="md-info-value">' + escHtml(m.account) + '</span></div>' +
+                            '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-calendar-alt"></i> 申请时间</span><span class="md-info-value">' + escHtml(m.createTime || '-') + '</span></div>' +
+                            (m.reviewTime ? '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-gavel"></i> 审核时间</span><span class="md-info-value">' + escHtml(m.reviewTime) + '</span></div>' : '') +
+                            (m.reviewer ? '<div class="md-info-item"><span class="md-info-label"><i class="fas fa-user-shield"></i> 审核人</span><span class="md-info-value">' + escHtml(m.reviewer) + '</span></div>' : '') +
+                            (m.rejectReason ? '<div class="md-info-item" style="grid-column:span 2"><span class="md-info-label"><i class="fas fa-comment-slash"></i> 驳回原因</span><span class="md-info-value" style="color:#dc2626">' + escHtml(m.rejectReason) + '</span></div>' : '') +
+                        '</div>' +
+                    '</div>' +
+
+                    /* 第二块：资质图片 */
+                    '<div class="md-section">' +
+                        '<div class="md-section-title"><i class="fas fa-images"></i> 资质图片</div>' +
+                        '<div class="md-photos">' +
+                            '<div class="md-photo-card"><div class="md-photo-label"><i class="fas fa-id-card"></i> 营业执照</div>' + licenseHtml + '</div>' +
+                            '<div class="md-photo-card"><div class="md-photo-label"><i class="fas fa-camera"></i> 门店实拍</div>' + storeHtml + '</div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    statusBar +
+
+                    /* 底部操作按钮 */
+                    '<div class="md-actions">' +
+                        '<button class="md-btn md-btn-approve" id="mdApprove"' + (!isPending ? ' disabled' : '') + '><i class="fas fa-check"></i> ' + approveText + '</button>' +
+                        '<button class="md-btn md-btn-reject" id="mdReject"' + (!isPending ? ' disabled' : '') + '><i class="fas fa-times"></i> ' + rejectText + '</button>' +
+                    '</div>' +
+                '</div>';
+
+            document.getElementById('mdContent').innerHTML = html;
+
+            /* 绑定审核通过按钮 */
+            var approveBtn = document.getElementById('mdApprove');
+            if (approveBtn && isPending) {
+                approveBtn.addEventListener('click', function() {
+                    if (!confirm('确定审核通过该商家入驻申请？')) return;
+                    var result = doReview(id, 'approved', 'admin', '');
+                    if (result) { showToast('审核通过', 'success'); setTimeout(function() { location.reload(); }, 800); }
+                    else { showToast('操作失败，可能已被审核', 'error'); }
+                });
+            }
+
+            /* 绑定驳回按钮 - 打开自定义弹窗 */
+            var rejectBtn = document.getElementById('mdReject');
+            if (rejectBtn && isPending) {
+                rejectBtn.addEventListener('click', function() {
+                    document.getElementById('mdRejectReason').value = '';
+                    document.getElementById('mdRejectOverlay').classList.add('active');
+                });
+            }
+        }
+
+        /* 驳回弹窗逻辑 */
+        function initRejectDialog() {
+            var overlay = document.getElementById('mdRejectOverlay');
+            var closeBtn = document.getElementById('mdRejectClose');
+            var cancelBtn = document.getElementById('mdRejectCancel');
+            var confirmBtn = document.getElementById('mdRejectConfirm');
+
+            function closeDialog() { overlay.classList.remove('active'); }
+
+            closeBtn.addEventListener('click', closeDialog);
+            cancelBtn.addEventListener('click', closeDialog);
+            overlay.addEventListener('click', function(e) { if (e.target === overlay) closeDialog(); });
+
+            confirmBtn.addEventListener('click', function() {
+                var reason = document.getElementById('mdRejectReason').value.trim();
+                if (!reason) reason = '资质不符合要求';
+                closeDialog();
+                var result = doReview(id, 'rejected', 'admin', reason);
+                if (result) { showToast('已驳回申请', 'success'); setTimeout(function() { location.reload(); }, 800); }
+                else { showToast('操作失败，可能已被审核', 'error'); }
+            });
+        }
+
+        function doReview(id, status, reviewer, rejectReason) {
+            if (window.CampusDB) {
+                return CampusDB.reviewMerchant(id, status, reviewer, rejectReason);
+            }
+            try {
+                var list = JSON.parse(localStorage.getItem('campus_merchants') || '[]');
+                var found = list.find(function(m) { return m.id === id; });
+                if (!found || found.status !== 'pending') return false;
+                found.status = status;
+                found.reviewer = reviewer;
+                found.reviewTime = new Date().toLocaleString();
+                found.rejectReason = rejectReason || '';
+                localStorage.setItem('campus_merchants', JSON.stringify(list));
+                return true;
+            } catch(e) { return false; }
+        }
+
+        function showToast(msg, type) {
+            var existing = document.querySelector('.md-toast');
+            if (existing) existing.remove();
+            var t = document.createElement('div');
+            t.className = 'md-toast';
+            t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:99999;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12);' +
+                (type === 'success' ? 'background:linear-gradient(135deg,#059669,#10b981)' : 'background:linear-gradient(135deg,#dc2626,#ef4444)');
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(function() { t.remove(); }, 2500);
+        }
+
+        function initLightbox() {
+            var lb = document.getElementById('mdLightbox');
+            var lbImg = document.getElementById('mdLightboxImg');
+            var lbClose = document.getElementById('mdLightboxClose');
+
+            window.openLightbox = function(src) {
+                lbImg.src = src;
+                lb.classList.add('active');
+            };
+
+            lbClose.addEventListener('click', function() { lb.classList.remove('active'); });
+            lb.addEventListener('click', function(e) { if (e.target === lb) lb.classList.remove('active'); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') lb.classList.remove('active'); });
+        }
+    })();
+    </script>
+</body>
+</html>

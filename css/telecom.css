@@ -1,0 +1,815 @@
+﻿﻿/* ============================================================
+ * 閫氫俊钀ヤ笟鍘?- 瀛︾敓绔牱寮? * ============================================================ */
+
+/* ---------- Hero ---------- */
+.tel-hero {
+    padding: 120px 20px 60px;
+    background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #818cf8 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.tel-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    animation: telHeroFloat 15s ease-in-out infinite;
+}
+
+@keyframes telHeroFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+}
+
+.tel-hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+.tel-hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.tel-hero h1 i { margin-right: 10px; }
+.tel-hero p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; }
+
+.tel-hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.tel-stat { text-align: center; }
+.tel-stat-num { display: block; font-size: 36px; font-weight: 700; color: #fff; }
+.tel-stat-label { font-size: 14px; color: rgba(255,255,255,0.7); }
+
+/* ---------- Tabs ---------- */
+.tel-tabs-section {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+}
+
+.tel-tabs-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 12px 20px;
+}
+
+.tel-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+}
+
+.tel-tab:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.tel-tab.active {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(67,56,202,0.3);
+}
+
+.tel-tab-content { display: none; padding: 40px 20px; animation: telFadeIn 0.4s ease; }
+.tel-tab-content.active { display: block; }
+
+@keyframes telFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Container ---------- */
+.tel-container { max-width: 1200px; margin: 0 auto; }
+
+/* ---------- 鎻愪氦宸ュ崟甯冨眬 ---------- */
+.tel-submit-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
+    align-items: start;
+}
+
+.tel-form-section {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 36px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.tel-form-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 28px;
+}
+
+.tel-form-section h2 i { color: #6366f1; margin-right: 8px; }
+
+/* ---------- 涓氬姟绫诲瀷閫夋嫨 ---------- */
+.tel-type-select { margin-bottom: 30px; }
+.tel-type-select h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+}
+
+.tel-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.tel-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 10px;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tel-type-card i { font-size: 24px; color: #6366f1; }
+.tel-type-card span { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+
+.tel-type-card:hover {
+    border-color: #818cf8;
+    background: rgba(99,102,241,0.06);
+    transform: translateY(-2px);
+}
+
+.tel-type-card.selected {
+    border-color: #6366f1;
+    background: rgba(99,102,241,0.1);
+    box-shadow: 0 4px 15px rgba(99,102,241,0.15);
+}
+
+.tel-type-card.selected i { color: #4338ca; }
+
+/* ---------- 琛ㄥ崟 ---------- */
+.tel-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.tel-form-group { margin-bottom: 20px; }
+.tel-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.tel-form-group label i { color: #6366f1; margin-right: 6px; }
+
+.tel-form-group input,
+.tel-form-group select,
+.tel-form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.tel-form-group input:focus,
+.tel-form-group select:focus,
+.tel-form-group textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.tel-form-group textarea { resize: vertical; }
+
+/* ---------- 鏂囦欢涓婁紶 ---------- */
+.tel-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.tel-upload-area:hover { border-color: #6366f1; background: rgba(99,102,241,0.03); }
+
+.tel-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+}
+
+.tel-upload-placeholder i { font-size: 36px; color: #818cf8; }
+.tel-upload-placeholder span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.tel-upload-placeholder small { font-size: 12px; color: var(--text-secondary); }
+
+.tel-upload-preview { position: relative; display: flex; justify-content: center; }
+.tel-upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.tel-upload-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239,68,68,0.9);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.tel-upload-remove:hover { background: #ef4444; transform: scale(1.1); }
+
+/* ---------- 鎻愪氦鎸夐挳 ---------- */
+.tel-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tel-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(67,56,202,0.35);
+}
+
+.tel-submit-btn:active { transform: translateY(0); }
+
+/* ---------- 渚ф爮 ---------- */
+.tel-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+.tel-sidebar-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.tel-sidebar-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+.tel-sidebar-card h3 i { color: #6366f1; margin-right: 8px; }
+
+.tel-steps { display: flex; flex-direction: column; gap: 16px; }
+
+.tel-step { display: flex; gap: 14px; align-items: flex-start; }
+
+.tel-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.tel-step-text strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.tel-step-text p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.tel-sidebar-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tel-sidebar-tips li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.tel-sidebar-tips li i { color: #6366f1; width: 16px; text-align: center; }
+
+/* ---------- 涓氬姟鍛樺悗鍙板叆鍙?---------- */
+.tel-admin-entry {
+    display: block;
+    width: 100%;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
+    text-decoration: none;
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tel-admin-entry h3 { color: #fff; }
+.tel-admin-entry h3 i { color: rgba(255,255,255,0.8); }
+.tel-admin-entry p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
+.tel-admin-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(49,46,129,0.35);
+}
+
+/* ---------- 鎴戠殑宸ュ崟 ---------- */
+.tel-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+}
+.tel-section-title i { color: #6366f1; margin-right: 8px; }
+
+.tel-orders-list { display: flex; flex-direction: column; gap: 16px; }
+
+.tel-order-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+
+.tel-order-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.tel-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.tel-order-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.tel-order-type i { color: #6366f1; }
+
+.tel-order-status {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tel-status-pending { background: #fef3c7; color: #92400e; }
+.tel-status-accepted { background: #dbeafe; color: #1e40af; }
+.tel-status-processing { background: #ede9fe; color: #4338ca; }
+.tel-status-done { background: #d1fae5; color: #065f46; }
+
+.tel-order-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.tel-order-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.tel-order-info-item i { color: #818cf8; width: 14px; }
+
+.tel-order-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+.tel-order-actions { display: flex; gap: 10px; }
+
+.tel-order-actions button {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tel-btn-chat {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+}
+
+.tel-btn-chat:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(67,56,202,0.3);
+}
+
+.tel-btn-detail {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.tel-btn-detail:hover { background: #e5e7eb; }
+
+/* ---------- 绌虹姸鎬?---------- */
+.tel-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.tel-empty-state i { font-size: 56px; opacity: 0.2; display: block; margin-bottom: 16px; }
+.tel-empty-state p { font-size: 15px; }
+
+/* ---------- 鑱婂ぉ寮圭獥 ---------- */
+.tel-chat-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.tel-chat-modal.active { display: flex; }
+
+.tel-chat-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: telChatIn 0.3s ease;
+}
+
+@keyframes telChatIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tel-chat-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tel-chat-header h3 { font-size: 16px; font-weight: 600; }
+.tel-chat-header h3 i { margin-right: 8px; }
+
+.tel-chat-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.tel-chat-close:hover { background: rgba(255,255,255,0.3); }
+
+.tel-chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+}
+
+.tel-msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.tel-msg-self {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.tel-msg-other {
+    align-self: flex-start;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+}
+
+.tel-msg-time {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 4px;
+}
+
+.tel-chat-input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+.tel-chat-input input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.tel-chat-input input:focus { border-color: #6366f1; }
+
+.tel-chat-input button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.tel-chat-input button:hover { transform: scale(1.08); }
+
+/* ---------- 涓氬姟鍛樺悗鍙扮櫥褰曞脊绐楋紙瀵归綈鍖诲姟瀹ゆ牎鍖荤櫥褰曪紝绱壊涓昏皟锛?---------- */
+.tel-admin-login-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30,27,75,0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10001;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.tel-admin-login-overlay.active { display: flex; }
+
+.tel-admin-login-modal {
+    background: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(49,46,129,0.25);
+    animation: telLoginIn 0.3s ease;
+}
+
+@keyframes telLoginIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tel-admin-login-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tel-admin-login-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.tel-admin-login-header h3 i { margin-right: 8px; }
+
+.tel-admin-login-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.tel-admin-login-close:hover { background: rgba(255,255,255,0.35); }
+
+.tel-admin-login-body { padding: 28px 24px; }
+
+.tel-admin-login-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+    border: 1px solid #c4b5fd;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    color: #6d28d9;
+    font-size: 13px;
+    font-weight: 500;
+}
+.tel-admin-login-hint i { color: #6366f1; }
+
+.tel-admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.tel-admin-login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tel-admin-login-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+.tel-admin-login-label i { margin-right: 6px; color: #6366f1; }
+
+.tel-admin-login-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f9fafb;
+    color: #1f2937;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+.tel-admin-login-input[readonly] {
+    cursor: not-allowed;
+    color: #4b5563;
+}
+.tel-admin-login-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.tel-admin-login-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6366f1, #4338ca);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 1px;
+}
+.tel-admin-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+}
+.tel-admin-login-btn:active { transform: translateY(0); }
+
+/* ---------- Toast ---------- */
+.tel-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #065f46;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.tel-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 鍝嶅簲寮?---------- */
+@media (max-width: 900px) {
+    .tel-submit-layout {
+        grid-template-columns: 1fr;
+    }
+    .tel-type-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .tel-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .tel-hero h1 { font-size: 28px; }
+    .tel-hero p { font-size: 14px; }
+    .tel-hero-stats { gap: 20px; }
+    .tel-stat-num { font-size: 26px; }
+    .tel-type-grid { grid-template-columns: repeat(2, 1fr); }
+    .tel-order-info { grid-template-columns: 1fr; }
+    .tel-form-section { padding: 24px 18px; }
+    .tel-admin-login-modal { max-width: 100%; }
+    .tel-admin-login-header h3 { font-size: 14px; }
+    .tel-admin-login-body { padding: 22px 18px; }
+}
+

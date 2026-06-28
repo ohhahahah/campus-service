@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医务室 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/clinic.css">
+    <link rel="stylesheet" href="css/life-modern.css">
+    <link rel="stylesheet" href="css/robot-assistant.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="secondhand.html" class="nav-link">二手市场</a>
+                <a href="life.html" class="nav-link active">生活服务</a>
+                <a href="booking.html" class="nav-link">场馆预约</a>
+                <a href="parttime.html" class="nav-link">兼职互助</a>
+                <a href="pets.html" class="nav-link">流浪猫寄养</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="login.html" class="login-btn">登录</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="cli-hero">
+        <a href="life.html" class="cli-back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+        <div class="cli-hero-content">
+            <h1><i class="fas fa-plus-circle"></i> 校园医务室</h1>
+            <p>在线问诊 · 病情上报 · 校医实时接单 · 药品配送上门 · 预约线下就诊</p>
+            <div class="cli-hero-stats">
+                <div class="cli-stat">
+                    <span class="cli-stat-num" data-target="2">0</span>
+                    <span class="cli-stat-label">在岗校医</span>
+                </div>
+                <div class="cli-stat">
+                    <span class="cli-stat-num" data-target="18">0</span>
+                    <span class="cli-stat-label">今日接诊</span>
+                </div>
+                <div class="cli-stat">
+                    <span class="cli-stat-num" data-target="5">0</span>
+                    <span class="cli-stat-label">送药订单</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab -->
+    <section class="cli-tabs-section">
+        <div class="cli-tabs-header">
+            <button class="cli-tab active" data-tab="chat"><i class="fas fa-comment-medical"></i><span>在线问诊</span></button>
+            <button class="cli-tab" data-tab="submit"><i class="fas fa-plus-circle"></i><span>求助工单</span></button>
+            <button class="cli-tab" data-tab="myorders"><i class="fas fa-list-alt"></i><span>我的工单</span></button>
+        </div>
+    </section>
+
+    <!-- 在线问诊 -->
+    <div class="cli-tab-content active" id="chat">
+        <div class="cli-container">
+            <div class="cli-chat-layout">
+                <div class="cli-doctors-panel">
+                    <h3><i class="fas fa-user-md"></i> 选择在岗校医</h3>
+                    <div class="cli-doctors-list" id="doctorsList"></div>
+                </div>
+                <div class="cli-chat-panel">
+                    <div class="cli-chat-placeholder" id="chatPlaceholder">
+                        <i class="fas fa-notes-medical"></i>
+                        <p>请先选择一位在岗校医，开始在线问诊</p>
+                    </div>
+                    <div class="cli-chat-box" id="chatBox" style="display:none">
+                        <div class="cli-chat-header">
+                            <span id="chatDoctorName"><i class="fas fa-user-md"></i> 校医</span>
+                        </div>
+                        <div class="cli-chat-messages" id="chatMessages"></div>
+                        <div class="cli-chat-input">
+                            <input type="text" id="chatInput" placeholder="描述您的症状...">
+                            <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 求助工单 -->
+    <div class="cli-tab-content" id="submit">
+        <div class="cli-container">
+            <div class="cli-submit-layout">
+                <div class="cli-form-section">
+                    <h2><i class="fas fa-edit"></i> 提交求助工单</h2>
+                    <form id="clinicForm">
+                        <div class="cli-form-group">
+                            <label><i class="fas fa-building"></i> 宿舍地址</label>
+                            <input type="text" id="cliDorm" placeholder="如：东区2号楼302室" required>
+                        </div>
+                        <div class="cli-form-group">
+                            <label><i class="fas fa-notes-medical"></i> 身体症状</label>
+                            <textarea id="cliSymptom" rows="4" placeholder="请详细描述您的身体不适症状，如发烧、头痛、腹泻等" required></textarea>
+                        </div>
+                        <div class="cli-form-group">
+                            <label><i class="fas fa-pills"></i> 需要的药品</label>
+                            <input type="text" id="cliMedicine" placeholder="如：感冒药、退烧药、创可贴（选填）">
+                        </div>
+                        <div class="cli-form-group">
+                            <label class="cli-checkbox-label">
+                                <input type="checkbox" id="cliDelivery">
+                                <span class="cli-checkbox-custom"></span>
+                                <span>需要送药上门</span>
+                            </label>
+                        </div>
+                        <div class="cli-form-group">
+                            <label><i class="fas fa-camera"></i> 上传照片（病情照片/伤口等）</label>
+                            <div class="cli-upload-area" id="uploadArea">
+                                <input type="file" id="cliPhoto" accept="image/*" hidden>
+                                <div class="cli-upload-placeholder" id="uploadPlaceholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>点击上传照片</span>
+                                    <small>支持 jpg/png，大小不超过5MB</small>
+                                </div>
+                                <div class="cli-upload-preview" id="uploadPreview" style="display:none">
+                                    <img id="previewImg" src="" alt="预览">
+                                    <button type="button" class="cli-upload-remove" id="removeImg"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cli-form-group">
+                            <label><i class="fas fa-user"></i> 姓名</label>
+                            <input type="text" id="cliName" placeholder="请输入您的姓名" required>
+                        </div>
+                        <div class="cli-form-group">
+                            <label><i class="fas fa-mobile-alt"></i> 手机号</label>
+                            <input type="tel" id="cliPhone" placeholder="请输入手机号码" required>
+                        </div>
+                        <button type="submit" class="cli-submit-btn">
+                            <i class="fas fa-paper-plane"></i> 提交求助
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 侧栏 -->
+                <div class="cli-sidebar">
+                    <div class="cli-sidebar-card">
+                        <h3><i class="fas fa-route"></i> 求助流程</h3>
+                        <div class="cli-steps">
+                            <div class="cli-step">
+                                <div class="cli-step-num">1</div>
+                                <div class="cli-step-text">
+                                    <strong>填写求助信息</strong>
+                                    <p>描述症状、宿舍地址</p>
+                                </div>
+                            </div>
+                            <div class="cli-step">
+                                <div class="cli-step-num">2</div>
+                                <div class="cli-step-text">
+                                    <strong>提交工单</strong>
+                                    <p>等待校医接单</p>
+                                </div>
+                            </div>
+                            <div class="cli-step">
+                                <div class="cli-step-num">3</div>
+                                <div class="cli-step-text">
+                                    <strong>校医接单沟通</strong>
+                                    <p>线上问诊/安排送药</p>
+                                </div>
+                            </div>
+                            <div class="cli-step">
+                                <div class="cli-step-num">4</div>
+                                <div class="cli-step-text">
+                                    <strong>办结确认</strong>
+                                    <p>诊疗完成，工单关闭</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cli-sidebar-card cli-sidebar-tips">
+                        <h3><i class="fas fa-exclamation-triangle"></i> 紧急提醒</h3>
+                        <ul>
+                            <li><i class="fas fa-ambulance"></i> 急症请拨打120</li>
+                            <li><i class="fas fa-clock"></i> 服务时间：08:00 – 22:00</li>
+                            <li><i class="fas fa-shield-alt"></i> 隐私信息严格保密</li>
+                        </ul>
+                    </div>
+                    <button type="button" class="cli-sidebar-card cli-admin-entry" id="clinicAdminEntryBtn">
+                        <h3><i class="fas fa-user-md"></i> 校医后台入口</h3>
+                        <p>点击进入校医工作台 →</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 我的工单 -->
+    <div class="cli-tab-content" id="myorders">
+        <div class="cli-container">
+            <h2 class="cli-section-title"><i class="fas fa-list-alt"></i> 我的工单</h2>
+            <div id="myOrdersList" class="cli-orders-list">
+                <div class="cli-empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>暂无工单记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天弹窗（工单沟通） -->
+    <div class="cli-chat-modal" id="orderChatModal">
+        <div class="cli-chat-modal-content">
+            <div class="cli-chat-modal-header">
+                <h3><i class="fas fa-comments"></i> 与校医沟通</h3>
+                <button class="cli-chat-modal-close" id="orderChatClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cli-chat-modal-messages" id="orderChatMessages"></div>
+            <div class="cli-chat-modal-input">
+                <input type="text" id="orderChatInput" placeholder="输入消息...">
+                <button id="orderChatSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 校医登录弹窗 -->
+    <div class="cli-admin-login-overlay" id="cliAdminLoginOverlay">
+        <div class="cli-admin-login-modal">
+            <div class="cli-admin-login-header">
+                <h3><i class="fas fa-user-md"></i> 校医登录</h3>
+                <button class="cli-admin-login-close" id="cliAdminLoginClose" type="button"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cli-admin-login-body">
+                <div class="cli-admin-login-hint">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>当前已预设账号密码，点击即可登录</span>
+                </div>
+                <div class="cli-admin-login-form">
+                    <div class="cli-admin-login-field">
+                        <label class="cli-admin-login-label"><i class="fas fa-id-badge"></i> 账号</label>
+                        <input type="text" class="cli-admin-login-input" id="cliAdminAccount" value="school_doc" autocomplete="off" readonly>
+                    </div>
+                    <div class="cli-admin-login-field">
+                        <label class="cli-admin-login-label"><i class="fas fa-key"></i> 密码</label>
+                        <input type="text" class="cli-admin-login-input" id="cliAdminPassword" value="123456" readonly>
+                    </div>
+                </div>
+                <button type="button" class="cli-admin-login-btn" id="cliAdminLoginBtn"><i class="fas fa-sign-in-alt"></i> 一键登录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="cli-toast" id="cliToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="cliToastMsg">操作成功</span>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>青园在线</h3>
+                <p>一站式校园服务平台</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="life.html">生活服务</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>地址：济南幼儿师范高等专科学校</p>
+                <p>电话：010-12345678</p>
+                <p>邮箱：support@campus.edu</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 青园在线综合服务平台</p>
+        </div>
+    </footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/clinic.js"></script>
+    <script src="js/robot-assistant.js"></script>
+</body>
+</html>

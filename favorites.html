@@ -1,9 +1,9 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的收藏 - 智慧校园二手市场</title>
+    <title>我的收藏 - 青园在线二手市场</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/secondhand.css">
@@ -12,10 +12,7 @@
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link active">二手市场</a>
@@ -39,10 +36,10 @@
         </div>
     </nav>
 
-    <div class="sh-page-container" style="padding-top:90px">
+    <div class="sh-page-container">
         <div class="sh-fav-header">
             <div class="sh-fav-header-left">
-                <h1 class="sh-page-title" style="margin-bottom:0"><i class="fas fa-heart" style="color:#f97316"></i> 我的收藏</h1>
+                <h1 class="sh-page-title sh-page-title-inline"><i class="fas fa-heart"></i> 我的收藏</h1>
                 <span id="favCount" class="sh-fav-count"></span>
             </div>
             <a href="secondhand.html" class="sh-fav-go-btn"><i class="fas fa-shopping-bag"></i> 去逛逛</a>
@@ -91,7 +88,7 @@
             var list = getCollected();
             updateCount();
             if (list.length === 0) {
-                listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px"><i class="far fa-heart" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">暂无收藏商品</p><a href="secondhand.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去二手市场逛逛</a></div>';
+                listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1"><i class="far fa-heart"></i><p>暂无收藏商品</p><a href="secondhand.html">去二手市场逛逛</a></div>';
                 return;
             }
             listEl.innerHTML = '';
@@ -127,7 +124,7 @@
         }
 
         if (!user || user.role !== 'student') {
-            listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px"><i class="fas fa-lock" style="font-size:48px;color:#d1d5db;margin-bottom:16px;display:block"></i><p style="color:var(--text-secondary);font-size:15px;margin-bottom:16px">请先登录后查看收藏</p><a href="login.html" style="display:inline-block;padding:10px 24px;border-radius:8px;background:var(--primary-light);color:#fff;text-decoration:none;font-size:14px">去登录</a></div>';
+            listEl.innerHTML = '<div class="sh-page-empty" style="grid-column:1/-1"><i class="fas fa-lock"></i><p>请先登录后查看收藏</p><a href="login.html">去登录</a></div>';
             countEl.textContent = '';
             return;
         }

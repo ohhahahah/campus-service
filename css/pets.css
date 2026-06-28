@@ -1,98 +1,491 @@
-/* ========== 流浪猫寄养页面 ========== */
-.pets-hero{padding:120px 20px 60px;text-align:center;position:relative;overflow:hidden;min-height:380px}
-.pets-hero-slides{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
-.pets-hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease}
-.pets-hero-slide.active{opacity:1}
-.pets-hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(217,119,6,0.7) 0%,rgba(245,158,11,0.55) 40%,rgba(251,191,36,0.45) 70%,rgba(254,243,199,0.3) 100%);z-index:1}
-.pets-hero-content{position:relative;z-index:2;max-width:900px;margin:0 auto}
-.pets-hero h1{font-size:42px;font-weight:700;color:#fff;margin-bottom:12px;text-shadow:0 2px 12px rgba(120,53,15,0.3)}
-.pets-hero h1 i{margin-right:10px}
-.pets-hero p{font-size:18px;color:rgba(255,255,255,0.95);margin-bottom:40px;text-shadow:0 1px 6px rgba(120,53,15,0.2)}
-.pets-hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
-.pets-stat{text-align:center;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:14px;padding:16px 28px;border:1px solid rgba(255,255,255,0.2)}
-.pets-stat-num{display:block;font-size:36px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(120,53,15,0.15)}
-.pets-stat-label{font-size:14px;color:rgba(255,255,255,0.85)}
+/* ========== 流浪猫寄养页面 - 橘黄治愈萌系主题 ========== */
+/* 主题变量：暖橘黄 + 奶白底 */
+:root{
+    --pet-orange:#F59E0B;
+    --pet-orange-deep:#D97706;
+    --pet-orange-light:#FBBF24;
+    --pet-cream:#FFF8EE;
+    --pet-cream-2:#FEF3E2;
+    --pet-cream-3:#FDE9C8;
+    --pet-paw:#FCD9A6;
+    --pet-pink:#FBCFE8;
+}
 
-/* 容器 */
+/* ========== Hero 区（无实景大图，橘黄渐变 + 爪印装饰） ========== */
+.pets-hero{
+    padding:120px 20px 70px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    min-height:380px;
+    background:
+        radial-gradient(circle at 18% 22%, rgba(255,255,255,0.45) 0%, transparent 35%),
+        radial-gradient(circle at 82% 78%, rgba(254,243,199,0.55) 0%, transparent 38%),
+        linear-gradient(135deg, #FBBF24 0%, #F59E0B 45%, #D97706 100%);
+}
+.pets-hero-slides,.pets-hero-slide,.pets-hero-overlay{display:none !important}
+
+/* 爪印装饰层 */
+.pets-hero-deco{position:absolute;inset:0;z-index:1;pointer-events:none}
+.paw-deco{position:absolute;color:rgba(255,255,255,0.22);width:54px;height:54px}
+.paw-deco.paw-d1{top:24%;left:8%;transform:rotate(-15deg)}
+.paw-deco.paw-d2{top:62%;left:14%;transform:rotate(20deg);width:38px;height:38px;color:rgba(255,255,255,0.18)}
+.paw-deco.paw-d3{top:20%;right:10%;transform:rotate(25deg);width:46px;height:46px;color:rgba(255,255,255,0.2)}
+.paw-deco.paw-d4{top:70%;right:6%;transform:rotate(-10deg);width:34px;height:34px;color:rgba(255,255,255,0.16)}
+
+/* 简笔猫咪轮廓 */
+.cat-silhouette{position:absolute;color:rgba(255,255,255,0.2);width:130px;height:130px}
+.cat-silhouette.cat-s1{top:8%;left:3%;transform:rotate(-8deg)}
+.cat-silhouette.cat-s2{bottom:5%;right:2%;transform:rotate(12deg);width:110px;height:110px;color:rgba(255,255,255,0.16)}
+
+.pets-hero-content{position:relative;z-index:2;max-width:900px;margin:0 auto}
+.pets-hero h1{
+    font-size:44px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:12px;
+    text-shadow:0 2px 14px rgba(120,53,15,0.4);
+    letter-spacing:2px;
+    font-family:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+}
+.pets-hero h1 i{margin-right:12px;font-size:36px}
+.pets-hero p{font-size:18px;color:rgba(255,255,255,0.95);margin-bottom:40px;text-shadow:0 1px 6px rgba(120,53,15,0.3);letter-spacing:1px}
+.pets-hero-stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
+
+/* 数据卡片：猫耳异形外框 */
+.pets-stat{
+    position:relative;
+    text-align:center;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(10px);
+    border-radius:28px 28px 36px 36px / 36px 36px 28px 28px;
+    padding:22px 30px 20px;
+    border:2.5px solid #FFE4A8;
+    box-shadow:0 8px 24px rgba(180,83,9,0.18);
+    min-width:140px;
+}
+/* 猫耳左 */
+.pets-stat::before{
+    content:'';
+    position:absolute;
+    top:-16px;left:18px;
+    width:0;height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:18px solid #FFE4A8;
+    transform:rotate(-18deg);
+    filter:drop-shadow(0 -2px 0 #FFE4A8);
+}
+/* 猫耳右 */
+.pets-stat::after{
+    content:'';
+    position:absolute;
+    top:-16px;right:18px;
+    width:0;height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:18px solid #FFE4A8;
+    transform:rotate(18deg);
+    filter:drop-shadow(0 -2px 0 #FFE4A8);
+}
+.pets-stat-num{
+    display:block;
+    font-size:38px;
+    font-weight:800;
+    color:var(--pet-orange-deep);
+    text-shadow:0 2px 4px rgba(245,158,11,0.2);
+    line-height:1.1;
+}
+.pets-stat-label{
+    font-size:13px;
+    color:#92400E;
+    font-weight:600;
+    letter-spacing:1px;
+    margin-top:4px;
+    display:inline-block;
+}
+.pets-stat-label::before{
+    content:'🐾';
+    margin-right:4px;
+    font-size:10px;
+    opacity:0.7;
+}
+
+/* ========== 容器 ========== */
 .pets-container{max-width:1200px;margin:0 auto}
 
-/* 爱心理念 */
-.pets-intro-section{padding:50px 20px;background:var(--bg-primary)}
-.pets-intro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.pets-intro-card{background:var(--bg-card);border-radius:16px;padding:28px 20px;border:1px solid var(--border-color);text-align:center;transition:all .3s}
-.pets-intro-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.08)}
-.pets-intro-icon{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin:0 auto 14px}
-.pets-intro-card h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
-.pets-intro-card p{font-size:13px;color:var(--text-secondary);line-height:1.6}
+/* ========== 爱心理念（云朵弧形卡片） ========== */
+.pets-intro-section{
+    padding:60px 20px;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(252,217,166,0.3) 0%, transparent 30%),
+        var(--pet-cream);
+}
+.pets-intro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
 
-/* 列表区 */
-.pets-list-section{padding:50px 20px;background:var(--bg-secondary)}
-.pets-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.pets-section-header h2{font-size:22px;font-weight:600;color:var(--text-primary)}
-.pets-section-header h2 i{color:#f59e0b;margin-right:8px}
-.pets-publish-btn{padding:10px 22px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:6px}
-.pets-publish-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+/* 云朵卡片：圆角不对称，模拟云朵轮廓 */
+.pets-intro-card{
+    position:relative;
+    background:linear-gradient(160deg, #FFFFFF 0%, #FFFBF0 100%);
+    border-radius:48px 24px 48px 24px / 24px 48px 24px 48px;
+    padding:32px 22px 26px;
+    border:2px solid var(--pet-cream-3);
+    text-align:center;
+    transition:all .4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 4px 16px rgba(245,158,11,0.08);
+}
+.pets-intro-card:hover{
+    transform:translateY(-6px) rotate(-1deg);
+    box-shadow:0 12px 28px rgba(245,158,11,0.18);
+    border-color:var(--pet-orange-light);
+}
+.pets-intro-icon{
+    width:64px;height:64px;
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange-deep));
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;color:#fff;margin:0 auto 14px;
+    box-shadow:0 6px 16px rgba(245,158,11,0.35);
+}
+.pets-intro-card h3{
+    font-size:17px;font-weight:700;
+    color:var(--pet-orange-deep);
+    margin-bottom:8px;letter-spacing:1px;
+}
+.pets-intro-card p{font-size:13px;color:#78350F;line-height:1.7}
+/* 卡片右下角小爪印 */
+.pets-intro-card::after{
+    content:'🐾';
+    position:absolute;
+    bottom:6px;right:10px;
+    font-size:14px;
+    opacity:0.18;
+    transform:rotate(-25deg);
+}
 
-/* 筛选 */
-.pets-filter-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
-.pets-filter{padding:8px 18px;border:1px solid var(--border-color);border-radius:20px;background:transparent;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .3s}
-.pets-filter:hover{border-color:#f59e0b;color:#f59e0b}
-.pets-filter.active{background:#f59e0b;color:#fff;border-color:#f59e0b}
+/* ========== 列表区 ========== */
+.pets-list-section{
+    padding:60px 20px;
+    background:
+        radial-gradient(circle at 5% 90%, rgba(252,217,166,0.35) 0%, transparent 28%),
+        var(--pet-cream-2);
+    position:relative;
+}
+.pets-section-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:28px;flex-wrap:wrap;gap:12px;
+}
+.pets-section-header h2{
+    font-size:24px;font-weight:800;
+    color:var(--pet-orange-deep);
+    display:flex;align-items:center;gap:8px;
+    letter-spacing:1.5px;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+}
+.pets-section-header h2 i{color:var(--pet-orange);font-size:22px}
+.pets-publish-btn{
+    padding:11px 24px;
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange-deep));
+    border:none;
+    border-radius:28px;
+    color:#fff;font-size:14px;font-weight:700;
+    cursor:pointer;transition:all .3s;
+    display:flex;align-items:center;gap:8px;
+    box-shadow:0 4px 12px rgba(245,158,11,0.32);
+    letter-spacing:1px;
+}
+.pets-publish-btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(245,158,11,0.45)}
 
-/* 猫咪卡片 */
-.pets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.pets-card{background:var(--bg-card);border-radius:16px;overflow:hidden;border:1px solid var(--border-color);transition:all .3s}
-.pets-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.1)}
-.pets-card-img{height:200px;overflow:hidden;cursor:pointer;position:relative;background:#f3f4f6}
-.pets-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
-.pets-card:hover .pets-card-img img{transform:scale(1.05)}
-.pets-card-img-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.5));color:#fff;font-size:12px;display:flex;align-items:center;gap:4px}
-.pets-card-info{padding:20px}
-.pets-card-info h4{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
-.pets-card-info p{font-size:13px;color:var(--text-secondary);margin-bottom:4px;line-height:1.5}
-.pets-card-info p i{width:16px;text-align:center;color:#f59e0b;margin-right:4px}
-.pets-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.pets-card-tag{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
-.pets-card-tag.gender{background:#fce7f3;color:#db2777}
-.pets-card-tag.neutered{background:#dcfce7;color:#16a34a}
-.pets-card-tag.not-neutered{background:#fef3c7;color:#d97706}
-.pets-card-tag.vaccinated{background:#dbeafe;color:#2563eb}
-.pets-card-tag.not-vaccinated{background:#fee2e2;color:#dc2626}
-.pets-adopt-btn{width:100%;padding:10px;margin-top:12px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
-.pets-adopt-btn:hover{box-shadow:0 4px 12px rgba(245,158,11,0.3)}
+/* 筛选 - 圆角大按钮 */
+.pets-filter-bar{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.pets-filter{
+    padding:9px 22px;
+    border:1.8px solid var(--pet-cream-3);
+    border-radius:24px;
+    background:#FFFBF0;
+    font-size:13px;font-weight:600;
+    color:#92400E;cursor:pointer;
+    transition:all .3s;
+}
+.pets-filter:hover{border-color:var(--pet-orange);color:var(--pet-orange-deep);transform:translateY(-1px)}
+.pets-filter.active{
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange));
+    color:#fff;border-color:var(--pet-orange);
+    box-shadow:0 4px 12px rgba(245,158,11,0.3);
+}
 
-/* 领养须知 */
-.pets-notice-section{padding:50px 20px;background:var(--bg-primary)}
+/* ========== 猫咪卡片：橘色断续爪印边线 ========== */
+.pets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pets-card{
+    position:relative;
+    background:#FFFFFF;
+    border-radius:32px 20px 32px 20px / 20px 32px 20px 32px;
+    overflow:hidden;
+    border:2px solid var(--pet-cream-3);
+    transition:all .35s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 4px 14px rgba(180,83,9,0.08);
+}
+/* 断续爪印边线 */
+.pets-card::before{
+    content:'';
+    position:absolute;
+    inset:6px;
+    border:2px dashed var(--pet-orange-light);
+    border-radius:26px 14px 26px 14px / 14px 26px 14px 26px;
+    pointer-events:none;
+    opacity:0.5;
+    z-index:1;
+}
+.pets-card:hover{
+    transform:translateY(-5px) rotate(-0.6deg);
+    box-shadow:0 12px 30px rgba(245,158,11,0.2);
+    border-color:var(--pet-orange);
+}
+.pets-card-img{
+    height:200px;overflow:hidden;cursor:pointer;
+    position:relative;
+    background:linear-gradient(135deg,#FEF3C7 0%,#FDE68A 100%);
+}
+.pets-card-img img{
+    width:100%;height:100%;object-fit:contain;
+    transition:transform .4s ease;
+    padding:20px;
+}
+.pets-card:hover .pets-card-img img{transform:scale(1.06)}
+.pets-card-img-overlay{
+    position:absolute;bottom:0;left:0;right:0;
+    padding:8px 14px;
+    background:linear-gradient(transparent,rgba(217,119,6,0.6));
+    color:#fff;font-size:12px;
+    display:flex;align-items:center;gap:4px;
+}
+.pets-card-info{padding:20px;position:relative;z-index:2}
+.pets-card-info h4{
+    font-size:17px;font-weight:700;
+    color:#7C2D12;margin-bottom:8px;letter-spacing:0.5px;
+}
+.pets-card-info p{font-size:13px;color:#92400E;margin-bottom:5px;line-height:1.5}
+.pets-card-info p i{width:18px;text-align:center;color:var(--pet-orange);margin-right:6px}
+.pets-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pets-card-tag{
+    padding:3px 12px;border-radius:14px;
+    font-size:11px;font-weight:600;
+}
+.pets-card-tag.gender{background:#FCE7F3;color:#DB2777}
+.pets-card-tag.neutered{background:#DCFCE7;color:#16A34A}
+.pets-card-tag.not-neutered{background:#FEF3C7;color:#D97706}
+.pets-card-tag.vaccinated{background:#DBEAFE;color:#2563EB}
+.pets-card-tag.not-vaccinated{background:#FEE2E2;color:#DC2626}
+.pets-adopt-btn{
+    width:100%;padding:11px;margin-top:14px;
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange-deep));
+    border:none;border-radius:24px;
+    color:#fff;font-size:14px;font-weight:700;
+    cursor:pointer;transition:all .3s;
+    letter-spacing:1px;
+}
+.pets-adopt-btn:hover{
+    box-shadow:0 6px 16px rgba(245,158,11,0.4);
+    transform:translateY(-1px);
+}
+
+/* ========== 领养须知 ========== */
+.pets-notice-section{
+    padding:60px 20px;
+    background:
+        radial-gradient(circle at 95% 5%, rgba(252,217,166,0.4) 0%, transparent 30%),
+        var(--pet-cream);
+}
 .pets-notice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.pets-notice-item{display:flex;gap:16px;padding:20px;background:var(--bg-card);border-radius:16px;border:1px solid var(--border-color);align-items:flex-start;transition:all .3s}
-.pets-notice-item:hover{box-shadow:0 4px 15px rgba(0,0,0,0.06)}
-.pets-notice-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
-.pets-notice-text h4{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
-.pets-notice-text p{font-size:13px;color:var(--text-secondary);line-height:1.5}
+.pets-notice-item{
+    display:flex;gap:16px;
+    padding:22px;
+    background:#FFFFFF;
+    border-radius:24px 16px 24px 16px / 16px 24px 16px 24px;
+    border:1.8px solid var(--pet-cream-3);
+    align-items:flex-start;
+    transition:all .3s;
+    position:relative;
+}
+.pets-notice-item:hover{
+    box-shadow:0 6px 20px rgba(245,158,11,0.15);
+    transform:translateX(4px);
+    border-color:var(--pet-orange-light);
+}
+.pets-notice-num{
+    width:38px;height:38px;
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange-deep));
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 4px 10px rgba(245,158,11,0.3);
+}
+.pets-notice-text h4{font-size:15px;font-weight:700;color:#7C2D12;margin-bottom:5px;letter-spacing:0.5px}
+.pets-notice-text p{font-size:13px;color:#92400E;line-height:1.6}
 
-/* 弹窗 */
-.pets-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
+/* ========== 弹窗 - 可爱软萌风格 ========== */
+.pets-modal{
+    display:none;position:fixed;top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(180,83,9,0.45);
+    backdrop-filter:blur(6px);
+    z-index:1000;
+    align-items:center;justify-content:center;
+    padding:20px;
+}
 .pets-modal.active{display:flex}
-.pets-modal-content{background:var(--bg-card);border-radius:20px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;animation:petsModalIn .3s ease}
-@keyframes petsModalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
-.pets-modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border-color)}
-.pets-modal-header h3{font-size:18px;font-weight:600;color:var(--text-primary)}
-.pets-modal-close{width:36px;height:36px;border-radius:50%;border:none;background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
-.pets-modal-close:hover{background:#ef4444;color:#fff}
-.pets-modal-body{padding:24px}
-.pets-form-group{margin-bottom:16px}
-.pets-form-group label{display:block;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
-.pets-form-group input,.pets-form-group select,.pets-form-group textarea{width:100%;padding:12px 16px;border:1px solid var(--border-color);border-radius:10px;font-size:14px;background:var(--bg-secondary);color:var(--text-primary);transition:all .3s;font-family:inherit}
-.pets-form-group input:focus,.pets-form-group select:focus,.pets-form-group textarea:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.15)}
-.pets-form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.pets-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px}
-.pets-submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.3)}
+.pets-modal-content{
+    background:var(--pet-cream);
+    border-radius:36px 22px 36px 22px / 22px 36px 22px 36px;
+    max-width:600px;width:100%;max-height:88vh;overflow-y:auto;
+    animation:petsModalIn .35s ease;
+    box-shadow:0 24px 70px rgba(180,83,9,0.25);
+    position:relative;
+    border:2.5px solid var(--pet-cream-3);
+}
+.pets-modal-content::before{
+    content:'🐾';
+    position:absolute;top:80px;right:30px;
+    font-size:80px;opacity:0.08;
+    pointer-events:none;z-index:0;line-height:1;
+}
+.pets-modal-content::after{
+    content:'🐾';
+    position:absolute;bottom:80px;left:25px;
+    font-size:60px;opacity:0.06;
+    pointer-events:none;z-index:0;line-height:1;
+    transform:rotate(-30deg);
+}
+@keyframes petsModalIn{
+    from{opacity:0;transform:scale(0.9) translateY(12px)}
+    to{opacity:1;transform:scale(1) translateY(0)}
+}
+.pets-modal-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:24px 30px;
+    border-bottom:2px dashed var(--pet-cream-3);
+    position:relative;z-index:1;
+}
+.pets-modal-header h3{
+    font-size:21px;font-weight:800;
+    color:var(--pet-orange-deep);
+    display:flex;align-items:center;gap:6px;
+    letter-spacing:1px;
+}
+.pets-modal-close{
+    width:36px;height:36px;
+    border-radius:50%;
+    border:none;
+    background:#FEF3C7;color:var(--pet-orange-deep);
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .3s;font-size:14px;
+}
+.pets-modal-close:hover{
+    background:#EF4444;color:#fff;transform:rotate(90deg);
+}
+.pets-modal-body{padding:30px;position:relative;z-index:1}
+.pets-form-group{margin-bottom:20px}
+.pets-form-group label{
+    display:block;font-size:14px;font-weight:700;
+    color:#7C2D12;margin-bottom:8px;letter-spacing:0.5px;
+}
+.pets-form-group input,
+.pets-form-group select,
+.pets-form-group textarea{
+    width:100%;padding:12px 18px;
+    border:1.8px solid var(--pet-cream-3);
+    border-radius:18px;
+    font-size:14px;
+    background:#FFFBF0;
+    color:#7C2D12;
+    transition:all .3s;
+    font-family:inherit;box-sizing:border-box;
+}
+.pets-form-group input:focus,
+.pets-form-group select:focus,
+.pets-form-group textarea:focus{
+    outline:none;
+    border-color:var(--pet-orange);
+    box-shadow:0 0 0 4px rgba(245,158,11,0.15);
+    background:#fff;
+}
+.pets-form-group textarea{resize:vertical;min-height:60px}
+.pets-form-row{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:16px;margin-bottom:20px;
+}
+.pets-submit-btn{
+    width:100%;padding:15px;
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange-deep));
+    border:none;
+    border-radius:24px;
+    color:#fff;font-size:16px;font-weight:800;
+    cursor:pointer;transition:all .3s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    letter-spacing:2px;
+    box-shadow:0 6px 18px rgba(245,158,11,0.3);
+}
+.pets-submit-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 28px rgba(245,158,11,0.42);
+}
+
+/* 图片上传区域 */
+.pet-upload-area{
+    border:2.5px dashed var(--pet-cream-3);
+    border-radius:22px;
+    padding:26px;text-align:center;cursor:pointer;
+    transition:all .3s;
+    background:#FFFBF0;
+    position:relative;overflow:hidden;
+}
+.pet-upload-area:hover{
+    border-color:var(--pet-orange);
+    background:#FFF9F0;
+}
+.pet-upload-placeholder{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    color:var(--pet-orange-deep);
+}
+.pet-upload-placeholder i{font-size:38px;color:var(--pet-orange);opacity:0.7}
+.pet-upload-placeholder span{font-size:14px;font-weight:700;color:#7C2D12}
+.pet-upload-placeholder small{font-size:11px;color:#A16207}
+.pet-upload-preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;justify-content:flex-start}
+.pet-upload-preview-item{
+    position:relative;width:80px;height:80px;
+    border-radius:18px;overflow:hidden;
+    border:2px solid var(--pet-cream-3);flex-shrink:0;
+}
+.pet-upload-preview-item img{width:100%;height:100%;object-fit:cover}
+.pet-upload-preview-item .pet-img-remove{
+    position:absolute;top:2px;right:2px;
+    width:20px;height:20px;border-radius:50%;
+    background:rgba(239,68,68,0.85);color:#fff;border:none;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    font-size:10px;line-height:1;transition:all .2s;
+}
+.pet-upload-preview-item .pet-img-remove:hover{background:#EF4444;transform:scale(1.15)}
 
 /* Toast */
-.pets-toast{position:fixed;top:80px;right:20px;padding:14px 24px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:12px;font-size:14px;font-weight:600;z-index:2000;transform:translateX(120%);transition:transform .3s ease;box-shadow:0 4px 20px rgba(245,158,11,0.3)}
+.pets-toast{
+    position:fixed;top:80px;right:20px;
+    padding:14px 26px;
+    background:linear-gradient(135deg,var(--pet-orange-light),var(--pet-orange-deep));
+    color:#fff;
+    border-radius:22px;
+    font-size:14px;font-weight:700;
+    z-index:2000;
+    transform:translateX(120%);
+    transition:transform .3s ease;
+    box-shadow:0 6px 22px rgba(245,158,11,0.4);
+    letter-spacing:1px;
+}
 .pets-toast.show{transform:translateX(0)}
 
-/* 响应式 */
+/* ========== 响应式 ========== */
 @media(max-width:900px){
     .pets-intro-grid{grid-template-columns:repeat(2,1fr)}
     .pets-grid,.pets-notice-grid{grid-template-columns:repeat(2,1fr)}
@@ -100,9 +493,11 @@
 }
 @media(max-width:480px){
     .pets-hero h1{font-size:28px}
-    .pets-hero{min-height:300px}
-    .pets-hero-stats{gap:12px}
-    .pets-stat{padding:12px 16px}
+    .pets-hero{min-height:320px;padding:100px 16px 50px}
+    .pets-hero-stats{gap:14px}
+    .pets-stat{padding:14px 18px;min-width:100px}
     .pets-stat-num{font-size:28px}
     .pets-intro-grid,.pets-grid,.pets-notice-grid{grid-template-columns:1fr}
+    .paw-deco{width:36px;height:36px}
+    .cat-silhouette{width:80px;height:80px}
 }

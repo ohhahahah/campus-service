@@ -1,0 +1,947 @@
+/* ============================================================
+ * 医务室 - 学生端样式
+ * ============================================================ */
+
+/* ---------- Hero ---------- */
+.cli-hero {
+    padding: 120px 20px 60px;
+    background:
+        radial-gradient(circle at 18% 22%, rgba(255, 209, 102, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 82% 78%, rgba(248, 113, 113, 0.35) 0%, transparent 50%),
+        linear-gradient(135deg, #7f1d1d 0%, #b91c1c 30%, #dc2626 60%, #f87171 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cli-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+    animation: cliHeroFloat 15s ease-in-out infinite;
+}
+
+.cli-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        repeating-linear-gradient(135deg, transparent 0, transparent 12px, rgba(255,255,255,0.025) 12px, rgba(255,255,255,0.025) 24px);
+    pointer-events: none;
+}
+
+@keyframes cliHeroFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+}
+
+.cli-hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+
+.cli-back-btn {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+.cli-back-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateX(-3px);
+}
+.cli-back-btn i { font-size: 13px; }
+
+.cli-hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.cli-hero h1 i { margin-right: 10px; }
+.cli-hero p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; }
+
+.cli-hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.cli-stat { text-align: center; }
+.cli-stat-num { display: block; font-size: 36px; font-weight: 700; color: #fff; }
+.cli-stat-label { font-size: 14px; color: rgba(255,255,255,0.7); }
+
+/* ---------- Tabs ---------- */
+.cli-tabs-section {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+}
+
+.cli-tabs-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 12px 20px;
+}
+
+.cli-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+}
+
+.cli-tab:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.cli-tab.active {
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(153,27,27,0.3);
+}
+
+.cli-tab-content { display: none; padding: 40px 20px; animation: cliFadeIn 0.4s ease; }
+.cli-tab-content.active { display: block; }
+
+@keyframes cliFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.cli-container { max-width: 1200px; margin: 0 auto; }
+
+/* ---------- 在线问诊布局 ---------- */
+.cli-chat-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    min-height: 500px;
+}
+
+.cli-doctors-panel {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.cli-doctors-panel h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 18px;
+}
+.cli-doctors-panel h3 i { color: #dc2626; margin-right: 6px; }
+
+.cli-doctor-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 10px;
+    border: 2px solid transparent;
+}
+
+.cli-doctor-card:hover { background: rgba(220,38,38,0.05); }
+.cli-doctor-card.selected {
+    border-color: #dc2626;
+    background: rgba(220,38,38,0.08);
+}
+
+.cli-doctor-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dc2626, #f87171);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.cli-doctor-info { flex: 1; min-width: 0; }
+.cli-doctor-info strong { display: block; font-size: 14px; color: var(--text-primary); }
+.cli-doctor-info span { font-size: 12px; color: var(--text-secondary); }
+
+.cli-doctor-status {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+    flex-shrink: 0;
+}
+
+/* ---------- 问诊聊天区 ---------- */
+.cli-chat-panel {
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.cli-chat-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    gap: 12px;
+}
+
+.cli-chat-placeholder i { font-size: 56px; opacity: 0.15; }
+.cli-chat-placeholder p { font-size: 15px; }
+
+.cli-chat-box { display: flex; flex-direction: column; height: 500px; }
+
+.cli-chat-header {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.cli-chat-header i { margin-right: 8px; }
+
+.cli-chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cli-msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.cli-msg-self {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.cli-msg-other {
+    align-self: flex-start;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+}
+
+.cli-msg-time { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+
+.cli-chat-input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+.cli-chat-input input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.cli-chat-input input:focus { border-color: #dc2626; }
+
+.cli-chat-input button {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.cli-chat-input button:hover { transform: scale(1.08); }
+
+/* ---------- 求助工单布局 ---------- */
+.cli-submit-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
+    align-items: start;
+}
+
+.cli-form-section {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 36px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.cli-form-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 28px;
+}
+
+.cli-form-section h2 i { color: #dc2626; margin-right: 8px; }
+
+.cli-form-group { margin-bottom: 20px; }
+.cli-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.cli-form-group label i { color: #dc2626; margin-right: 6px; }
+
+.cli-form-group input,
+.cli-form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.cli-form-group input:focus,
+.cli-form-group textarea:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+}
+
+.cli-form-group textarea { resize: vertical; }
+
+/* ---------- 复选框 ---------- */
+.cli-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.cli-checkbox-label input[type="checkbox"] { display: none; }
+
+.cli-checkbox-custom {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.cli-checkbox-label input:checked + .cli-checkbox-custom {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+.cli-checkbox-label input:checked + .cli-checkbox-custom::after {
+    content: '✓';
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ---------- 文件上传 ---------- */
+.cli-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cli-upload-area:hover { border-color: #dc2626; background: rgba(220,38,38,0.03); }
+
+.cli-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+}
+
+.cli-upload-placeholder i { font-size: 36px; color: #f87171; }
+.cli-upload-placeholder span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.cli-upload-placeholder small { font-size: 12px; color: var(--text-secondary); }
+
+.cli-upload-preview { position: relative; display: flex; justify-content: center; }
+.cli-upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.cli-upload-remove {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239,68,68,0.9);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.cli-upload-remove:hover { background: #ef4444; transform: scale(1.1); }
+
+/* ---------- 提交按钮 ---------- */
+.cli-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.cli-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(153,27,27,0.35);
+}
+
+/* ---------- 侧栏 ---------- */
+.cli-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+.cli-sidebar-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.cli-sidebar-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+.cli-sidebar-card h3 i { color: #dc2626; margin-right: 8px; }
+
+.cli-steps { display: flex; flex-direction: column; gap: 16px; }
+.cli-step { display: flex; gap: 14px; align-items: flex-start; }
+
+.cli-step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.cli-step-text strong { display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px; }
+.cli-step-text p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+.cli-sidebar-tips ul {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cli-sidebar-tips li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.cli-sidebar-tips li i { color: #dc2626; width: 16px; text-align: center; }
+
+/* ---------- 校医后台入口 ---------- */
+.cli-admin-entry {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cli-admin-entry h3 { color: #fff; }
+.cli-admin-entry h3 i { color: rgba(255,255,255,0.8); }
+.cli-admin-entry p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
+.cli-admin-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(153,27,27,0.35);
+}
+
+/* ---------- 校医登录弹窗 ---------- */
+.cli-admin-entry { width: 100%; border: none; text-align: left; font-family: inherit; }
+
+.cli-admin-login-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10001;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.cli-admin-login-overlay.active { display: flex; }
+
+.cli-admin-login-modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: cliLoginIn 0.3s ease;
+}
+
+@keyframes cliLoginIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cli-admin-login-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #7f1d1d, #991b1b);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cli-admin-login-header h3 { font-size: 16px; font-weight: 600; }
+.cli-admin-login-header h3 i { margin-right: 8px; }
+
+.cli-admin-login-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.cli-admin-login-close:hover { background: rgba(255,255,255,0.3); }
+
+.cli-admin-login-body { padding: 28px 24px; }
+
+.cli-admin-login-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 500;
+}
+.cli-admin-login-hint i { color: #16a34a; }
+
+.cli-admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.cli-admin-login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cli-admin-login-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.cli-admin-login-label i { margin-right: 6px; color: #991b1b; }
+
+.cli-admin-login-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+.cli-admin-login-input:focus {
+    outline: none;
+    border-color: #dc2626;
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+
+.cli-admin-login-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.cli-admin-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(153,27,27,0.35);
+}
+.cli-admin-login-btn:active { transform: translateY(0); }
+
+/* ---------- 我的工单 ---------- */
+.cli-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+}
+.cli-section-title i { color: #dc2626; margin-right: 8px; }
+
+.cli-orders-list { display: flex; flex-direction: column; gap: 16px; }
+
+.cli-order-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+
+.cli-order-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.cli-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.cli-order-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cli-order-type i { color: #dc2626; }
+
+.cli-order-status {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.cli-status-pending { background: #fef3c7; color: #92400e; }
+.cli-status-accepted { background: #dbeafe; color: #1e40af; }
+.cli-status-processing { background: #fee2e2; color: #991b1b; }
+.cli-status-done { background: #d1fae5; color: #065f46; }
+
+.cli-order-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.cli-order-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.cli-order-info-item i { color: #f87171; width: 14px; }
+
+.cli-order-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+.cli-order-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.cli-badge-delivery { background: #dbeafe; color: #1e40af; }
+.cli-badge-medicine { background: #fce7f3; color: #9d174d; }
+
+.cli-order-actions { display: flex; gap: 10px; }
+
+.cli-order-actions button {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cli-btn-chat {
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+}
+
+.cli-btn-chat:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(153,27,27,0.3);
+}
+
+.cli-btn-detail {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.cli-btn-detail:hover { background: #e5e7eb; }
+
+/* ---------- 空状态 ---------- */
+.cli-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.cli-empty-state i { font-size: 56px; opacity: 0.2; display: block; margin-bottom: 16px; }
+.cli-empty-state p { font-size: 15px; }
+
+/* ---------- 工单聊天弹窗 ---------- */
+.cli-chat-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.cli-chat-modal.active { display: flex; }
+
+.cli-chat-modal-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: cliModalIn 0.3s ease;
+}
+
+@keyframes cliModalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cli-chat-modal-header {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cli-chat-modal-header h3 { font-size: 16px; font-weight: 600; }
+.cli-chat-modal-header h3 i { margin-right: 8px; }
+
+.cli-chat-modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.cli-chat-modal-close:hover { background: rgba(255,255,255,0.3); }
+
+.cli-chat-modal-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+}
+
+.cli-chat-modal-input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+.cli-chat-modal-input input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    outline: none;
+}
+
+.cli-chat-modal-input input:focus { border-color: #dc2626; }
+
+.cli-chat-modal-input button {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #991b1b, #dc2626);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.cli-chat-modal-input button:hover { transform: scale(1.08); }
+
+/* ---------- Toast ---------- */
+.cli-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #065f46;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.cli-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+    .cli-chat-layout { grid-template-columns: 1fr; }
+    .cli-submit-layout { grid-template-columns: 1fr; }
+    .cli-doctors-panel { order: -1; }
+}
+
+@media (max-width: 600px) {
+    .cli-hero h1 { font-size: 28px; }
+    .cli-hero p { font-size: 14px; }
+    .cli-hero-stats { gap: 20px; }
+    .cli-stat-num { font-size: 26px; }
+    .cli-order-info { grid-template-columns: 1fr; }
+    .cli-form-section { padding: 24px 18px; }
+}

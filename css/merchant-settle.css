@@ -1,0 +1,394 @@
+/* ============================================================
+ * 商家入驻页面样式
+ * ============================================================ */
+
+/* ---------- Hero ---------- */
+.ms-hero {
+    padding: 120px 20px 50px;
+    background: linear-gradient(135deg, #92400e 0%, #b45309 50%, #f59e0b 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ms-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    animation: msHeroFloat 15s ease-in-out infinite;
+}
+
+@keyframes msHeroFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+}
+
+.ms-hero-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+.ms-hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.ms-hero h1 i { margin-right: 10px; }
+.ms-hero p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 30px; }
+
+.ms-hero-features { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.ms-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+}
+
+.ms-feature i { color: #fff; }
+
+/* ---------- 表单区域 ---------- */
+.ms-form-section { padding: 40px 20px 60px; }
+
+.ms-container { max-width: 1100px; margin: 0 auto; }
+
+.ms-form-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+    align-items: start;
+}
+
+.ms-form-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 36px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.ms-form-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 28px;
+}
+
+.ms-form-card h2 i { color: #f59e0b; margin-right: 8px; }
+
+.ms-form-group { margin-bottom: 20px; }
+.ms-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.ms-form-group label i { color: #f59e0b; margin-right: 6px; }
+
+.ms-form-group input,
+.ms-form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.ms-form-group input:focus,
+.ms-form-group select:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+}
+
+.ms-form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+}
+
+/* ---------- 上传区域 ---------- */
+.ms-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ms-upload-area:hover { border-color: #f59e0b; background: rgba(245,158,11,0.03); }
+
+.ms-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+}
+
+.ms-upload-placeholder i { font-size: 36px; color: #fbbf24; }
+.ms-upload-placeholder span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.ms-upload-placeholder small { font-size: 12px; color: var(--text-secondary); }
+
+.ms-upload-preview { position: relative; display: flex; justify-content: center; }
+.ms-upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.ms-upload-remove {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239,68,68,0.9);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.ms-upload-remove:hover { background: #ef4444; transform: scale(1.1); }
+
+/* ---------- 提交按钮 ---------- */
+.ms-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ms-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(146,64,14,0.35);
+}
+
+.ms-submit-btn:disabled,
+.ms-submit-btn.disabled {
+    background: #d1d5db;
+    color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.ms-submit-btn:disabled:hover,
+.ms-submit-btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ---------- 侧栏 ---------- */
+.ms-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+.ms-sidebar-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.ms-sidebar-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.ms-sidebar-card h3 i { color: #f59e0b; margin-right: 8px; }
+
+.ms-steps { display: flex; flex-direction: column; gap: 16px; }
+.ms-step { display: flex; gap: 14px; align-items: flex-start; }
+
+.ms-step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.ms-step-text strong { display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px; }
+.ms-step-text p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+.ms-sidebar-tips ul {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ms-sidebar-tips li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.ms-sidebar-tips li i { color: #f59e0b; width: 16px; text-align: center; }
+
+.ms-login-entry {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ms-login-entry h3 { color: #fff; }
+.ms-login-entry h3 i { color: rgba(255,255,255,0.8); }
+.ms-login-entry p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
+.ms-login-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(146,64,14,0.35);
+}
+
+/* ---------- 结果弹窗 ---------- */
+.ms-result-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.ms-result-modal.active { display: flex; }
+
+.ms-result-content {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: msModalIn 0.3s ease;
+}
+
+@keyframes msModalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ms-result-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+}
+
+.ms-result-content h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.ms-result-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.ms-result-actions { display: flex; gap: 12px; justify-content: center; }
+
+.ms-result-btn {
+    padding: 10px 22px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+}
+
+.ms-result-btn:hover { background: #e5e7eb; }
+
+.ms-result-btn-primary {
+    background: linear-gradient(135deg, #92400e, #f59e0b);
+    color: #fff;
+    border: none;
+}
+
+.ms-result-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(146,64,14,0.3);
+}
+
+/* ---------- Toast ---------- */
+.ms-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #065f46;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.ms-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+    .ms-form-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+    .ms-hero h1 { font-size: 28px; }
+    .ms-hero p { font-size: 14px; }
+    .ms-form-card { padding: 24px 18px; }
+    .ms-hero-features { gap: 12px; }
+}

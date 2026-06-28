@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园超市后台 - 青园在线</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/life-modern.css">
+    <link rel="stylesheet" href="css/shopping-admin.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><span>青园在线 · 超市后台</span></div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="life.html" class="nav-link">生活服务</a>
+                <a href="shopping.html" class="nav-link">超市前台</a>
+            </div>
+            <div class="nav-right">
+                <a href="javascript:void(0)" class="login-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="sa-hero">
+        <a href="life.html" class="hero-back-btn"><i class="fas fa-arrow-left"></i> 返回生活服务</a>
+        <div class="sa-hero-content">
+            <h1><i class="fas fa-store"></i> 校园超市后台</h1>
+            <p>实时接单 · 配送管理 · 双向私信 · 商品上下架</p>
+            <div class="sa-hero-stats">
+                <div class="sa-stat">
+                    <span class="sa-stat-num" id="statPending">0</span>
+                    <span class="sa-stat-label">待接单</span>
+                </div>
+                <div class="sa-stat">
+                    <span class="sa-stat-num" id="statDelivering">0</span>
+                    <span class="sa-stat-label">配送中</span>
+                </div>
+                <div class="sa-stat">
+                    <span class="sa-stat-num" id="statDone">0</span>
+                    <span class="sa-stat-label">已送达</span>
+                </div>
+                <div class="sa-stat">
+                    <span class="sa-stat-num" id="statTotal">0</span>
+                    <span class="sa-stat-label">总订单</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab -->
+    <section class="sa-tabs-section">
+        <div class="sa-tabs-header">
+            <button class="sa-tab active" data-tab="orders"><i class="fas fa-clipboard-list"></i><span>订单管理</span></button>
+            <button class="sa-tab" data-tab="products"><i class="fas fa-boxes"></i><span>商品管理</span></button>
+        </div>
+    </section>
+
+    <!-- 订单管理 -->
+    <div class="sa-tab-content active" id="orders">
+        <div class="sa-container">
+            <div class="sa-orders-toolbar">
+                <div class="sa-orders-filter">
+                    <button class="sa-filter-btn active" data-filter="all">全部</button>
+                    <button class="sa-filter-btn" data-filter="pending">待接单 <em id="badgePending" class="sa-badge">0</em></button>
+                    <button class="sa-filter-btn" data-filter="delivering">配送中 <em id="badgeDelivering" class="sa-badge">0</em></button>
+                    <button class="sa-filter-btn" data-filter="done">已送达</button>
+                </div>
+                <div class="sa-orders-tip"><i class="fas fa-bell"></i> 学生下单后自动出现，无需手动刷新</div>
+            </div>
+            <div id="ordersList" class="sa-orders-list">
+                <div class="sa-empty">
+                    <i class="fas fa-inbox"></i>
+                    <p>暂无订单</p>
+                    <span>学生下单后将自动出现在此处</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商品管理 -->
+    <div class="sa-tab-content" id="products">
+        <div class="sa-container">
+            <div class="sa-products-toolbar">
+                <h3><i class="fas fa-boxes"></i> 商品列表</h3>
+                <div class="sa-products-tip">修改库存、上下架状态后前端实时同步</div>
+            </div>
+            <div class="sa-cat-tabs" id="productCatTabs">
+                <button class="sa-cat-tab active" data-cat="snack">零食</button>
+                <button class="sa-cat-tab" data-cat="drink">饮料</button>
+                <button class="sa-cat-tab" data-cat="daily">日用品</button>
+                <button class="sa-cat-tab" data-cat="stationery">文具</button>
+            </div>
+            <div id="productsList" class="sa-products-list"></div>
+        </div>
+    </div>
+
+    <!-- 聊天弹窗 -->
+    <div class="sa-chat-modal" id="chatModal">
+        <div class="sa-chat-content">
+            <div class="sa-chat-header">
+                <div class="sa-chat-title">
+                    <i class="fas fa-comments"></i>
+                    <span id="chatOrderTitle">订单对话</span>
+                </div>
+                <button class="sa-chat-close" id="chatCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="sa-chat-meta" id="chatOrderMeta"></div>
+            <div class="sa-chat-messages" id="chatMessages"></div>
+            <div class="sa-chat-input-row">
+                <input type="text" id="chatInput" placeholder="输入消息，与学生沟通收货地址/缺货等问题...">
+                <button id="chatSendBtn" class="sa-chat-send"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 青园在线 · 校园超市后台</p>
+        </div>
+    </footer>
+
+    <script src="js/shopping-admin.js"></script>
+</body>
+</html>

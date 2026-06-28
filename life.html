@@ -1,22 +1,20 @@
-﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生活服务 - 智慧校园</title>
+    <title>生活服务 - 青园在线</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/life.css">
+    <link rel="stylesheet" href="css/life-modern.css">
     <link rel="stylesheet" href="css/robot-assistant.css">
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-university"></i>
-                <span>智慧校园</span>
-            </div>
+            <div class="nav-logo"><svg class="brand-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="青园在线"><defs><linearGradient id="qyArc" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DF0D9"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0891B2"/></linearGradient><radialGradient id="qyCore" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#A8F0E0"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/></radialGradient><radialGradient id="qyDot" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#38BDF8"/></radialGradient></defs><circle class="brand-wave" cx="20" cy="20" r="16" stroke="url(#qyArc)" stroke-width="1.2" fill="none" opacity="0.4"/><path d="M9 14 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M7 20 H33" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 26 H31" stroke="url(#qyArc)" stroke-width="2.6" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="url(#qyCore)" class="brand-core"/><circle class="brand-pulse" cx="32" cy="7" r="2.2" fill="url(#qyDot)"/></svg><span>青园在线</span></div>
             <div class="nav-menu" id="navMenu">
                 <a href="index.html" class="nav-link">首页</a>
                 <a href="secondhand.html" class="nav-link">二手市场</a>
@@ -37,117 +35,157 @@
         </div>
     </nav>
 
-    <!-- 顶部全屏轮播Banner -->
-    <section class="life-banner">
-        <div class="life-banner-slides" id="bannerSlides">
-            <div class="life-banner-slide active" style="background-image:url('https://images.unsplash.com/photo-1562774053-701939374585?w=1400&h=400&fit=crop')"></div>
-            <div class="life-banner-slide" style="background-image:url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1400&h=400&fit=crop')"></div>
-            <div class="life-banner-slide" style="background-image:url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1400&h=400&fit=crop')"></div>
+    <!-- 极简标题栏（取代轮播横幅） -->
+    <section class="lm-hero">
+        <div class="lm-hero-inner">
+            <div class="lm-hero-left">
+                <span class="lm-hero-eyebrow"><i class="fas fa-sparkles"></i> CAMPUS · LIFE</span>
+                <h1 class="lm-hero-title">
+                    生活<span class="lm-title-accent">服务</span>
+                </h1>
+                <p class="lm-hero-slogan">轻享校园日常 · 一站式精致生活</p>
+                <div class="lm-hero-line"></div>
+            </div>
+            <div class="lm-hero-right">
+                <p class="lm-hero-intro">
+                    涵盖餐饮、快递、超市、通信、医务五大核心场景，<br>
+                    所有服务在线办理，让校园日常更轻盈。
+                </p>
+                <div class="lm-hero-meta">
+                    <span><i class="fas fa-circle lm-dot-mint"></i> 5 项核心服务</span>
+                    <span><i class="fas fa-circle lm-dot-orange"></i> 08:00 – 22:00</span>
+                </div>
+            </div>
         </div>
-        <div class="life-banner-overlay"></div>
-        <div class="life-banner-content">
-            <h1>生活服务</h1>
-            <p>校园一站式生活服务平台</p>
-        </div>
-        <div class="life-banner-dots" id="bannerDots">
-            <span class="life-banner-dot active" data-slide="0"></span>
-            <span class="life-banner-dot" data-slide="1"></span>
-            <span class="life-banner-dot" data-slide="2"></span>
-        </div>
+        <div class="lm-hero-bg-glow lm-glow-1"></div>
+        <div class="lm-hero-bg-glow lm-glow-2"></div>
     </section>
 
-    <!-- 服务入口卡片区 -->
-    <section class="life-services-section">
-        <div class="life-section-title">
-            <h2><i class="fas fa-th-large"></i> 服务入口</h2>
-            <p>点击卡片进入对应服务</p>
-        </div>
-        <div class="life-cards-grid">
-            <div class="life-card" onclick="location.href='dining.html'">
-                <div class="life-card-icon life-card-icon-dining">
-                    <i class="fas fa-utensils"></i>
+    <!-- 不规则错落服务区块 -->
+    <main class="lm-main">
+        <section class="lm-grid">
+            <!-- 区块1：餐饮服务（大块，跨两行） -->
+            <a href="dining.html" class="lm-block lm-block-1 lm-block-dining" data-block="dining">
+                <div class="lm-block-glow"></div>
+                <div class="lm-block-inner">
+                    <div class="lm-block-top">
+                        <span class="lm-block-no">01</span>
+                        <span class="lm-block-tag">FEATURED</span>
+                    </div>
+                    <div class="lm-block-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="lm-block-title">餐饮服务</h3>
+                    <p class="lm-block-desc">食堂菜单 · 在线点餐 · 消费账单</p>
+                    <div class="lm-block-footer">
+                        <span class="lm-block-cta">进入食堂 <i class="fas fa-arrow-right"></i></span>
+                        <div class="lm-block-line"></div>
+                    </div>
                 </div>
-                <div class="life-card-body">
-                    <h3>餐饮服务</h3>
-                    <p>食堂菜单 · 在线点餐 · 消费账单</p>
-                </div>
-                <div class="life-card-arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-            <div class="life-card" onclick="location.href='express.html'">
-                <div class="life-card-icon life-card-icon-express">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <div class="life-card-body">
-                    <h3>快递服务</h3>
-                    <p>快递查询 · 代取服务 · 驿站位置</p>
-                </div>
-                <div class="life-card-arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-            <div class="life-card" onclick="location.href='shopping.html'">
-                <div class="life-card-icon life-card-icon-shop">
-                    <i class="fas fa-shopping-bag"></i>
-                </div>
-                <div class="life-card-body">
-                    <h3>校园超市</h3>
-                    <p>在线购物 · 送货上门 · 商品分类</p>
-                </div>
-                <div class="life-card-arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-        </div>
-    </section>
+            </a>
 
-    <!-- 服务简介 -->
-    <section class="life-intro-section">
-        <div class="life-intro-card">
-            <div class="life-intro-icon"><i class="fas fa-concierge-bell"></i></div>
-            <h3>服务简介</h3>
-            <p>智慧校园生活服务平台是面向全校师生的综合服务入口，涵盖餐饮美食、快递驿站、校园商超等核心生活场景。所有服务均可在线办理，让您足不出户即可享受便捷校园生活。点击上方服务卡片，即可进入对应功能页面。</p>
-        </div>
-    </section>
+            <!-- 区块2：快递服务 -->
+            <a href="express.html" class="lm-block lm-block-2 lm-block-express" data-block="express">
+                <div class="lm-block-glow"></div>
+                <div class="lm-block-inner">
+                    <div class="lm-block-top">
+                        <span class="lm-block-no">02</span>
+                    </div>
+                    <div class="lm-block-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3 class="lm-block-title">快递服务</h3>
+                    <p class="lm-block-desc">代取 · 接单 · 实时沟通</p>
+                    <div class="lm-block-footer">
+                        <span class="lm-block-cta">查看 <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
 
-    <!-- 校园服务概览 -->
-    <section class="life-overview-section">
-        <div class="life-section-title">
-            <h2><i class="fas fa-compass"></i> 校园服务概览</h2>
-        </div>
-        <div class="life-overview-grid">
-            <div class="life-overview-item">
-                <div class="life-overview-icon" style="background:linear-gradient(135deg,#f97316,#fb923c)"><i class="fas fa-utensils"></i></div>
-                <span>餐饮美食</span>
-            </div>
-            <div class="life-overview-item">
-                <div class="life-overview-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa)"><i class="fas fa-box"></i></div>
-                <span>快递驿站</span>
-            </div>
-            <div class="life-overview-item">
-                <div class="life-overview-icon" style="background:linear-gradient(135deg,#10b981,#34d399)"><i class="fas fa-shopping-cart"></i></div>
-                <span>校园商超</span>
-            </div>
-            <div class="life-overview-item">
-                <div class="life-overview-icon" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)"><i class="fas fa-hands-helping"></i></div>
-                <span>便民服务</span>
-            </div>
-        </div>
-    </section>
+            <!-- 区块3：校园超市 -->
+            <a href="shopping.html" class="lm-block lm-block-3 lm-block-shop" data-block="shop">
+                <div class="lm-block-glow"></div>
+                <div class="lm-block-inner">
+                    <div class="lm-block-top">
+                        <span class="lm-block-no">03</span>
+                    </div>
+                    <div class="lm-block-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h3 class="lm-block-title">校园超市</h3>
+                    <p class="lm-block-desc">在线购物 · 送货上门</p>
+                    <div class="lm-block-footer">
+                        <span class="lm-block-cta">逛超市 <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
 
-    <!-- 温馨提示 -->
-    <section class="life-tips-section">
-        <div class="life-tips-card">
-            <div class="life-tips-icon"><i class="fas fa-info-circle"></i></div>
-            <h3>温馨提示</h3>
-            <div class="life-tips-list">
-                <div class="life-tips-item"><i class="fas fa-clock"></i> 服务时间：工作日 08:00 – 22:00</div>
-                <div class="life-tips-item"><i class="fas fa-phone-alt"></i> 客服热线：010-12345678</div>
-                <div class="life-tips-item"><i class="fas fa-shield-alt"></i> 所有交易均受平台保障</div>
+            <!-- 区块4：通信营业厅 -->
+            <a href="telecom.html" class="lm-block lm-block-4 lm-block-telecom" data-block="telecom">
+                <div class="lm-block-glow"></div>
+                <div class="lm-block-inner">
+                    <div class="lm-block-top">
+                        <span class="lm-block-no">04</span>
+                    </div>
+                    <div class="lm-block-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3 class="lm-block-title">通信营业厅</h3>
+                    <p class="lm-block-desc">办卡 · 套餐 · 宽带</p>
+                    <div class="lm-block-footer">
+                        <span class="lm-block-cta">办理 <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 区块5：医务室 -->
+            <a href="clinic.html" class="lm-block lm-block-5 lm-block-clinic" data-block="clinic">
+                <div class="lm-block-glow"></div>
+                <div class="lm-block-inner">
+                    <div class="lm-block-top">
+                        <span class="lm-block-no">05</span>
+                    </div>
+                    <div class="lm-block-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3 class="lm-block-title">医务室</h3>
+                    <p class="lm-block-desc">问诊 · 上报 · 送药</p>
+                    <div class="lm-block-footer">
+                        <span class="lm-block-cta">就医 <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+        </section>
+
+        <!-- 底部装饰条 + 简介合并区 -->
+        <section class="lm-foot">
+            <div class="lm-foot-divider">
+                <span class="lm-divider-dot"></span>
+                <span class="lm-divider-text">校园服务一站式入口</span>
+                <span class="lm-divider-dot"></span>
             </div>
-        </div>
-    </section>
+            <div class="lm-foot-tips">
+                <div class="lm-tip">
+                    <i class="fas fa-clock"></i>
+                    <span>服务时间 · 工作日 08:00 – 22:00</span>
+                </div>
+                <div class="lm-tip">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>客服热线 · 010-12345678</span>
+                </div>
+                <div class="lm-tip">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>所有交易均受平台保障</span>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>智慧校园</h3>
+                <h3>青园在线</h3>
                 <p>一站式校园服务平台</p>
             </div>
             <div class="footer-section">
@@ -165,7 +203,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 智慧校园综合服务平台</p>
+            <p>&copy; 2026 青园在线综合服务平台</p>
         </div>
     </footer>
 
