@@ -686,6 +686,25 @@ body { background: var(--bk-paper); }
     text-decoration: line-through;
 }
 
+/* 时段多选提示标签 */
+.slot-multi-hint {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--bk-mint);
+    margin-left: 8px;
+    background: rgba(52,199,135,0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* 复选模式下选中态增强 */
+.slot-cell.active {
+    background: linear-gradient(135deg, var(--bk-purple) 0%, var(--bk-mint) 100%);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(184,168,212,0.35);
+}
+
 /* ============ 座位选择网格（与时间段按钮保持统一圆角/配色） ============ */
 .seat-grid {
     display: grid;

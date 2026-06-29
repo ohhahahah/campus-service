@@ -57,9 +57,7 @@
                 pets = JSON.parse(localStorage.getItem('campus_pets') || '[]');
             } catch(e) {}
         }
-        if (!pets || pets.length === 0) {
-            pets = getDefaultPets();
-        }
+        /* 不再使用默认模拟数据，只读取数据库真实记录 */
         /* 去重 + 字段补全 */
         var seen = {};
         var deduped = [];
@@ -76,128 +74,6 @@
         } else {
             pets = deduped;
         }
-    }
-
-    function getDefaultPets() {
-        return [
-            {
-                id: 'p1', name: '小橘', breed: '橘猫', age: '约2岁', gender: '公',
-                neutered: true, vaccinated: true,
-                health: '已驱虫、已打疫苗，身体健康，性格亲人',
-                location: '2号宿舍楼下', contact: '138****3333',
-                personality: '小橘是一只非常亲人的橘猫，喜欢在2号宿舍楼下晒太阳。每次有人经过都会主动蹭腿，特别黏人。吃饭的时候会发出呼噜声，吃饱了就翻肚皮让人摸。',
-                images: [
-                    catImg('橘猫', 0),
-                    catImg('橘猫', 1),
-                    catImg('橘猫', 2)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p2', name: '花花', breed: '三花猫', age: '约1岁', gender: '母',
-                neutered: false, vaccinated: false,
-                health: '已驱虫，待打疫苗，活泼好动',
-                location: '食堂后门', contact: '139****4444',
-                personality: '花花是食堂后门的常客，毛色漂亮，黑白橙三色分明。性格活泼好动，喜欢在花丛中追逐蝴蝶。虽然有点怕生，但熟悉后会用头蹭你的手。',
-                images: [
-                    catImg('三花猫', 0),
-                    catImg('三花猫', 1),
-                    catImg('三花猫', 2)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p3', name: '黑豆', breed: '黑猫', age: '约3岁', gender: '公',
-                neutered: true, vaccinated: true,
-                health: '已绝育、已驱虫、已打疫苗，安静乖巧',
-                location: '图书馆花坛', contact: '137****5555',
-                personality: '黑豆是一只安静优雅的黑猫，全身漆黑发亮，眼睛是漂亮的金色。喜欢在图书馆花坛旁安静地坐着，像一个小小的守护者。',
-                images: [
-                    catImg('黑猫', 0),
-                    catImg('黑猫', 1),
-                    catImg('黑猫', 2)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p4', name: '小白', breed: '白猫', age: '约6个月', gender: '母',
-                neutered: false, vaccinated: false,
-                health: '幼猫，已做初步驱虫，需定期检查',
-                location: '教学楼B座', contact: '136****6666',
-                personality: '小白是一只纯白色的小奶猫，眼睛一蓝一绿，非常漂亮。因为还是幼猫，好奇心很强，喜欢探索新事物。会用小爪子拍你的手指玩，非常可爱。',
-                images: [
-                    catImg('白猫', 0),
-                    catImg('白猫', 1),
-                    catImg('白猫', 2)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p5', name: '奶牛', breed: '奶牛猫', age: '约1.5岁', gender: '公',
-                neutered: true, vaccinated: true,
-                health: '已绝育、已驱虫、已打疫苗，粘人爱玩',
-                location: '操场旁', contact: '135****7777',
-                personality: '奶牛是一只黑白花色的猫，像穿着小西装的绅士。性格粘人爱玩，喜欢在操场上追逐飞虫。会主动跳到人腿上求抚摸，是出了名的"社交达人"。',
-                images: [
-                    catImg('奶牛猫', 0),
-                    catImg('奶牛猫', 1),
-                    catImg('奶牛猫', 2)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p6', name: '狸花', breed: '狸花猫', age: '约2岁', gender: '母',
-                neutered: true, vaccinated: true,
-                health: '已绝育、已驱虫、已打疫苗，独立自主',
-                location: '宿舍5号楼', contact: '134****8888',
-                personality: '狸花是一只漂亮的中华狸花猫，虎斑纹路清晰漂亮。性格独立自主，不黏人但也不怕人。喜欢在宿舍楼下巡视自己的"领地"，偶尔会让人摸摸头。',
-                images: [
-                    catImg('狸花猫', 0),
-                    catImg('狸花猫', 1),
-                    catImg('狸花猫', 2)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p7', name: '大橘', breed: '橘猫', age: '约4岁', gender: '公',
-                neutered: true, vaccinated: true,
-                health: '已绝育、已驱虫、已打疫苗，体型偏胖，性格温顺',
-                location: '一食堂门口', contact: '133****9999',
-                personality: '大橘是校园里最有名的猫，体型圆润，是公认的"校猫"。每天准时在一食堂门口蹲守，同学们都认识它。性格极其温顺，怎么摸都不生气。',
-                images: [
-                    catImg('橘猫', 1),
-                    catImg('橘猫', 2),
-                    catImg('橘猫', 0)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p8', name: '小灰', breed: '狸花猫', age: '约8个月', gender: '公',
-                neutered: false, vaccinated: false,
-                health: '幼猫，已驱虫，待打疫苗，胆小但亲人',
-                location: '实验楼C座', contact: '132****0000',
-                personality: '小灰是一只灰色的狸花幼猫，胆子比较小，刚见到人会躲起来。但只要耐心等待，它会慢慢靠近你，用小脑袋蹭你的手。',
-                images: [
-                    catImg('狸花猫', 2),
-                    catImg('狸花猫', 0),
-                    catImg('狸花猫', 1)
-                ],
-                reviewStatus: 'approved'
-            },
-            {
-                id: 'p9', name: '咪咪', breed: '三花猫', age: '约3岁', gender: '母',
-                neutered: true, vaccinated: true,
-                health: '已绝育、已驱虫、已打疫苗，喜欢被抚摸',
-                location: '行政楼花园', contact: '131****1111',
-                personality: '咪咪是一只优雅的三花猫，毛色柔和美丽。最喜欢在行政楼花园的长椅旁晒太阳，看到熟悉的人会主动走过来蹭腿。喜欢被抚摸下巴和耳朵后面，会发出满足的呼噜声。',
-                images: [
-                    catImg('三花猫', 2),
-                    catImg('三花猫', 0),
-                    catImg('三花猫', 1)
-                ],
-                reviewStatus: 'approved'
-            }
-        ];
     }
 
     function init() {

@@ -1,129 +1,295 @@
-﻿﻿/* ============================================================
- * 閫氫俊钀ヤ笟鍘?- 瀛︾敓绔牱寮? * ============================================================ */
+/* ============================================================
+ * 通信营业厅 - 生活服务风格重制版
+ * 风格：清新年轻化，与生活服务主页面统一
+ * ============================================================ */
 
-/* ---------- Hero ---------- */
-.tel-hero {
-    padding: 120px 20px 60px;
-    background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #818cf8 100%);
-    text-align: center;
+/* ---------- 页面标题区 ---------- */
+.tel-page-header {
     position: relative;
+    padding: 150px 5% 40px;
+    margin: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(36, 104, 205, 0.08);
     overflow: hidden;
+    box-sizing: border-box;
 }
 
-.tel-hero::before {
+.tel-page-header::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-    animation: telHeroFloat 15s ease-in-out infinite;
+    top: -30%;
+    left: -10%;
+    width: 50%;
+    height: 150%;
+    background: radial-gradient(ellipse, rgba(137, 85, 224, 0.06) 0%, transparent 70%);
+    pointer-events: none;
 }
 
-@keyframes telHeroFloat {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(30px, -30px); }
+.tel-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -5%;
+    width: 40%;
+    height: 120%;
+    background: radial-gradient(ellipse, rgba(36, 104, 205, 0.04) 0%, transparent 70%);
+    pointer-events: none;
 }
 
-.tel-hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
-.tel-hero h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 12px; }
-.tel-hero h1 i { margin-right: 10px; }
-.tel-hero p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; }
+.tel-back-btn {
+    position: absolute;
+    top: 100px;
+    left: 5%;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(36, 104, 205, 0.12);
+    border-radius: 20px;
+    color: #2468CD;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
 
-.tel-hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-.tel-stat { text-align: center; }
-.tel-stat-num { display: block; font-size: 36px; font-weight: 700; color: #fff; }
-.tel-stat-label { font-size: 14px; color: rgba(255,255,255,0.7); }
+.tel-back-btn:hover {
+    background: #2468CD;
+    color: #fff;
+    border-color: #2468CD;
+    transform: translateX(-3px);
+}
 
-/* ---------- Tabs ---------- */
-.tel-tabs-section {
-    background: var(--bg-primary);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 60px;
-    z-index: 100;
+.tel-back-btn i { font-size: 12px; }
+
+.tel-header-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.tel-header-left {
+    flex: 1;
+    min-width: 280px;
+}
+
+.tel-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8955E0;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.tel-eyebrow i { color: #8955E0; }
+
+.tel-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #1A2438;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+.tel-title-accent {
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tel-slogan {
+    font-size: 14px;
+    color: #5A6A82;
+    margin: 0;
+}
+
+.tel-header-right {
+    flex: 1;
+    min-width: 320px;
+    max-width: 480px;
+}
+
+.tel-stats-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.tel-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(36, 104, 205, 0.1);
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(36, 104, 205, 0.04);
+}
+
+.tel-stat-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.tel-stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.tel-stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1A2438;
+    line-height: 1;
+}
+
+.tel-stat-label {
+    font-size: 12px;
+    color: #8A98AE;
+    margin-top: 2px;
+}
+
+/* ---------- 主内容区 ---------- */
+.tel-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 5% 60px;
+}
+
+/* ---------- Tab切换 ---------- */
+.tel-tabs-wrap {
+    margin-bottom: 24px;
 }
 
 .tel-tabs-header {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 4px;
-    padding: 12px 20px;
+    display: inline-flex;
+    gap: 6px;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(36, 104, 205, 0.1);
+    border-radius: 16px;
 }
 
 .tel-tab {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 28px;
+    padding: 10px 24px;
     border: none;
     background: transparent;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--text-secondary);
-    transition: all 0.3s;
+    color: #5A6A82;
+    transition: all 0.3s ease;
 }
 
-.tel-tab:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.tel-tab:hover {
+    color: #1A2438;
+    background: rgba(36, 104, 205, 0.04);
+}
+
 .tel-tab.active {
-    background: linear-gradient(135deg, #4338ca, #6366f1);
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
-    box-shadow: 0 4px 15px rgba(67,56,202,0.3);
+    box-shadow: 0 4px 14px rgba(137, 85, 224, 0.3);
 }
 
-.tel-tab-content { display: none; padding: 40px 20px; animation: telFadeIn 0.4s ease; }
-.tel-tab-content.active { display: block; }
+.tel-tab i { font-size: 14px; }
+
+.tel-tab-content {
+    display: none;
+    animation: telFadeIn 0.4s ease;
+}
+
+.tel-tab-content.active {
+    display: block;
+}
 
 @keyframes telFadeIn {
-    from { opacity: 0; transform: translateY(15px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- Container ---------- */
-.tel-container { max-width: 1200px; margin: 0 auto; }
-
-/* ---------- 鎻愪氦宸ュ崟甯冨眬 ---------- */
-.tel-submit-layout {
+/* ---------- 内容网格布局 ---------- */
+.tel-content-grid {
     display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 30px;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
     align-items: start;
 }
 
-.tel-form-section {
-    background: var(--bg-card);
+/* ---------- 表单卡片 ---------- */
+.tel-form-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(36, 104, 205, 0.1);
     border-radius: 20px;
-    padding: 36px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 20px rgba(36, 104, 205, 0.06);
+    overflow: hidden;
 }
 
-.tel-form-section h2 {
-    font-size: 22px;
+.tel-card-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid rgba(36, 104, 205, 0.08);
+}
+
+.tel-card-header h2 {
+    font-size: 18px;
     font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 28px;
+    color: #1A2438;
+    margin: 0;
 }
 
-.tel-form-section h2 i { color: #6366f1; margin-right: 8px; }
+.tel-card-header h2 i {
+    color: #8955E0;
+    margin-right: 8px;
+}
 
-/* ---------- 涓氬姟绫诲瀷閫夋嫨 ---------- */
-.tel-type-select { margin-bottom: 30px; }
-.tel-type-select h3 {
-    font-size: 16px;
+.tel-card-body {
+    padding: 24px 28px;
+}
+
+/* ---------- 业务类型选择 ---------- */
+.tel-type-section {
+    margin-bottom: 24px;
+}
+
+.tel-type-section h3 {
+    font-size: 14px;
     font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 14px;
+    color: #5A6A82;
+    margin: 0 0 14px 0;
 }
 
 .tel-type-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
 }
 
 .tel-type-card {
@@ -131,129 +297,192 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 18px 10px;
-    background: var(--bg-secondary);
+    padding: 16px 10px;
+    background: rgba(137, 85, 224, 0.04);
     border: 2px solid transparent;
     border-radius: 14px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
-.tel-type-card i { font-size: 24px; color: #6366f1; }
-.tel-type-card span { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.tel-type-card i {
+    font-size: 22px;
+    color: #8955E0;
+    transition: color 0.3s;
+}
+
+.tel-type-card span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A2438;
+}
 
 .tel-type-card:hover {
-    border-color: #818cf8;
-    background: rgba(99,102,241,0.06);
+    border-color: #B692F0;
+    background: rgba(137, 85, 224, 0.08);
     transform: translateY(-2px);
 }
 
 .tel-type-card.selected {
-    border-color: #6366f1;
-    background: rgba(99,102,241,0.1);
-    box-shadow: 0 4px 15px rgba(99,102,241,0.15);
+    border-color: #8955E0;
+    background: linear-gradient(135deg, rgba(137, 85, 224, 0.15) 0%, rgba(182, 146, 240, 0.15) 100%);
+    box-shadow: 0 4px 14px rgba(137, 85, 224, 0.3);
+    transform: translateY(-2px);
 }
 
-.tel-type-card.selected i { color: #4338ca; }
+.tel-type-card.selected i {
+    color: #6D28D9;
+}
 
-/* ---------- 琛ㄥ崟 ---------- */
-.tel-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tel-type-card.selected span {
+    color: #6D28D9;
+    font-weight: 700;
+}
 
-.tel-form-group { margin-bottom: 20px; }
+/* ---------- 表单 ---------- */
+.tel-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.tel-form-group {
+    margin-bottom: 16px;
+}
+
 .tel-form-group label {
-    display: block;
-    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
+    color: #5A6A82;
+    margin-bottom: 6px;
 }
-.tel-form-group label i { color: #6366f1; margin-right: 6px; }
+
+.tel-form-group label i {
+    color: #8955E0;
+    font-size: 12px;
+}
 
 .tel-form-group input,
 .tel-form-group select,
 .tel-form-group textarea {
     width: 100%;
-    padding: 12px 16px;
-    border: 1px solid var(--border-color);
+    padding: 11px 14px;
+    border: 1px solid rgba(36, 104, 205, 0.15);
     border-radius: 12px;
     font-size: 14px;
-    color: var(--text-primary);
-    background: var(--bg-secondary);
+    color: #1A2438;
+    background: rgba(255, 255, 255, 0.9);
     transition: all 0.3s;
     box-sizing: border-box;
+}
+
+.tel-form-group input::placeholder,
+.tel-form-group textarea::placeholder {
+    color: #8A98AE;
 }
 
 .tel-form-group input:focus,
 .tel-form-group select:focus,
 .tel-form-group textarea:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    border-color: #8955E0;
+    box-shadow: 0 0 0 3px rgba(137, 85, 224, 0.1);
 }
 
-.tel-form-group textarea { resize: vertical; }
+.tel-form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
 
-/* ---------- 鏂囦欢涓婁紶 ---------- */
+/* ---------- 文件上传 ---------- */
 .tel-upload-area {
-    border: 2px dashed var(--border-color);
+    border: 2px dashed rgba(137, 85, 224, 0.3);
     border-radius: 14px;
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
     transition: all 0.3s;
-    position: relative;
+    background: rgba(137, 85, 224, 0.02);
 }
 
-.tel-upload-area:hover { border-color: #6366f1; background: rgba(99,102,241,0.03); }
+.tel-upload-area:hover {
+    border-color: #8955E0;
+    background: rgba(137, 85, 224, 0.04);
+}
 
 .tel-upload-placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 20px;
+    gap: 6px;
+    padding: 16px;
 }
 
-.tel-upload-placeholder i { font-size: 36px; color: #818cf8; }
-.tel-upload-placeholder span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
-.tel-upload-placeholder small { font-size: 12px; color: var(--text-secondary); }
+.tel-upload-placeholder i {
+    font-size: 28px;
+    color: #B692F0;
+}
 
-.tel-upload-preview { position: relative; display: flex; justify-content: center; }
+.tel-upload-placeholder span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #5A6A82;
+}
+
+.tel-upload-placeholder small {
+    font-size: 11px;
+    color: #8A98AE;
+}
+
+.tel-upload-preview {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+}
+
 .tel-upload-preview img {
     max-width: 100%;
-    max-height: 200px;
+    max-height: 160px;
     border-radius: 10px;
     object-fit: contain;
 }
 
 .tel-upload-remove {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 30px;
-    height: 30px;
+    top: 4px;
+    right: 4px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: none;
-    background: rgba(239,68,68,0.9);
+    background: rgba(232, 76, 80, 0.9);
     color: #fff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
     transition: all 0.2s;
 }
 
-.tel-upload-remove:hover { background: #ef4444; transform: scale(1.1); }
+.tel-upload-remove:hover {
+    background: #E84C50;
+    transform: scale(1.1);
+}
 
-/* ---------- 鎻愪氦鎸夐挳 ---------- */
+/* ---------- 提交按钮 ---------- */
 .tel-submit-btn {
     width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #4338ca, #6366f1);
+    padding: 13px;
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
     border: none;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
@@ -261,129 +490,229 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 14px rgba(137, 85, 224, 0.25);
 }
 
 .tel-submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(67,56,202,0.35);
+    box-shadow: 0 8px 24px rgba(137, 85, 224, 0.35);
 }
 
-.tel-submit-btn:active { transform: translateY(0); }
+.tel-submit-btn:active {
+    transform: translateY(0);
+}
 
-/* ---------- 渚ф爮 ---------- */
-.tel-sidebar { display: flex; flex-direction: column; gap: 20px; }
+/* ---------- 侧边栏 ---------- */
+.tel-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 
 .tel-sidebar-card {
-    background: var(--bg-card);
-    border-radius: 20px;
-    padding: 28px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(36, 104, 205, 0.1);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(36, 104, 205, 0.05);
 }
 
 .tel-sidebar-card h3 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-}
-.tel-sidebar-card h3 i { color: #6366f1; margin-right: 8px; }
-
-.tel-steps { display: flex; flex-direction: column; gap: 16px; }
-
-.tel-step { display: flex; gap: 14px; align-items: flex-start; }
-
-.tel-step-num {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #4338ca, #6366f1);
-    color: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 14px;
+    gap: 8px;
+    font-size: 15px;
     font-weight: 700;
-    flex-shrink: 0;
+    color: #1A2438;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(36, 104, 205, 0.08);
 }
 
-.tel-step-text strong {
-    display: block;
+.tel-sidebar-card h3 i {
+    color: #8955E0;
     font-size: 14px;
-    color: var(--text-primary);
-    margin-bottom: 2px;
 }
 
-.tel-step-text p {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.tel-sidebar-tips ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* ---------- 流程步骤 ---------- */
+.tel-steps {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.tel-sidebar-tips li {
+.tel-step {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--text-secondary);
+    gap: 12px;
+    align-items: flex-start;
 }
 
-.tel-sidebar-tips li i { color: #6366f1; width: 16px; text-align: center; }
-
-/* ---------- 涓氬姟鍛樺悗鍙板叆鍙?---------- */
-.tel-admin-entry {
-    display: block;
-    width: 100%;
-    border: none;
-    font-family: inherit;
-    font-size: inherit;
-    text-align: left;
-    text-decoration: none;
-    background: linear-gradient(135deg, #312e81, #4338ca);
+.tel-step-num {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.tel-step-text {
+    flex: 1;
+}
+
+.tel-step-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A2438;
+    margin-bottom: 1px;
+}
+
+.tel-step-text p {
+    font-size: 12px;
+    color: #8A98AE;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ---------- 温馨提示 ---------- */
+.tel-tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tel-tips-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: #5A6A82;
+    line-height: 1.4;
+}
+
+.tel-tips-list li i {
+    color: #8955E0;
+    font-size: 11px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* ---------- 后台入口 ---------- */
+.tel-admin-entry {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px 18px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(137, 85, 224, 0.1) 0%, rgba(182, 146, 240, 0.1) 100%);
+    border: 1px solid rgba(137, 85, 224, 0.2);
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    font-family: inherit;
+}
+
+.tel-admin-entry:hover {
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(137, 85, 224, 0.25);
+}
+
+.tel-admin-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(137, 85, 224, 0.15);
+    border-radius: 12px;
+    color: #8955E0;
+    font-size: 18px;
     transition: all 0.3s;
 }
 
-.tel-admin-entry h3 { color: #fff; }
-.tel-admin-entry h3 i { color: rgba(255,255,255,0.8); }
-.tel-admin-entry p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
-.tel-admin-entry:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(49,46,129,0.35);
+.tel-admin-entry:hover .tel-admin-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
 }
 
-/* ---------- 鎴戠殑宸ュ崟 ---------- */
-.tel-section-title {
-    font-size: 22px;
+.tel-admin-text {
+    flex: 1;
+}
+
+.tel-admin-text h3 {
+    font-size: 14px;
     font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 24px;
+    color: #1A2438;
+    margin: 0 0 2px 0;
+    transition: color 0.3s;
 }
-.tel-section-title i { color: #6366f1; margin-right: 8px; }
 
-.tel-orders-list { display: flex; flex-direction: column; gap: 16px; }
+.tel-admin-text p {
+    font-size: 12px;
+    color: #8955E0;
+    margin: 0;
+    transition: color 0.3s;
+}
+
+.tel-admin-entry:hover .tel-admin-text h3,
+.tel-admin-entry:hover .tel-admin-text p {
+    color: #fff;
+}
+
+/* ---------- 我的工单 ---------- */
+.tel-orders-wrap {
+    max-width: 900px;
+}
+
+.tel-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A2438;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(36, 104, 205, 0.1);
+}
+
+.tel-section-title i {
+    color: #8955E0;
+}
+
+.tel-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
 
 .tel-order-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(36, 104, 205, 0.1);
     border-radius: 16px;
-    padding: 24px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(36, 104, 205, 0.04);
     transition: all 0.3s;
 }
 
 .tel-order-card:hover {
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(36, 104, 205, 0.08);
     transform: translateY(-2px);
 }
 
@@ -391,60 +720,63 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .tel-order-type {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #1A2438;
 }
 
-.tel-order-type i { color: #6366f1; }
+.tel-order-type i { color: #8955E0; }
 
 .tel-order-status {
-    padding: 5px 14px;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 16px;
     font-size: 12px;
     font-weight: 600;
 }
 
-.tel-status-pending { background: #fef3c7; color: #92400e; }
-.tel-status-accepted { background: #dbeafe; color: #1e40af; }
-.tel-status-processing { background: #ede9fe; color: #4338ca; }
-.tel-status-done { background: #d1fae5; color: #065f46; }
+.tel-status-pending { background: #FEF3C7; color: #92400E; }
+.tel-status-accepted { background: #DBEAFE; color: #1E40AF; }
+.tel-status-processing { background: #EDE9FE; color: #8955E0; }
+.tel-status-done { background: #D1FAE5; color: #065F46; }
 
 .tel-order-info {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 12px;
 }
 
 .tel-order-info-item {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
-    color: var(--text-secondary);
+    font-size: 12px;
+    color: #5A6A82;
 }
 
-.tel-order-info-item i { color: #818cf8; width: 14px; }
+.tel-order-info-item i { color: #B692F0; font-size: 11px; }
 
 .tel-order-desc {
     font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 14px;
-    line-height: 1.6;
+    color: #5A6A82;
+    margin-bottom: 12px;
+    line-height: 1.5;
 }
 
-.tel-order-actions { display: flex; gap: 10px; }
+.tel-order-actions {
+    display: flex;
+    gap: 10px;
+}
 
 .tel-order-actions button {
-    padding: 8px 18px;
+    padding: 8px 16px;
     border-radius: 10px;
     border: none;
     font-size: 13px;
@@ -457,56 +789,74 @@
 }
 
 .tel-btn-chat {
-    background: linear-gradient(135deg, #4338ca, #6366f1);
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
 }
 
 .tel-btn-chat:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(67,56,202,0.3);
+    box-shadow: 0 4px 12px rgba(137, 85, 224, 0.3);
 }
 
 .tel-btn-detail {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: rgba(36, 104, 205, 0.08);
+    color: #5A6A82;
 }
 
-.tel-btn-detail:hover { background: #e5e7eb; }
+.tel-btn-detail:hover {
+    background: rgba(36, 104, 205, 0.12);
+}
 
-/* ---------- 绌虹姸鎬?---------- */
+/* ---------- 空状态 ---------- */
 .tel-empty-state {
     text-align: center;
-    padding: 60px 20px;
-    color: var(--text-secondary);
+    padding: 48px 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    border: 1px dashed rgba(36, 104, 205, 0.15);
 }
 
-.tel-empty-state i { font-size: 56px; opacity: 0.2; display: block; margin-bottom: 16px; }
-.tel-empty-state p { font-size: 15px; }
+.tel-empty-state i {
+    font-size: 48px;
+    color: #B692F0;
+    opacity: 0.4;
+    display: block;
+    margin-bottom: 12px;
+}
 
-/* ---------- 鑱婂ぉ寮圭獥 ---------- */
+.tel-empty-state p {
+    font-size: 14px;
+    color: #8A98AE;
+    margin: 0;
+}
+
+/* ---------- 聊天弹窗 ---------- */
 .tel-chat-modal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(26, 36, 56, 0.5);
+    backdrop-filter: blur(4px);
     z-index: 10000;
     justify-content: center;
     align-items: center;
     padding: 20px;
 }
 
-.tel-chat-modal.active { display: flex; }
+.tel-chat-modal.active {
+    display: flex;
+}
 
 .tel-chat-content {
-    background: var(--bg-card);
+    background: #fff;
     border-radius: 20px;
     width: 100%;
-    max-width: 480px;
+    max-width: 460px;
     max-height: 80vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 60px rgba(26, 36, 56, 0.2);
     animation: telChatIn 0.3s ease;
 }
 
@@ -516,23 +866,28 @@
 }
 
 .tel-chat-header {
-    padding: 18px 24px;
-    background: linear-gradient(135deg, #4338ca, #6366f1);
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.tel-chat-header h3 { font-size: 16px; font-weight: 600; }
+.tel-chat-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+}
+
 .tel-chat-header h3 i { margin-right: 8px; }
 
 .tel-chat-close {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -541,16 +896,16 @@
     transition: all 0.2s;
 }
 
-.tel-chat-close:hover { background: rgba(255,255,255,0.3); }
+.tel-chat-close:hover { background: rgba(255, 255, 255, 0.3); }
 
 .tel-chat-messages {
     flex: 1;
-    padding: 20px;
+    padding: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    min-height: 300px;
+    gap: 10px;
+    min-height: 280px;
 }
 
 .tel-msg {
@@ -563,27 +918,27 @@
 
 .tel-msg-self {
     align-self: flex-end;
-    background: linear-gradient(135deg, #4338ca, #6366f1);
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
     border-bottom-right-radius: 4px;
 }
 
 .tel-msg-other {
     align-self: flex-start;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: #F4F6FB;
+    color: #1A2438;
     border-bottom-left-radius: 4px;
 }
 
 .tel-msg-time {
-    font-size: 11px;
+    font-size: 10px;
     opacity: 0.6;
     margin-top: 4px;
 }
 
 .tel-chat-input {
-    padding: 14px 18px;
-    border-top: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-top: 1px solid rgba(36, 104, 205, 0.1);
     display: flex;
     gap: 10px;
 }
@@ -591,23 +946,25 @@
 .tel-chat-input input {
     flex: 1;
     padding: 10px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 25px;
+    border: 1px solid rgba(36, 104, 205, 0.15);
+    border-radius: 24px;
     font-size: 14px;
-    color: var(--text-primary);
-    background: var(--bg-secondary);
+    color: #1A2438;
+    background: #F4F6FB;
     outline: none;
     transition: border-color 0.2s;
 }
 
-.tel-chat-input input:focus { border-color: #6366f1; }
+.tel-chat-input input:focus {
+    border-color: #8955E0;
+}
 
 .tel-chat-input button {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: linear-gradient(135deg, #4338ca, #6366f1);
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -616,14 +973,16 @@
     transition: all 0.3s;
 }
 
-.tel-chat-input button:hover { transform: scale(1.08); }
+.tel-chat-input button:hover {
+    transform: scale(1.08);
+}
 
-/* ---------- 涓氬姟鍛樺悗鍙扮櫥褰曞脊绐楋紙瀵归綈鍖诲姟瀹ゆ牎鍖荤櫥褰曪紝绱壊涓昏皟锛?---------- */
+/* ---------- 后台登录弹窗 ---------- */
 .tel-admin-login-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(30,27,75,0.55);
+    background: rgba(26, 36, 56, 0.5);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 10001;
@@ -631,15 +990,18 @@
     align-items: center;
     padding: 20px;
 }
-.tel-admin-login-overlay.active { display: flex; }
+
+.tel-admin-login-overlay.active {
+    display: flex;
+}
 
 .tel-admin-login-modal {
-    background: #ffffff;
+    background: #fff;
     border-radius: 20px;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(49,46,129,0.25);
+    box-shadow: 0 20px 60px rgba(137, 85, 224, 0.2);
     animation: telLoginIn 0.3s ease;
 }
 
@@ -649,25 +1011,29 @@
 }
 
 .tel-admin-login-header {
-    padding: 18px 24px;
-    background: linear-gradient(135deg, #312e81, #4338ca);
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .tel-admin-login-header h3 {
     font-size: 15px;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    margin: 0;
+    letter-spacing: 0.3px;
 }
+
 .tel-admin-login-header h3 i { margin-right: 8px; }
 
 .tel-admin-login-close {
-    width: 32px; height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -675,101 +1041,117 @@
     justify-content: center;
     transition: all 0.2s;
 }
-.tel-admin-login-close:hover { background: rgba(255,255,255,0.35); }
 
-.tel-admin-login-body { padding: 28px 24px; }
+.tel-admin-login-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.tel-admin-login-body {
+    padding: 24px 20px;
+}
 
 .tel-admin-login-hint {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    border: 1px solid #c4b5fd;
-    border-radius: 10px;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(137, 85, 224, 0.08) 0%, rgba(182, 146, 240, 0.08) 100%);
+    border: 1px solid rgba(137, 85, 224, 0.15);
+    border-radius: 12px;
     padding: 12px 14px;
     margin-bottom: 20px;
-    color: #6d28d9;
+    color: #6D28D9;
     font-size: 13px;
     font-weight: 500;
 }
-.tel-admin-login-hint i { color: #6366f1; }
+
+.tel-admin-login-hint i { color: #8955E0; }
 
 .tel-admin-login-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 22px;
+    gap: 14px;
+    margin-bottom: 20px;
 }
 
 .tel-admin-login-field {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .tel-admin-login-label {
-    font-size: 14px;
-    color: #6b7280;
+    font-size: 13px;
+    color: #5A6A82;
     font-weight: 500;
 }
-.tel-admin-login-label i { margin-right: 6px; color: #6366f1; }
+
+.tel-admin-login-label i {
+    margin-right: 6px;
+    color: #8955E0;
+}
 
 .tel-admin-login-input {
     width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    background: #f9fafb;
-    color: #1f2937;
-    font-size: 15px;
+    padding: 11px 14px;
+    border: 1px solid rgba(36, 104, 205, 0.15);
+    border-radius: 12px;
+    background: #F4F6FB;
+    color: #1A2438;
+    font-size: 14px;
     font-family: inherit;
     transition: all 0.2s;
     box-sizing: border-box;
 }
+
 .tel-admin-login-input[readonly] {
     cursor: not-allowed;
-    color: #4b5563;
+    color: #8955E0;
+    font-weight: 600;
 }
+
 .tel-admin-login-input:focus {
     outline: none;
-    border-color: #6366f1;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    border-color: #8955E0;
+    box-shadow: 0 0 0 3px rgba(137, 85, 224, 0.1);
 }
 
 .tel-admin-login-btn {
     width: 100%;
-    padding: 14px;
+    padding: 13px;
     border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #6366f1, #4338ca);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #8955E0 0%, #B692F0 100%);
     color: #fff;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    letter-spacing: 1px;
+    box-shadow: 0 4px 14px rgba(137, 85, 224, 0.25);
 }
+
 .tel-admin-login-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+    box-shadow: 0 8px 24px rgba(137, 85, 224, 0.35);
 }
-.tel-admin-login-btn:active { transform: translateY(0); }
 
-/* ---------- Toast ---------- */
+.tel-admin-login-btn:active {
+    transform: translateY(0);
+}
+
+/* ---------- Toast提示 ---------- */
 .tel-toast {
     position: fixed;
     top: 80px;
     left: 50%;
     transform: translateX(-50%) translateY(-20px);
-    background: #065f46;
+    background: #34C787;
     color: #fff;
-    padding: 12px 28px;
-    border-radius: 12px;
+    padding: 12px 24px;
+    border-radius: 14px;
     font-size: 14px;
     font-weight: 600;
     display: flex;
@@ -779,7 +1161,7 @@
     opacity: 0;
     pointer-events: none;
     transition: all 0.4s ease;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 24px rgba(52, 199, 135, 0.25);
 }
 
 .tel-toast.show {
@@ -787,29 +1169,121 @@
     transform: translateX(-50%) translateY(0);
 }
 
-/* ---------- 鍝嶅簲寮?---------- */
-@media (max-width: 900px) {
-    .tel-submit-layout {
+/* ---------- 响应式 ---------- */
+@media (max-width: 960px) {
+    .tel-content-grid {
         grid-template-columns: 1fr;
     }
+
+    .tel-sidebar {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .tel-admin-entry {
+        grid-column: 1 / -1;
+    }
+
+    .tel-stats-row {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .tel-page-header {
+        padding: 120px 4% 32px;
+    }
+
+    .tel-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tel-title {
+        font-size: 28px;
+    }
+
+    .tel-stats-row {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .tel-stat-item {
+        flex: 1;
+        min-width: 140px;
+        padding: 12px 14px;
+    }
+
+    .tel-stat-num {
+        font-size: 18px;
+    }
+
+    .tel-main {
+        padding: 24px 4% 48px;
+    }
+
+    .tel-tabs-header {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .tel-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 16px;
+    }
+
     .tel-type-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .tel-form-row {
         grid-template-columns: 1fr;
     }
+
+    .tel-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .tel-order-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .tel-back-btn {
+        top: 12px;
+        left: 4%;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
-@media (max-width: 600px) {
-    .tel-hero h1 { font-size: 28px; }
-    .tel-hero p { font-size: 14px; }
-    .tel-hero-stats { gap: 20px; }
-    .tel-stat-num { font-size: 26px; }
-    .tel-type-grid { grid-template-columns: repeat(2, 1fr); }
-    .tel-order-info { grid-template-columns: 1fr; }
-    .tel-form-section { padding: 24px 18px; }
-    .tel-admin-login-modal { max-width: 100%; }
-    .tel-admin-login-header h3 { font-size: 14px; }
-    .tel-admin-login-body { padding: 22px 18px; }
-}
+@media (max-width: 480px) {
+    .tel-eyebrow {
+        font-size: 11px;
+    }
 
+    .tel-title {
+        font-size: 24px;
+    }
+
+    .tel-slogan {
+        font-size: 13px;
+    }
+
+    .tel-stat-item {
+        min-width: 100%;
+    }
+
+    .tel-card-body {
+        padding: 20px 16px;
+    }
+
+    .tel-card-header {
+        padding: 16px 20px;
+    }
+
+    .tel-sidebar-card {
+        padding: 16px;
+    }
+}

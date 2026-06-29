@@ -71,7 +71,7 @@
         activeCat: null,
         activeVenue: null,
         selectedDate: null,
-        selectedSlot: null,
+        selectedSlots: [],  /* 支持多选时段 */
         selectedSeat: null
     };
 
@@ -127,6 +127,36 @@
         });
     }
 
+    /* 检测指定场地+日期的所有时段是否全部被占用 */
+    function areAllSlotsBooked(venueId, date) {
+        var list = getBookings();
+        var bookedSlots = [];
+        list.forEach(function(b) {
+            if (b.venueId === venueId && b.date === date && b.status !== 'cancelled') {
+                bookedSlots.push(b.timeSlot);
+            }
+        });
+        /* 检查每个时段是否都被预约 */
+        return TIME_SLOTS.every(function(s) {
+            var slotStr = s.start + '-' + s.end;
+            return bookedSlots.indexOf(slotStr) > -1;
+        });
+    }
+
+    /* 获取某场地+日期已预约的时段列表 */
+    function getBookedSlots(venueId, date) {
+        var list = getBookings();
+        var bookedSlots = [];
+        list.forEach(function(b) {
+            if (b.venueId === venueId && b.date === date && b.status !== 'cancelled') {
+                if (bookedSlots.indexOf(b.timeSlot) === -1) {
+                    bookedSlots.push(b.timeSlot);
+                }
+            }
+        });
+        return bookedSlots;
+    }
+
     /* ============================================================
        视图切换
        ============================================================ */
@@ -159,6 +189,7 @@
     function renderListView(cat) {
         var info = CATEGORIES[cat];
         var venues = getVenuesByCat(cat);
+        var todayStr = fmtDate(new Date());
 
         $('listEyebrow').textContent = info.eyebrow;
         $('listTitle').textContent = info.name;
@@ -168,14 +199,18 @@
         venues.forEach(function(v, idx) {
             /* 错落：每隔一张加 tall 样式让高度不齐 */
             var tallCls = (idx % 2 === 0) ? 'tall' : '';
-            var statusText = { free: '空闲可预约', busy: '已被占用', using: '使用中' }[v.status];
+
+            /* 检测今日所有时段是否都被预约 */
+            var allBookedToday = areAllSlotsBooked(v.id, todayStr);
+            var statusClass = allBookedToday ? 'busy' : 'free';
+            var statusText = allBookedToday ? '今日约满' : (statusClass === 'free' ? '空闲可预约' : '已被占用');
 
             var descHtml = idx % 2 === 0 ? '<p class="venue-desc">开放时段内可在线预约，提交后系统自动记录，重复时段将自动拦截。</p>' : '';
 
             html += '<div class="venue-card ' + tallCls + '" data-cat="' + v.cat + '" data-id="' + v.id + '">' +
                 '<div class="venue-card-head">' +
                     '<div class="venue-name">' + v.name + '</div>' +
-                    '<span class="venue-status ' + v.status + '">' + statusText + '</span>' +
+                    '<span class="venue-status ' + statusClass + '">' + statusText + '</span>' +
                 '</div>' +
                 descHtml +
                 '<div class="venue-meta">' +
@@ -198,10 +233,14 @@
                 var id = card.getAttribute('data-id');
                 var venue = getVenueById(id);
                 if (!venue) return;
-                if (venue.status === 'busy') {
-                    showToast('该场地已被占用，无法预约', 'error');
+
+                /* 检测今日是否全部约满 */
+                var todayStr = fmtDate(new Date());
+                if (areAllSlotsBooked(venue.id, todayStr)) {
+                    showToast('该场馆今日已约满，暂时无法预约', 'error');
                     return;
                 }
+
                 state.activeVenue = venue;
                 renderDetailView(venue);
                 switchView('detail');
@@ -224,7 +263,7 @@
             dates.push({ date: fmtDate(d), day: d.getDate(), week: getWeekStr(d), full: d });
         }
         state.selectedDate = dates[0].date;
-        state.selectedSlot = null;
+        state.selectedSlots = [];  /* 重置多选时段 */
         state.selectedSeat = null;
 
         var dateHtml = dates.map(function(d, i) {
@@ -234,6 +273,7 @@
             '</button>';
         }).join('');
 
+        /* 渲染时段（复选模式） */
         var slotHtml = TIME_SLOTS.map(function(s) {
             var conflict = checkConflict(venue.id, state.selectedDate, s.start + '-' + s.end);
             return '<button class="slot-cell' + (conflict ? ' disabled' : '') + '" data-slot="' + s.start + '-' + s.end + '">' +
@@ -288,9 +328,9 @@
             seatBlockHtml +
 
             '<div class="detail-block">' +
-                '<h3 class="detail-block-title">选择时间段</h3>' +
+                '<h3 class="detail-block-title">选择时间段 <span class="slot-multi-hint">（可多选）</span></h3>' +
                 '<div class="slot-grid" id="slotGrid">' + slotHtml + '</div>' +
-                '<p class="slot-hint"><i class="fas fa-info-circle"></i> 已被预约的时段会自动置灰，无法选择</p>' +
+                '<p class="slot-hint"><i class="fas fa-info-circle"></i> 已预约的时段会自动置灰无法勾选，点击可选中或取消选中多个时段</p>' +
             '</div>' +
 
             '<div class="detail-block">' +
@@ -325,7 +365,7 @@
             });
         });
 
-        /* 时间段切换 */
+        /* 时间段切换（复选模式） */
         bindSlots();
         /* 座位选择 */
         bindSeats();
@@ -389,17 +429,28 @@
             '</button>';
         }).join('');
         slotGrid.innerHTML = html;
-        state.selectedSlot = null;
+        state.selectedSlots = [];  /* 重置多选时段 */
         bindSlots();
     }
 
+    /* 时段复选模式绑定 */
     function bindSlots() {
         document.querySelectorAll('#slotGrid .slot-cell').forEach(function(cell) {
             cell.addEventListener('click', function() {
                 if (cell.classList.contains('disabled')) return;
-                document.querySelectorAll('#slotGrid .slot-cell').forEach(function(c) { c.classList.remove('active'); });
-                cell.classList.add('active');
-                state.selectedSlot = cell.getAttribute('data-slot');
+
+                var slot = cell.getAttribute('data-slot');
+                var idx = state.selectedSlots.indexOf(slot);
+
+                if (idx > -1) {
+                    /* 已选中，取消选择 */
+                    state.selectedSlots.splice(idx, 1);
+                    cell.classList.remove('active');
+                } else {
+                    /* 未选中，添加选择 */
+                    state.selectedSlots.push(slot);
+                    cell.classList.add('active');
+                }
                 updateTimeDisplay();
             });
         });
@@ -408,18 +459,25 @@
     function updateTimeDisplay() {
         var el = $('timeDisplay');
         if (!el) return;
-        if (state.selectedDate && state.selectedSlot) {
-            var parts = state.selectedSlot.split('-');
+        if (state.selectedDate && state.selectedSlots.length > 0) {
+            /* 显示多选时段 */
+            var slotsText = state.selectedSlots.map(function(slot) {
+                var parts = slot.split('-');
+                return '<strong>' + parts[0] + '</strong>~<strong>' + parts[1] + '</strong>';
+            }).join('、');
+
             var seatTxt = state.selectedSeat ? ' · 座位 <strong>' + state.selectedSeat + '号</strong>' : '';
-            el.innerHTML = '已选 <strong>' + state.selectedDate + '</strong> ' +
-                '<strong>' + parts[0] + '</strong> 至 <strong>' + parts[1] + '</strong>' + seatTxt + ' · 预约起止时间已确认';
+            var countTxt = state.selectedSlots.length > 1 ? '（共 ' + state.selectedSlots.length + ' 个时段）' : '';
+            el.innerHTML = '已选 <strong>' + state.selectedDate + '</strong> ' + slotsText + countTxt + seatTxt + ' · 预约时段已确认';
+        } else if (state.selectedDate) {
+            el.textContent = '已选日期 ' + state.selectedDate + '，请选择时间段（可多选）';
         } else {
             el.textContent = '尚未选择日期与时间段';
         }
     }
 
     /* ============================================================
-       提交预约（真实写入 localStorage / CampusDB）
+       提交预约（支持多时段批量预约）
        ============================================================ */
     function handleSubmit(venue) {
         var stuId = $('fStuId').value.trim();
@@ -432,7 +490,7 @@
         if (!phone || !/^1\d{10}$/.test(phone)) { showToast('请输入正确的11位手机号', 'error'); return; }
         if (!purpose) { showToast('请填写预约用途', 'error'); return; }
         if (!state.selectedDate) { showToast('请选择预约日期', 'error'); return; }
-        if (!state.selectedSlot) { showToast('请选择时间段', 'error'); return; }
+        if (state.selectedSlots.length === 0) { showToast('请至少选择一个时间段', 'error'); return; }
 
         /* 若场地为单人座位类型，必须选定座位号 */
         var needSeat = venue.seatCount && venue.seatCount > 0;
@@ -441,9 +499,7 @@
             return;
         }
 
-        /* 二次检测冲突（防并发）
-           - 单人座位场地：同一场地+同一日期+同一座位号被占用即视为冲突（座位号维度）
-           - 集体场地：同一场地+同一日期+同一时间段被占用即视为冲突（时间段维度） */
+        /* 座位类型场地：检测座位是否已被预约 */
         if (needSeat) {
             var booked = getBookedSeatNumbers(venue.id, state.selectedDate);
             if (booked.indexOf(Number(state.selectedSeat)) > -1) {
@@ -451,43 +507,74 @@
                 refreshSeats(venue);
                 return;
             }
-        } else if (checkConflict(venue.id, state.selectedDate, state.selectedSlot)) {
-            showToast('该时间段已被预约，请选择其他时段', 'error');
-            refreshSlots(venue);
-            return;
         }
 
-        var parts = state.selectedSlot.split('-');
-        var booking = {
-            id: 'BK' + Date.now(),
-            venueId: venue.id,
-            venueName: venue.name,
-            venueCat: venue.cat,
-            venueCatName: CATEGORIES[venue.cat].name,
-            date: state.selectedDate,
-            timeSlot: state.selectedSlot,
-            startTime: parts[0],
-            endTime: parts[1],
-            seatNo: needSeat ? Number(state.selectedSeat) : null,
-            stuId: stuId,
-            name: name,
-            phone: phone,
-            purpose: purpose,
-            people: 1,
-            status: 'confirmed',
-            note: '',
-            createdAt: new Date().toISOString()
-        };
+        /* 多时段逐一检测冲突并提交 */
+        var successCount = 0;
+        var failCount = 0;
+        var failedSlots = [];
 
-        saveBooking(booking);
+        state.selectedSlots.forEach(function(slot) {
+            /* 检测该时段是否已被他人预约（双重检测） */
+            if (checkConflict(venue.id, state.selectedDate, slot)) {
+                failCount++;
+                var parts = slot.split('-');
+                failedSlots.push(parts[0] + '~' + parts[1]);
+                return;
+            }
 
-        /* 成功提示 */
-        $('bkToastMsg').innerHTML = '已生成预约记录并存入「<a href="profile.html#bookings" style="color:#a890c5;text-decoration:underline">我的预约记录</a>」，该时间段已被锁定，他人无法重复预约。';
-        var toast = $('bkToast');
-        toast.classList.add('show');
-        setTimeout(function() { toast.classList.remove('show'); }, 5000);
+            /* 创建预约记录 */
+            var parts = slot.split('-');
+            var booking = {
+                id: 'BK' + Date.now() + '_' + successCount,
+                venueId: venue.id,
+                venueName: venue.name,
+                venueCat: venue.cat,
+                venueCatName: CATEGORIES[venue.cat].name,
+                date: state.selectedDate,
+                timeSlot: slot,
+                startTime: parts[0],
+                endTime: parts[1],
+                seatNo: needSeat ? Number(state.selectedSeat) : null,
+                stuId: stuId,
+                name: name,
+                phone: phone,
+                purpose: purpose,
+                people: 1,
+                status: 'confirmed',
+                note: '',
+                createdAt: new Date().toISOString()
+            };
 
-        /* 1.5秒后返回列表（刷新状态） */
+            saveBooking(booking);
+            successCount++;
+        });
+
+        /* 刷新时段显示（更新已预约状态） */
+        refreshSlots(venue);
+
+        /* 根据结果提示 */
+        if (failCount === 0) {
+            /* 全部成功 */
+            var msg = successCount > 1
+                ? '已成功创建 <strong>' + successCount + ' 条</strong>预约记录，存入「<a href="profile.html#bookings" style="color:#a890c5;text-decoration:underline">我的预约记录</a>」，这些时段已被锁定。'
+                : '已生成预约记录并存入「<a href="profile.html#bookings" style="color:#a890c5;text-decoration:underline">我的预约记录</a>」，该时段已被锁定。';
+            $('bkToastMsg').innerHTML = msg;
+            var toast = $('bkToast');
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 5000);
+        } else if (successCount === 0) {
+            /* 全部失败 */
+            showToast('时段 ' + failedSlots.join('、') + ' 已被预约，请选择其他时段', 'error');
+        } else {
+            /* 部分成功 */
+            var toast = $('bkToast');
+            toast.classList.add('show');
+            $('bkToastMsg').innerHTML = '成功创建 <strong>' + successCount + ' 条</strong>预约记录，<strong>' + failCount + ' 条</strong>失败（' + failedSlots.join('、') + ' 已被预约）。<a href="profile.html#bookings" style="color:#a890c5;text-decoration:underline">查看预约记录</a>';
+            setTimeout(function() { toast.classList.remove('show'); }, 5000);
+        }
+
+        /* 1.5秒后返回列表 */
         setTimeout(function() {
             renderListView(state.activeCat);
             switchView('list');

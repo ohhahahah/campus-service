@@ -66,7 +66,7 @@
             fillStudentBtn.addEventListener('click', function() {
                 stuIdInput.value = DEMO_STUDENT_ID;
                 stuPwdInput.value = DEMO_STUDENT_PWD;
-                stuIdInput.focus();
+                document.getElementById('studentLogin').submit();
             });
         }
         var fillAdminBtn = document.getElementById('fillAdminBtn');
@@ -74,7 +74,7 @@
             fillAdminBtn.addEventListener('click', function() {
                 admIdInput.value = ADMIN_ACCOUNT;
                 admPwdInput.value = ADMIN_PASSWORD;
-                admIdInput.focus();
+                document.getElementById('adminLogin').submit();
             });
         }
     }
