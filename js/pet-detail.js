@@ -42,7 +42,41 @@
     }
 
 
-    function loadPetsData() {
+    /* ========== 云端API配置 ========== */
+    var API_BASE = 'http://localhost:3000';
+
+    /* ========== 禁用浏览器缓存 fetch 包装 ========== */
+    function fetchNoCache(url, options) {
+        var separator = url.indexOf('?') === -1 ? '?' : '&';
+        var noCacheUrl = url + separator + '_t=' + Date.now() + '&_r=' + Math.random();
+        options = options || {};
+        options.headers = options.headers || {};
+        options.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+        options.headers['Pragma'] = 'no-cache';
+        options.headers['Expires'] = '0';
+        return fetch(noCacheUrl, options);
+    }
+
+    function loadPetsFromAPI() {
+        return fetchNoCache(API_BASE + '/api/pets')
+            .then(function(res) { return res.json(); })
+            .then(function(result) {
+                if (result.success && result.data) {
+                    petsData = result.data;
+                    petsData.forEach(function(p) {
+                        if (!p.reviewStatus) p.reviewStatus = p.review_status || 'approved';
+                    });
+                }
+                return petsData;
+            })
+            .catch(function(e) {
+                console.warn('[PetDetail] 云端API加载失败，降级到本地存储:', e.message);
+                loadPetsFromLocal();
+                return petsData;
+            });
+    }
+
+    function loadPetsFromLocal() {
         if (window.CampusDB) {
             petsData = window.CampusDB.getPets();
         }
@@ -51,15 +85,19 @@
                 petsData = JSON.parse(localStorage.getItem('campus_pets') || '[]');
             } catch(e) {}
         }
-        /* 不再使用默认模拟数据，只读取数据库真实记录 */
+        petsData.forEach(function(p) {
+            if (!p.reviewStatus) p.reviewStatus = p.review_status || 'approved';
+        });
+    }
+
+    function loadPetsData() {
+        loadPetsFromAPI();
     }
 
     var currentPet = null;
     var currentImgIndex = 0;
 
     function init() {
-        loadPetsData();
-
         var params = new URLSearchParams(window.location.search);
         var petId = params.get('id');
 
@@ -68,16 +106,18 @@
             return;
         }
 
-        currentPet = petsData.find(function(p) { return p.id === petId; });
-        if (!currentPet) {
-            showNotFound();
-            return;
-        }
+        loadPetsFromAPI().then(function() {
+            currentPet = petsData.find(function(p) { return p.id === petId; });
+            if (!currentPet) {
+                showNotFound();
+                return;
+            }
 
-        document.getElementById('breadcrumbName').textContent = currentPet.name;
-        document.title = currentPet.name + ' - 猫咪详情 - 智慧校园';
-        renderDetail();
-        initAdoptModal();
+            document.getElementById('breadcrumbName').textContent = currentPet.name;
+            document.title = currentPet.name + ' - 猫咪详情 - 智慧校园';
+            renderDetail();
+            initAdoptModal();
+        });
     }
 
     function showNotFound() {

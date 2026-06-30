@@ -48,7 +48,43 @@
     }
 
 
-    function loadPets() {
+    /* ========== 云端API配置 ========== */
+    var API_BASE = 'http://localhost:3000'; // 云端API地址，修改为实际服务器地址
+
+    /* ========== 禁用浏览器缓存 fetch 包装 ========== */
+    function fetchNoCache(url, options) {
+        var separator = url.indexOf('?') === -1 ? '?' : '&';
+        var noCacheUrl = url + separator + '_t=' + Date.now() + '&_r=' + Math.random();
+        options = options || {};
+        options.headers = options.headers || {};
+        options.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+        options.headers['Pragma'] = 'no-cache';
+        options.headers['Expires'] = '0';
+        return fetch(noCacheUrl, options);
+    }
+
+    /* ========== 从云端API加载猫咪数据 ========== */
+    function loadPetsFromAPI() {
+        return fetchNoCache(API_BASE + '/api/pets')
+            .then(function(res) { return res.json(); })
+            .then(function(result) {
+                if (result.success && result.data) {
+                    pets = result.data;
+                    /* 字段兼容处理 */
+                    pets.forEach(function(p) {
+                        if (!p.reviewStatus) p.reviewStatus = p.review_status || 'approved';
+                    });
+                }
+                return pets;
+            })
+            .catch(function(e) {
+                console.warn('[Pets] 云端API加载失败，降级到本地存储:', e.message);
+                loadPetsFromLocal();
+                return pets;
+            });
+    }
+
+    function loadPetsFromLocal() {
         if (window.CampusDB) {
             pets = window.CampusDB.getPets();
         }
@@ -57,34 +93,26 @@
                 pets = JSON.parse(localStorage.getItem('campus_pets') || '[]');
             } catch(e) {}
         }
-        /* 不再使用默认模拟数据，只读取数据库真实记录 */
-        /* 去重 + 字段补全 */
-        var seen = {};
-        var deduped = [];
+        /* 字段补全 */
         pets.forEach(function(p) {
-            if (!p.reviewStatus) p.reviewStatus = 'approved';
-            if (!seen[p.id]) {
-                seen[p.id] = true;
-                deduped.push(p);
-            }
+            if (!p.reviewStatus) p.reviewStatus = p.review_status || 'approved';
         });
-        if (deduped.length !== pets.length) {
-            pets = deduped;
-            try { localStorage.setItem('campus_pets', JSON.stringify(pets)); } catch(e) {}
-        } else {
-            pets = deduped;
-        }
+    }
+
+    function loadPets() {
+        loadPetsFromAPI();
     }
 
     function init() {
-        loadPets();
-        initHeroSlider();
-        animateStats();
-        renderPets('all');
-        initFilters();
-        initModal();
-        initImageUpload();
-        initForm();
+        loadPetsFromAPI().then(function() {
+            initHeroSlider();
+            animateStats();
+            renderPets('all');
+            initFilters();
+            initModal();
+            initImageUpload();
+            initForm();
+        });
     }
 
     function initHeroSlider() {
@@ -283,21 +311,6 @@
             var contact = document.getElementById('petContact').value.trim();
             if (!name || !location) { showToast('请填写完整信息'); return; }
 
-            /* 幂等性校验：同一用户1分钟内不能提交名称+位置+联系人完全相同的流浪猫 */
-            try {
-                var stored = JSON.parse(localStorage.getItem('campus_pets') || '[]');
-                var now = Date.now();
-                var duplicate = stored.find(function(p) {
-                    if (p.name !== name || p.location !== location) return false;
-                    if (contact && p.contact && p.contact !== contact) return false;
-                    if (!p.publishTime) return false;
-                    var t = new Date(p.publishTime.replace(' ', 'T')).getTime();
-                    if (isNaN(t)) return false; /* 解析失败则跳过 */
-                    return (now - t) < 60000; /* 1分钟内 */
-                });
-                if (duplicate) { showToast('请勿重复提交相同信息'); return; }
-            } catch(e) {}
-
             isSubmitting = true;
             /* 禁用提交按钮，防止重复点击 */
             var submitBtn = this.querySelector('button[type="submit"]');
@@ -317,49 +330,64 @@
                 personality: '待补充',
                 adoptInfo: ['需提供稳定住所证明','承诺科学喂养、定期体检','签署领养协议','接受志愿者定期回访','不弃养承诺'],
                 images: uploadedImages.length > 0 ? uploadedImages.slice() : [
-                    catImg(breed, 0)
+                    catImg(document.getElementById('petBreed').value, 0)
                 ],
-                reviewStatus: 'pending', /* 强制待审核，禁止直接通过 */
-                publishTime: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                review_status: 'pending', /* 强制待审核，禁止直接通过 */
+                publish_time: new Date().toISOString().replace('T', ' ').substring(0, 16)
             };
-            /* 持久化到 localStorage */
-            try {
-                var stored2 = JSON.parse(localStorage.getItem('campus_pets') || '[]');
-                /* 二次幂等校验：写入前再检查一次，防止并发写入 */
-                var now2 = Date.now();
-                var dup2 = stored2.find(function(p) {
-                    if (p.name !== name || p.location !== location) return false;
-                    if (contact && p.contact && p.contact !== contact) return false;
-                    if (!p.publishTime) return false;
-                    var t2 = new Date(p.publishTime.replace(' ', 'T')).getTime();
-                    if (isNaN(t2)) return false;
-                    return (now2 - t2) < 60000;
-                });
-                if (dup2) {
-                    isSubmitting = false;
-                    if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; submitBtn.style.cursor = ''; }
-                    showToast('请勿重复提交相同信息');
-                    return;
+
+            /* 发送到云端API */
+            fetchNoCache(API_BASE + '/api/pets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPet)
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(result) {
+                if (result.success) {
+                    /* 云端存储成功，同时写入本地作为缓存 */
+                    try {
+                        var stored = JSON.parse(localStorage.getItem('campus_pets') || '[]');
+                        stored.unshift(newPet);
+                        localStorage.setItem('campus_pets', JSON.stringify(stored));
+                    } catch(e) {}
+                    pets.unshift(newPet);
+                    renderPets('all');
+                    closeModal('petModal');
+                    this.reset();
+                    uploadedImages = [];
+                    var previewContainer = document.getElementById('petUploadPreview');
+                    var placeholder = document.getElementById('petUploadPlaceholder');
+                    if (previewContainer) previewContainer.innerHTML = '';
+                    if (placeholder) placeholder.style.display = '';
+                    showToast('流浪猫登记成功，等待管理员审核！');
+                } else {
+                    showToast('提交失败，请重试');
                 }
-                stored2.unshift(newPet);
-                localStorage.setItem('campus_pets', JSON.stringify(stored2));
-            } catch(e) {}
-            /* 不再调用 CampusDB.addPet，避免与直接写 localStorage 重复 */
-            pets.unshift(newPet);
-            renderPets('all');
-            closeModal('petModal');
-            this.reset();
-            uploadedImages = [];
-            var previewContainer = document.getElementById('petUploadPreview');
-            var placeholder = document.getElementById('petUploadPlaceholder');
-            if (previewContainer) previewContainer.innerHTML = '';
-            if (placeholder) placeholder.style.display = '';
-            /* 延迟恢复提交按钮，防止快速重复点击 */
-            setTimeout(function() {
+            }.bind(this))
+            .catch(function(e) {
+                console.warn('[Pets] 云端提交失败:', e.message);
+                /* 云端失败时降级到本地存储 */
+                try {
+                    var stored2 = JSON.parse(localStorage.getItem('campus_pets') || '[]');
+                    stored2.unshift(newPet);
+                    localStorage.setItem('campus_pets', JSON.stringify(stored2));
+                } catch(e2) {}
+                pets.unshift(newPet);
+                renderPets('all');
+                closeModal('petModal');
+                this.reset();
+                uploadedImages = [];
+                var previewContainer2 = document.getElementById('petUploadPreview');
+                var placeholder2 = document.getElementById('petUploadPlaceholder');
+                if (previewContainer2) previewContainer2.innerHTML = '';
+                if (placeholder2) placeholder2.style.display = '';
+                showToast('流浪猫登记成功（本地模式），等待管理员审核！');
+            }.bind(this))
+            .finally(function() {
                 isSubmitting = false;
                 if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; submitBtn.style.cursor = ''; }
-            }, 2000);
-            showToast('流浪猫登记成功，等待管理员审核！');
+            });
         });
     }
 

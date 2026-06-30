@@ -1,0 +1,8 @@
+{
+  "host": "YOUR_CLOUD_MYSQL_IP",
+  "port": 3306,
+  "user": "YOUR_MYSQL_USERNAME",
+  "password": "YOUR_MYSQL_PASSWORD",
+  "database": "campus_pets",
+  "charset": "utf8mb4"
+}
